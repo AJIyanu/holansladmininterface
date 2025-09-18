@@ -1,13 +1,13 @@
 import Image from "next/image";
-import { Bell, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import MobileMenu from "./MobileMenu";
 import { UserMenu } from "../user/UserMenu";
+import { getCurrentUser } from "@/lib/auth-server";
 
-export default function Header() {
+export default async function Header() {
+  const { user } = await getCurrentUser();
+  // console.log(user);
   return (
     <header className="bg-white/20 backdrop-blur-sm mb-5 px-4 py-3 z-10 relative">
       <div className="flex items-center justify-between">
@@ -34,7 +34,12 @@ export default function Header() {
 
         {/* Desktop Right Section */}
         <div className="me-6 lg:flex hidden items-center gap-4">
-          <UserMenu name="Joseph Aderemi" />
+          <UserMenu
+            name={`${user ? user.first_name : "please"} ${
+              user ? user.last_name : "reload"
+            }`}
+            email={user ? user.email : "pleasereload@page"}
+          />
         </div>
 
         {/* Mobile Section (client) */}

@@ -14,9 +14,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "../user/UserMenu";
+import { useUser } from "../UserProvider";
+import { NavigationBreakdown } from "./NavBreakDown";
+import { sampleNavigationData } from "./Sidebar";
 
 export default function MobileMenu() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useUser();
 
   return (
     <>
@@ -59,28 +63,17 @@ export default function MobileMenu() {
             </div>
             {/* Mobile Nav */}
             <div className="p-4 space-y-4">
-              <div className="space-y-1">
-                <Button variant="ghost" className="w-full justify-start">
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Research
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Plan & Reports
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <Truck className="h-4 w-4 mr-2" />
-                  Deliverables
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <Scale className="h-4 w-4 mr-2" />
-                  Legal
-                </Button>
-              </div>
+              <NavigationBreakdown navigationData={sampleNavigationData} />
             </div>
             {/* User Section */}
             <div className="pt-4 mt-auto">
-              <UserMenu name="Joseph Aderemi" mobile />
+              <UserMenu
+                name={`${user ? user.first_name : "please"} ${
+                  user ? user.last_name : "reload"
+                }`}
+                email={user ? user.email : "pleasereload@page"}
+                mobile
+              />
             </div>
           </div>
         </div>

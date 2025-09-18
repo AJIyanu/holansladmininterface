@@ -2,7 +2,7 @@ import type React from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
-import Breadcrumb from "./Breadcrumb";
+import { Breadcrumb } from "./Breadcrumb";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Bell, LogOut, Settings, User, ChevronDown } from "lucide-react";
 import LogoutButton from "./LogoutButton";
+import { useUser } from "@/components/UserProvider";
 
 interface UserMenuProps {
   name: string;

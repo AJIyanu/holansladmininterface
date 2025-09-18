@@ -9,7 +9,7 @@ import {
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background flex flex-col items-center md:grid md:grid-cols-fit-3 lg:grid-cols-fit-3 gap-8 p-8">
       {/* Hero Section */}
       <section className="bg-brand-navy text-brand-white py-20">
         <div className="container mx-auto px-4 text-center">
