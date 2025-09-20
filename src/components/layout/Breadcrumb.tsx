@@ -71,7 +71,7 @@ export function Breadcrumb({ className = "" }: BreadcrumbProps) {
 
   return (
     <div
-      className={`flex items-center gap-2 text-sm py-3 border text-gray-600 ${className}`}
+      className={`flex items-center gap-2 text-sm py-3 rounded-full shadow-md ${className}`}
     >
       {/* Home/Root link */}
       <Link
