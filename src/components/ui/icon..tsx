@@ -48,6 +48,7 @@ import {
   Tag,
   Archive,
   Trash2,
+  NotebookText,
 } from "lucide-react";
 
 const iconMap: { [key: string]: React.ComponentType<any> } = {
@@ -67,6 +68,7 @@ const iconMap: { [key: string]: React.ComponentType<any> } = {
   orders: Package,
   deliverables: Truck,
   inventory: Database,
+  track: NotebookText,
 
   // CRM & Customer Management
   customers: Users,

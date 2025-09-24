@@ -12,7 +12,7 @@ function getBaseUrl() {
 
 export async function getCurrentUser() {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const cookie = (await cookieStore).toString();
 
     const res = await fetch(`${getBaseUrl()}/api/auth/me`, {

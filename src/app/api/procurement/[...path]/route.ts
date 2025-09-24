@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function proxyRequest(req: NextRequest, method: string, path: string[]) {
-  const endpoint = `${API_BASE_URL}/procurement/${path.join("/")}`;
+  const endpoint = `${API_BASE_URL}/procurement/${path.join("/")}/`;
 
   const token = req.cookies.get("access_token")?.value;
 
@@ -11,6 +11,7 @@ async function proxyRequest(req: NextRequest, method: string, path: string[]) {
   if (method !== "GET" && method !== "HEAD") {
     body = await req.text();
   }
+  console.log("Proxying request body:", body);
 
   const res = await fetch(endpoint, {
     method,
@@ -19,10 +20,11 @@ async function proxyRequest(req: NextRequest, method: string, path: string[]) {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body,
-    cache: "no-store", // always fresh
+    cache: "no-store",
   });
 
-  const data = await res.text(); // fetch raw to pass exactly
+  const data = await res.text();
+  console.log(`Response from ${endpoint}:`, data);
   return new NextResponse(data, {
     status: res.status,
     headers: {
@@ -34,39 +36,45 @@ async function proxyRequest(req: NextRequest, method: string, path: string[]) {
 // GET
 export async function GET(
   req: NextRequest,
-  { params }: { params: { path: string[] } }
+  props: { params: Promise<{ path: string[] }> }
 ) {
+  const params = await props.params;
   return proxyRequest(req, "GET", params.path);
 }
 
 // POST
 export async function POST(
   req: NextRequest,
-  { params }: { params: { path: string[] } }
+  props: { params: Promise<{ path: string[] }> }
 ) {
+  const params = await props.params;
+  // console.log("POST request to path:", params.path);
   return proxyRequest(req, "POST", params.path);
 }
 
 // PUT
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { path: string[] } }
+  props: { params: Promise<{ path: string[] }> }
 ) {
+  const params = await props.params;
   return proxyRequest(req, "PUT", params.path);
 }
 
 // PATCH
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { path: string[] } }
+  props: { params: Promise<{ path: string[] }> }
 ) {
+  const params = await props.params;
   return proxyRequest(req, "PATCH", params.path);
 }
 
 // DELETE
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { path: string[] } }
+  props: { params: Promise<{ path: string[] }> }
 ) {
+  const params = await props.params;
   return proxyRequest(req, "DELETE", params.path);
 }

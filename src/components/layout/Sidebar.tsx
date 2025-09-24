@@ -1,4 +1,3 @@
-import { link } from "fs";
 import { NavigationBreakdown } from "./NavBreakDown";
 
 export const sampleNavigationData = {
@@ -54,18 +53,18 @@ export const sampleNavigationData = {
         {
           subitemname: "Create Order",
           iconname: "procurement",
-          link: "/dashboard/orders/create",
+          link: "/dashboard/po/new",
         },
         {
           subitemname: "Track Orders",
-          iconname: "clock",
-          link: "/dashboard/orders/pending",
+          iconname: "track",
+          link: "/dashboard/po",
         },
-        {
-          subitemname: "Order History",
-          iconname: "archive",
-          link: "/dashboard/orders/history",
-        },
+        // {
+        //   subitemname: "Order History",
+        //   iconname: "archive",
+        //   link: "/dashboard/po/track",
+        // },
       ],
     },
     {

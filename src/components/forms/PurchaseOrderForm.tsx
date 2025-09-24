@@ -143,6 +143,7 @@ export default function PurchaseOrderForm({
   const [supplierQuotes, setSupplierQuotes] = useState<SupplierQuote[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const form = useForm<z.infer<typeof purchaseOrderSchema>>({
     resolver: zodResolver(purchaseOrderSchema),
@@ -199,8 +200,8 @@ export default function PurchaseOrderForm({
       };
 
       const url = defaultData
-        ? `${API_BASE_URL}/procurement/purchase-orders/${defaultData.id}/`
-        : `${API_BASE_URL}/procurement/purchase-orders/`;
+        ? `/api/procurement/purchase-orders/${defaultData.id}/`
+        : `/api/procurement/purchase-orders/`;
 
       const method = defaultData ? "PUT" : "POST";
 
@@ -226,6 +227,12 @@ export default function PurchaseOrderForm({
       const result = await response.json();
       onSubmit?.(result);
 
+      setSuccessMessage(
+        defaultData
+          ? "Purchase order updated successfully."
+          : "Purchase order submitted successfully."
+      );
+
       if (!defaultData) form.reset();
     } catch (error) {
       console.error("Submission error:", error);
@@ -248,7 +255,7 @@ export default function PurchaseOrderForm({
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto border-none shadow-none h-full">
+    <Card className="w-full max-w-2xl mx-auto border-none shadow-none">
       <CardHeader>
         <CardTitle>
           {defaultData ? "Update Purchase Order" : "Create Purchase Order"}
@@ -266,6 +273,14 @@ export default function PurchaseOrderForm({
           </Alert>
         )}
 
+        {successMessage && (
+          <Alert className="mb-6 border border-green-400 bg-green-50 text-green-800">
+            {" "}
+            {/* No variant prop, so it uses the default style */}
+            <AlertDescription>{successMessage}</AlertDescription>
+          </Alert>
+        )}
+
         <Form {...form}>
           {/* Use form tag to trigger native submit */}
           <form
@@ -273,7 +288,7 @@ export default function PurchaseOrderForm({
             className="space-y-6"
           >
             {form.formState.errors.root && (
-              <Alert className="mb-6" variant="destructive">
+              <Alert className="mb-6 border border-red-400 text-red-800" variant="destructive">
                 <AlertDescription>
                   {form.formState.errors.root.message}
                 </AlertDescription>
@@ -479,7 +494,11 @@ export default function PurchaseOrderForm({
                         selected={
                           field.value ? new Date(field.value) : undefined
                         }
-                        onSelect={(date) => field.onChange(date?.toISOString())}
+                        onSelect={(date) => {
+                          if (date) {
+                            field.onChange(format(date, "yyyy-MM-dd"));
+                          }
+                        }}
                         captionLayout="dropdown"
                         className="w-auto"
                       />
