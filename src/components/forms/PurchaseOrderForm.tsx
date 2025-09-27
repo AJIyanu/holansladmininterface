@@ -288,7 +288,10 @@ export default function PurchaseOrderForm({
             className="space-y-6"
           >
             {form.formState.errors.root && (
-              <Alert className="mb-6 border border-red-400 text-red-800" variant="destructive">
+              <Alert
+                className="mb-6 border border-red-400 text-red-800"
+                variant="destructive"
+              >
                 <AlertDescription>
                   {form.formState.errors.root.message}
                 </AlertDescription>

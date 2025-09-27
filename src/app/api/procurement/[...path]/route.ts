@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function proxyRequest(req: NextRequest, method: string, path: string[]) {
   const endpoint = `${API_BASE_URL}/procurement/${path.join("/")}/`;
 
-  const token = req.cookies.get("access_token")?.value;
+  let token = req.cookies.get("access_token")?.value;
+  if (!token) {
+    token = cookies().toString();
+  }
+  // console.log(`Accessing endpoint: ${endpoint} with token: ${token}`);
 
   let body: string | undefined;
   if (method !== "GET" && method !== "HEAD") {
     body = await req.text();
   }
-  console.log("Proxying request body:", body);
+  // console.log("Proxying request body:", body);
 
   const res = await fetch(endpoint, {
     method,
@@ -23,8 +28,18 @@ async function proxyRequest(req: NextRequest, method: string, path: string[]) {
     cache: "no-store",
   });
 
-  const data = await res.text();
-  console.log(`Response from ${endpoint}:`, data);
+  const data = (await res.text().catch(() => null)) ?? "";
+  // console.log(`Response from ${endpoint}:`, data);
+
+  if (res.status === 204) {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Content-Type": res.headers.get("Content-Type") ?? "application/json",
+      },
+    });
+  }
+
   return new NextResponse(data, {
     status: res.status,
     headers: {

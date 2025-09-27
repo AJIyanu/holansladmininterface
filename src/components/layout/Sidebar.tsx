@@ -113,17 +113,12 @@ export const sampleNavigationData = {
         {
           subitemname: "Supplier Directory",
           iconname: "building",
-          link: "/dashboard/suppliers/directory",
+          link: "/dashboard/suppliers",
         },
         {
-          subitemname: "Supplier Performance",
-          iconname: "analytics",
-          link: "/dashboard/suppliers/performance",
-        },
-        {
-          subitemname: "Add New Supplier",
+          subitemname: "Supplier Profiles",
           iconname: "adduser",
-          link: "/dashboard/suppliers/onboarding",
+          link: "/dashboard/suppliers/profiles",
         },
       ],
     },
@@ -132,19 +127,14 @@ export const sampleNavigationData = {
       iconname: "customers",
       subitems: [
         {
-          subitemname: "Customer List",
+          subitemname: "Customer Directory",
           iconname: "users",
-          link: "/dashboard/customers/list",
+          link: "/dashboard/customers/",
         },
         {
           subitemname: "Customer Profiles",
           iconname: "user",
           link: "/dashboard/customers/profiles",
-        },
-        {
-          subitemname: "Customer Analytics",
-          iconname: "analytics",
-          link: "/dashboard/customers/analytics",
         },
       ],
     },

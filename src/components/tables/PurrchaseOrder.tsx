@@ -1,6 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -9,97 +18,78 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Eye, Loader2, SquarePen, Trash2 } from "lucide-react";
+import { Loader2, Eye, SquarePen, Trash2 } from "lucide-react";
 
-interface Tracker {
-  id: string;
-  status: string;
-  description: string;
-  updated_at: string;
-}
-interface PurchaseOrder {
-  id: string;
-  client_name: string;
-  supplier_name: string;
-  item_name: string;
-  item_brand: string;
-  po_number: string;
-  status: string;
-  created_at: string;
-  trackers: Tracker[];
-  supplier_quote: string;
+import { PurchaseOrder } from "@/types/purchase";
+import PurchaseOrderDialog from "../PurchaseOrderDialog";
+import Link from "next/link";
+
+interface Props {
+  initialOrders: PurchaseOrder[];
 }
 
-export default function PurchaseOrdersPage() {
-  const [orders, setOrders] = useState<PurchaseOrder[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function PurchaseOrderTable({ initialOrders }: Props) {
+  const [orders, setOrders] = useState<PurchaseOrder[]>(initialOrders ?? []);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder | null>(
-    null
-  );
-  const [quoteDetail, setQuoteDetail] = useState<any>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  const [viewOrder, setViewOrder] = useState<PurchaseOrder | null>(null);
 
-  async function fetchOrders() {
+  async function refreshOrders() {
     setLoading(true);
-    const res = await fetch(`/api/procurement/purchase-orders/`, {
-      credentials: "include",
-    });
-    const data = await res.json();
-    setOrders(data);
-    setLoading(false);
-  }
-
-  async function openView(order: PurchaseOrder) {
-    setSelectedOrder(order);
-    const res = await fetch(
-      `/api/procurement/supplier-quotes/${order.supplier_quote}/`,
-      {
+    try {
+      const res = await fetch(`/api/procurement/purchase-orders/`, {
         credentials: "include",
-      }
-    );
-    const quote = await res.json();
-    setQuoteDetail(quote);
+      });
+      if (!res.ok) throw new Error("Failed to fetch orders");
+      const data = (await res.json()) as PurchaseOrder[];
+      setOrders(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const filteredOrders = orders.filter(
-    (o) =>
-      (filter
-        ? o.po_number.toLowerCase().includes(filter.toLowerCase())
-        : true) && (statusFilter ? o.status === statusFilter : true)
-  );
+  async function handleDelete(orderId: string) {
+    if (!confirm("Are you sure you want to delete this purchase order?"))
+      return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/procurement/purchase-orders/${orderId}/`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      await refreshOrders();
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  }
+
+  const filteredOrders = orders.filter((o) => {
+    const matchesPo = filter
+      ? o.po_number.toLowerCase().includes(filter.toLowerCase())
+      : true;
+    const matchesStatus =
+      !statusFilter || statusFilter === "all"
+        ? true
+        : o.status === statusFilter;
+    return matchesPo && matchesStatus;
+  });
 
   return (
-    <div className="p-6 space-y-4 h-full">
-      <h1 className="text-2xl font-bold">Purchase Orders</h1>
-      <div className="flex flex-col sm:flex-row gap-3">
+    <div className="p-0">
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <Input
           placeholder="Search by PO Number..."
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           className="sm:w-1/3"
         />
-        <Select onValueChange={setStatusFilter}>
+        <Select onValueChange={(v) => setStatusFilter(v)}>
           <SelectTrigger className="sm:w-40">
             <SelectValue placeholder="Filter Status" />
           </SelectTrigger>
@@ -109,6 +99,12 @@ export default function PurchaseOrdersPage() {
             <SelectItem value="pending">Pending</SelectItem>
           </SelectContent>
         </Select>
+
+        <div className="ml-auto">
+          <Button onClick={() => refreshOrders()} size="sm">
+            Refresh
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -155,14 +151,20 @@ export default function PurchaseOrdersPage() {
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={() => openView(order)}
+                      onClick={() => setViewOrder(order)}
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="secondary" size="sm">
-                      <SquarePen className="h-4 w-4" />
+                    <Button size="sm" asChild>
+                      <Link href={`/dashboard/po/update?id=${order.id}`}>
+                        <SquarePen className="h-4 w-4" />
+                      </Link>
                     </Button>
-                    <Button variant="secondary" size="sm">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => handleDelete(order.id)}
+                    >
                       <Trash2 className="h-4 w-4" color="red" />
                     </Button>
                   </TableCell>
@@ -172,85 +174,14 @@ export default function PurchaseOrdersPage() {
           </TableBody>
         </Table>
       </div>
-      <Dialog
-        open={!!selectedOrder}
-        onOpenChange={() => {
-          setSelectedOrder(null);
-          setQuoteDetail(null);
-        }}
-      >
-        <DialogContent className="rounded-lg max-w-sm md:max-w-2xl bg-white">
-          <DialogHeader>
-            <DialogTitle>Purchase Order Details</DialogTitle>
-          </DialogHeader>
-          {selectedOrder && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold">Client</h4>
-                  <p>{selectedOrder.client_name}</p>
-                  <h4 className="font-semibold mt-2">Supplier</h4>
-                  <p>{selectedOrder.supplier_name}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold">Item</h4>
-                  <p>
-                    {selectedOrder.item_brand} – {selectedOrder.item_name}
-                  </p>
-                  <h4 className="font-semibold mt-2">Status</h4>
-                  <Badge>{selectedOrder.status}</Badge>
-                </div>
-              </div>
-              {/* Supplier Quote */}
-              {quoteDetail && (
-                <div className="border-t pt-3">
-                  <h4 className="font-semibold mb-2">Supplier Quote</h4>
-                  <p>
-                    <strong>Quoted Price:</strong> {quoteDetail.quoted_price}
-                  </p>
-                  <p>
-                    <strong>Lead Time:</strong> {quoteDetail.lead_time_days}{" "}
-                    days
-                  </p>
-                  <p>
-                    <strong>Currency:</strong> {quoteDetail.currency}
-                  </p>
-                  <p>
-                    <strong>Import Type:</strong> {quoteDetail.import_type}
-                  </p>
-                  <p>
-                    <strong>Item Spec:</strong>{" "}
-                    {quoteDetail.client_request_details.specification}
-                  </p>
-                </div>
-              )}
 
-              {/* PO Tracker */}
-              <div className="border-t pt-3">
-                <h4 className="font-semibold mb-2">PO Tracker</h4>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-                  {selectedOrder.trackers.map((t, idx) => (
-                    <div key={t.id} className="flex items-center">
-                      <div
-                        title={t.description}
-                        className={`w-4 h-4 rounded-full ${
-                          t.status === "ordered" || t.status === "pending"
-                            ? "bg-green-500"
-                            : "bg-gray-300"
-                        }`}
-                      />
-                      {idx < selectedOrder.trackers.length - 1 && (
-                        <div className="h-px sm:w-16 w-full bg-gray-400 mx-2"></div>
-                      )}
-                      <span className="text-xs">{t.status}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* View Dialog */}
+      {viewOrder && (
+        <PurchaseOrderDialog
+          order={viewOrder}
+          onClose={() => setViewOrder(null)}
+        />
+      )}
     </div>
   );
 }
