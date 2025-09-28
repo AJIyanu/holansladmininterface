@@ -74,17 +74,13 @@ export const sampleNavigationData = {
         {
           subitemname: "Create Request",
           iconname: "procurement",
-          link: "/dashboard/orders/create",
+          link: "/dashboard/requests/new",
         },
-        {
-          subitemname: "Pending Requests",
-          iconname: "clock",
-          link: "/dashboard/orders/pending",
-        },
+
         {
           subitemname: "View Requests",
           iconname: "archive",
-          link: "/dashboard/orders/history",
+          link: "/dashboard/requests",
         },
       ],
     },
