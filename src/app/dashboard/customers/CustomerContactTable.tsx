@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PenLine } from "lucide-react";
+import DeleteActionButton from "@/components/DeleteButton";
 
 export default function CustomerContactTable({ data }: { data: any[] }) {
   return (
@@ -26,10 +27,11 @@ export default function CustomerContactTable({ data }: { data: any[] }) {
               <td className="px-4 py-2 space-x-2">
                 <Link
                   href={`/dashboard/customers/profiles?id=${c.id}&type=contact`}
-                  className="text-blue-600 underline"
+                  className="text-blue-600"
                 >
-                  <PenLine className="inline h-4 w-4 mr-1" color="navy" />
+                  <PenLine className="h-4 w-4" color="navy" />
                 </Link>
+                <DeleteActionButton id={c.id} url="/api/crm/contacts/" />
               </td>
             </tr>
           ))}

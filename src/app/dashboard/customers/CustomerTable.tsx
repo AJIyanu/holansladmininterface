@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PenBoxIcon } from "lucide-react";
+import DeleteActionButton from "@/components/DeleteButton";
 
 export default function CustomerTable({ data }: { data: any[] }) {
   return (
@@ -20,10 +21,11 @@ export default function CustomerTable({ data }: { data: any[] }) {
               <td className="px-4 py-2 space-x-2">
                 <Link
                   href={`/dashboard/customers/profiles?id=${p.id}&type=party`}
-                  className="text-blue-600 underline"
+                  className="text-blue-600"
                 >
-                  <PenBoxIcon className="inline h-4 w-4 mr-1" color="navy" />
+                  <PenBoxIcon className="h-4 w-4 mr-1" color="navy" />
                 </Link>
+                <DeleteActionButton id={p.id} url="/api/crm/parties/" />
               </td>
             </tr>
           ))}

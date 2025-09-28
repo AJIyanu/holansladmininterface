@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { partySchema, PartyFormValues } from "@/app/dashboard/crm/schemas/crm";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface PartyFormProps {
   initialValues?: Partial<PartyFormValues>;
@@ -32,10 +32,20 @@ interface PartyFormProps {
   loading?: boolean;
   error?: string | null;
   success?: string | null;
+  // New props for inline usage
+  inline?: boolean;
+  onValuesChange?: (values: PartyFormValues) => void;
+  externalForm?: UseFormReturn<any>;
 }
 
-export function PartyForm({ initialValues, onSubmit }: PartyFormProps) {
-  const [loading, setloading] = useState(false);
+export function PartyForm({
+  initialValues,
+  onSubmit,
+  inline = false,
+  onValuesChange,
+  externalForm,
+}: PartyFormProps) {
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -52,8 +62,25 @@ export function PartyForm({ initialValues, onSubmit }: PartyFormProps) {
     },
   });
 
+  // Watch form values and notify parent when they change (for inline usage)
+  const watchedValues = form.watch();
+  useEffect(() => {
+    if (inline && onValuesChange) {
+      const subscription = form.watch((values, { name }) => {
+        // Only call onValuesChange if form is valid
+        form.trigger().then((isValid) => {
+          if (isValid && values) {
+            onValuesChange(values as PartyFormValues);
+          }
+        });
+      });
+
+      return () => subscription.unsubscribe();
+    }
+  }, [inline, onValuesChange, form]);
+
   async function handleSubmit(values: PartyFormValues) {
-    setloading(true);
+    setLoading(true);
     const result: {
       success?: string;
       error?: string;
@@ -68,9 +95,118 @@ export function PartyForm({ initialValues, onSubmit }: PartyFormProps) {
       form.reset();
       setTimeout(() => setSuccess(null), 10000);
     }
-    setloading(false);
+    setLoading(false);
   }
 
+  const formFields = (
+    <>
+      <FormField
+        control={form.control}
+        name="name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Party Name</FormLabel>
+            <FormControl>
+              <Input placeholder="Party name" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="party_type"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Party Type</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                <SelectItem value="client">Client</SelectItem>
+                <SelectItem value="supplier">Supplier</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="is_organization"
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+            <FormLabel>Is Organization</FormLabel>
+            <FormControl>
+              <Switch
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                className="bg-brand-navy"
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Party Email</FormLabel>
+            <FormControl>
+              <Input placeholder="Email address" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="phone"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Party Phone</FormLabel>
+            <FormControl>
+              <Input placeholder="Phone number" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="address"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Address</FormLabel>
+            <FormControl>
+              <Input placeholder="Address" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </>
+  );
+
+  // For inline usage, return just the form fields without form wrapper
+  if (inline) {
+    return (
+      <div className="space-y-4">
+        <Form {...form}>
+          <div className="space-y-4">{formFields}</div>
+        </Form>
+      </div>
+    );
+  }
+
+  // For standalone usage, return complete form with submit button
   return (
     <div className="space-y-4">
       {error && (
@@ -85,99 +221,7 @@ export function PartyForm({ initialValues, onSubmit }: PartyFormProps) {
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Party name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="party_type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Party Type</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="client">Client</SelectItem>
-                    <SelectItem value="supplier">Supplier</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="is_organization"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-                <FormLabel>Is Organization</FormLabel>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    className="bg-brand-navy"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="Email address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input placeholder="Phone number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="Address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+          {formFields}
           <Button
             type="submit"
             disabled={loading}

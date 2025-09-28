@@ -49,6 +49,7 @@ import {
   Archive,
   Trash2,
   NotebookText,
+  ContactRound,
 } from "lucide-react";
 
 const iconMap: { [key: string]: React.ComponentType<any> } = {
@@ -79,6 +80,7 @@ const iconMap: { [key: string]: React.ComponentType<any> } = {
   phone: Phone,
   email: Mail,
   calendar: Calendar,
+  directory: ContactRound,
 
   // Financial & Accounting
   finance: DollarSign,

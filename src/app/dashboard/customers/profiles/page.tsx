@@ -46,22 +46,28 @@ export default async function Page({
     existingData = await res.json();
   }
 
-  async function handleParty(values: any) {
+  async function handleParty(
+    values: any
+  ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
+    let res;
     if (id && type === "party") {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/parties/${id}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(values),
-        cache: "no-store",
-      });
+      res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/${id}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(values),
+          cache: "no-store",
+        }
+      );
     } else {
       const payload = { ...values, party_type: "client" };
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/parties/`, {
+      res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/parties/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,24 +77,34 @@ export default async function Page({
         cache: "no-store",
       });
     }
+
+    if (!res.ok)
+      return {
+        error: `Unable to save data. Try again or contact IT`,
+      };
+    return { success: "Party saved and updated successfully" };
   }
 
   async function handleContact(values: any) {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
+    let res;
     if (id && type === "contact") {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/${id}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(values),
-        cache: "no-store",
-      });
+      res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/${id}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(values),
+          cache: "no-store",
+        }
+      );
     } else {
       const payload = { ...values };
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/`, {
+      res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,6 +114,12 @@ export default async function Page({
         cache: "no-store",
       });
     }
+
+    if (!res.ok)
+      return {
+        error: `Unable to save data. Try again or contact IT`,
+      };
+    return { success: "Party saved and updated successfully" };
   }
 
   return (
@@ -116,7 +138,7 @@ export default async function Page({
           parties={parties.map((p: any) => ({ id: p.id, name: p.name }))}
           onSubmit={async (values) => {
             "use server";
-            await handleContact(values);
+            return await handleContact(values);
           }}
         />
       ) : (
@@ -124,7 +146,7 @@ export default async function Page({
           initialValues={existingData ?? { party_type: "client" }}
           onSubmit={async (values) => {
             "use server";
-            await handleParty(values);
+            return await handleParty(values);
           }}
         />
       )}

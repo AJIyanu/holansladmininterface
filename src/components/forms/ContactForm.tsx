@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   contactSchema,
   ContactFormValues,
+  PartyFormValues,
 } from "@/app/dashboard/crm/schemas/crm";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +31,9 @@ import { PartyForm } from "./PartyForm";
 interface ContactFormProps {
   initialValues?: Partial<ContactFormValues>;
   parties?: { id: string; name: string }[];
-  onSubmit: (values: ContactFormValues) => Promise<void>;
+  onSubmit: (
+    values: ContactFormValues
+  ) => Promise<{ success?: string; error?: string }>;
   loading?: boolean;
   error?: string | null;
   success?: string | null;
@@ -40,11 +43,14 @@ export function ContactForm({
   initialValues,
   parties,
   onSubmit,
-  loading,
-  error,
-  success,
 }: ContactFormProps) {
   const [createNewParty, setCreateNewParty] = React.useState(false);
+  const [newPartyData, setNewPartyData] =
+    React.useState<PartyFormValues | null>(null);
+
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [success, setSuccess] = React.useState<string | null>(null);
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
@@ -60,8 +66,47 @@ export function ContactForm({
   });
 
   async function handleSubmit(values: ContactFormValues) {
-    await onSubmit(values);
+    setLoading(true);
+
+    const submitValues = {
+      ...values,
+      new_party: createNewParty && newPartyData ? newPartyData : undefined,
+    };
+
+    const result = await onSubmit(submitValues);
+
+    if (result.error) {
+      setError(result.error);
+      setTimeout(() => setError(null), 10000);
+    }
+    if (result.success) {
+      setSuccess(result.success);
+      form.reset();
+      setCreateNewParty(false);
+      setNewPartyData(null);
+      setTimeout(() => setSuccess(null), 10000);
+    }
+
+    setLoading(false);
   }
+
+  const handleNewPartyValuesChange = (partyValues: PartyFormValues) => {
+    setNewPartyData(partyValues);
+    // Update the form's new_party field
+    form.setValue("new_party", partyValues);
+  };
+
+  const handleCancelNewParty = () => {
+    setCreateNewParty(false);
+    setNewPartyData(null);
+    form.setValue("new_party", undefined);
+  };
+
+  const handleCreateNewParty = () => {
+    setCreateNewParty(true);
+    form.setValue("party_id", undefined);
+    setNewPartyData(null);
+  };
 
   return (
     <div className="space-y-4">
@@ -172,41 +217,42 @@ export function ContactForm({
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => {
-                    setCreateNewParty(true);
-                    form.setValue("party_id", undefined);
-                  }}
+                  onClick={handleCreateNewParty}
                   className="mt-2"
                 >
                   + Create New Party
                 </Button>
               </>
             ) : (
-              <div className="border p-3 rounded-md">
+              <div className="border p-3 rounded-md bg-gray-50">
+                <div className="mb-3">
+                  <h4 className="text-sm font-medium text-gray-700">
+                    New Party Details
+                  </h4>
+                </div>
                 <PartyForm
+                  inline={true}
                   initialValues={{}}
-                  onSubmit={async (values) => {
-                    form.setValue("new_party", values);
-                  }}
+                  onSubmit={async () => ({ success: "" })} // Dummy function since we're using inline
+                  onValuesChange={handleNewPartyValuesChange}
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setCreateNewParty(false);
-                    form.setValue("new_party", undefined);
-                  }}
-                  className="mt-2"
-                >
-                  Cancel New Party
-                </Button>
+                <div className="mt-4 pt-3 border-t">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleCancelNewParty}
+                    size="sm"
+                  >
+                    Cancel New Party
+                  </Button>
+                </div>
               </div>
             )}
           </div>
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || (createNewParty && !newPartyData)}
             className="bg-brand-navy text-white hover:text-blue-900 hover:border"
           >
             {loading ? "Saving..." : "Save Contact"}

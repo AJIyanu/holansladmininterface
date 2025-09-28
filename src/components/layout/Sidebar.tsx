@@ -112,7 +112,7 @@ export const sampleNavigationData = {
       subitems: [
         {
           subitemname: "Supplier Directory",
-          iconname: "building",
+          iconname: "directory",
           link: "/dashboard/suppliers",
         },
         {
@@ -128,7 +128,7 @@ export const sampleNavigationData = {
       subitems: [
         {
           subitemname: "Customer Directory",
-          iconname: "users",
+          iconname: "directory",
           link: "/dashboard/customers/",
         },
         {

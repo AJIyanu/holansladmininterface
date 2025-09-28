@@ -81,7 +81,7 @@ export default async function Page({
     // console.log(await res.json());
     if (!res.ok)
       return {
-        error: `Unable to save data. Try again or contact IT ${await res.json()}`,
+        error: `Unable to save data. Try again or contact IT`,
       };
     return { success: "Party saved and updated successfully" };
   }
@@ -89,18 +89,22 @@ export default async function Page({
   async function handleContact(values: any) {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
+    let res;
     if (id && type === "contact") {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/${id}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(values),
-        cache: "no-store",
-      });
+      res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/${id}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(values),
+          cache: "no-store",
+        }
+      );
     } else {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/`, {
+      res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,6 +114,12 @@ export default async function Page({
         cache: "no-store",
       });
     }
+
+    if (!res.ok)
+      return {
+        error: `Unable to save data. Try again or contact IT`,
+      };
+    return { success: "Party saved and updated successfully" };
   }
 
   return (
@@ -128,7 +138,7 @@ export default async function Page({
           parties={parties.map((p: any) => ({ id: p.id, name: p.name }))}
           onSubmit={async (values) => {
             "use server";
-            await handleContact(values);
+            return await handleContact(values);
           }}
         />
       ) : (
