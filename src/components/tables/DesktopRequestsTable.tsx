@@ -18,11 +18,12 @@ interface DesktopRequestsTableProps {
 export default function DesktopRequestsTable({
   requests,
 }: DesktopRequestsTableProps) {
+  // console.log("Rendering DesktopRequestsTable with requests:", requests);
   return (
     <div className="hidden lg:block">
-      <Table>
-        <TableHeader>
-          <TableRow>
+      <Table className="bg-blue-100 rounded-lg">
+        <TableHeader className="bg-brand-navy text-white">
+          <TableRow className="rounded-t-lg">
             <TableHead>Item Name</TableHead>
             <TableHead>Client</TableHead>
             <TableHead>Contact Person</TableHead>

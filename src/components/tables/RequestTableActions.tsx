@@ -92,7 +92,7 @@ export default function RequestTableActions({
                   <Trash2 className="h-4 w-4" />
                 </div>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="bg-gray-50">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete Request</AlertDialogTitle>
                   <AlertDialogDescription>
@@ -123,7 +123,7 @@ export default function RequestTableActions({
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuContent align="end" className="w-40 bg-white">
               <DropdownMenuItem onClick={handleEdit}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit

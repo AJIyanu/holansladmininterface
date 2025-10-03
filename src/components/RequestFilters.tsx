@@ -81,8 +81,8 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
           <SelectTrigger>
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All statuses</SelectItem>
+          <SelectContent className="bg-white">
+            <SelectItem value="all">All statuses</SelectItem>
             {STATUS_OPTIONS.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
@@ -101,8 +101,8 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
           <SelectTrigger>
             <SelectValue placeholder="All clients" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All clients</SelectItem>
+          <SelectContent className="all">
+            <SelectItem value="all">All clients</SelectItem>
             {clients.map((client) => (
               <SelectItem key={client.id} value={client.id}>
                 {client.name}
@@ -124,7 +124,7 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
   return (
     <>
       {/* Desktop Filters */}
-      <div className="hidden md:block">
+      <div className="hidden md:block p-5">
         <div className="flex items-center gap-4">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -143,8 +143,8 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All statuses</SelectItem>
+            <SelectContent className="bg-white">
+              <SelectItem value="all">All statuses</SelectItem>
               {STATUS_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
@@ -160,8 +160,8 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Client" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All clients</SelectItem>
+            <SelectContent className="bg-white">
+              <SelectItem value="all">All clients</SelectItem>
               {clients.map((client) => (
                 <SelectItem key={client.id} value={client.id}>
                   {client.name}
@@ -179,7 +179,7 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
       </div>
 
       {/* Mobile Filters */}
-      <div className="md:hidden">
+      <div className="md:hidden p-5">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
@@ -201,7 +201,7 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
             </SheetTrigger>
           </div>
 
-          <SheetContent side="right" className="w-80">
+          <SheetContent side="right" className="w-80 bg-white">
             <SheetHeader>
               <SheetTitle>Filter Requests</SheetTitle>
             </SheetHeader>

@@ -18,7 +18,7 @@ export interface SearchParams {
 
 async function fetchRequests(
   searchParams: SearchParams
-): Promise<PaginatedResponse<ClientRequest>> {
+): Promise<ClientRequest[]> {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
 
@@ -41,7 +41,8 @@ async function fetchRequests(
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch requests");
+    // throw new Error("Failed to fetch requests");
+    return [];
   }
 
   return response.json();
@@ -147,7 +148,7 @@ export default async function RequestsPage({ searchParams }: PageProps) {
   const currentPage = parseInt(params.page || "1");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-9">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Client Requests</h1>

@@ -46,7 +46,7 @@ export default function RequestViewModal({ request }: RequestViewModalProps) {
   );
 
   const RequestDetails = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white p-5">
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Request Information</CardTitle>
@@ -149,7 +149,7 @@ export default function RequestViewModal({ request }: RequestViewModalProps) {
             <Eye className="h-4 w-4" />
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-white p-5 m-8">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Eye className="h-5 w-5" />
@@ -169,7 +169,7 @@ export default function RequestViewModal({ request }: RequestViewModalProps) {
           <Eye className="h-4 w-4" />
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="max-h-[85vh]">
+      <DrawerContent className="max-h-[85vh] mb-6 bg-white p-2 m-4">
         <DrawerHeader className="text-left">
           <DrawerTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5" />

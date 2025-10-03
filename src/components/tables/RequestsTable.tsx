@@ -8,7 +8,7 @@ import EmptyRequestsState from "./EmptyRequestsState";
 import { SearchParams } from "@/app/dashboard/requests/page";
 
 interface RequestsTableProps {
-  data: PaginatedResponse<ClientRequest>;
+  data: ClientRequest[];
   currentPage: number;
   searchParams: SearchParams; //Record<string, string | undefined>;
 }
@@ -18,7 +18,8 @@ export default function RequestsTable({
   currentPage,
   searchParams,
 }: RequestsTableProps) {
-  const { results: requests, count, next, previous } = data;
+  // console.log("Rendering RequestsTable with data:", data);
+  // const { results: requests, count, next, previous } = data;
 
   const createPaginationUrl = (page: number) => {
     const params = new URLSearchParams();
@@ -35,25 +36,25 @@ export default function RequestsTable({
 
   const hasFilters = Object.keys(searchParams).length > 0;
 
-  if (requests.length === 0) {
+  if (data.length === 0) {
     return <EmptyRequestsState hasFilters={hasFilters} />;
   }
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="border-none shadow-none">
         <CardContent className="p-0">
-          <DesktopRequestsTable requests={requests} />
-          <TabletRequestsTable requests={requests} />
-          <MobileRequestsCards requests={requests} />
+          <DesktopRequestsTable requests={data} />
+          <TabletRequestsTable requests={data} />
+          <MobileRequestsCards requests={data} />
         </CardContent>
       </Card>
 
       <TablePagination
-        count={count}
+        count={data.length}
         currentPage={currentPage}
-        hasNext={!!next}
-        hasPrevious={!!previous}
+        hasNext
+        hasPrevious
         searchParams={searchParams}
         createPaginationUrl={createPaginationUrl}
       />

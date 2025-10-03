@@ -49,7 +49,12 @@ export default function DeleteActionButton({
   }
 
   return (
-    <Button onClick={() => handleDelete(id)} disabled={isDeleting} size="sm">
+    <Button
+      onClick={() => handleDelete(id)}
+      disabled={isDeleting}
+      size="sm"
+      variant="ghost"
+    >
       <Trash2 className="h-4 w-4 text-red-500" />
       {isDeleting && <span className="ml-2">Deleting...</span>}
     </Button>
