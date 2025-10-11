@@ -72,7 +72,7 @@ export default function RequestForm({ initialData, mode }: RequestFormProps) {
         const data = await response.json();
         // console.log(data);
         setClients(data || []);
-      } catch (error) {
+      } catch {
         toast("Error", {
           description: "Failed to load clients",
         });
@@ -94,7 +94,7 @@ export default function RequestForm({ initialData, mode }: RequestFormProps) {
         const data = await response.json();
         // console.log(data);
         setContacts(data || []);
-      } catch (error) {
+      } catch {
         toast("Error", {
           description: "Failed to load contacts",
         });

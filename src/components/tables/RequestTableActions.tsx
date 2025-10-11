@@ -61,7 +61,7 @@ export default function RequestTableActions({
 
       onDelete?.();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast("Error", {
         description: "Failed to delete request",
       });
@@ -96,8 +96,8 @@ export default function RequestTableActions({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete Request</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Are you sure you want to delete the request for "
-                    {request.item_name}"? This action cannot be undone.
+                    Are you sure you want to delete the request for &quot;
+                    {request.item_name}&quot;? This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -138,8 +138,8 @@ export default function RequestTableActions({
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete Request</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to delete the request for "
-                        {request.item_name}"? This action cannot be undone.
+                        Are you sure you want to delete the request for &quot;
+                        {request.item_name}&quot;? This action cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

@@ -51,8 +51,15 @@ import {
   NotebookText,
   ContactRound,
 } from "lucide-react";
+import { LucideProps } from "lucide-react";
 
-const iconMap: { [key: string]: React.ComponentType<any> } = {
+interface IconProps extends LucideProps {
+  name: string;
+}
+
+const iconMap: {
+  [key: string]: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+} = {
   // Navigation & General
   home: Home,
   user: User,
@@ -127,10 +134,10 @@ const iconMap: { [key: string]: React.ComponentType<any> } = {
   delete: Trash2,
 };
 
-interface IconProps {
-  name: string;
-  [key: string]: any;
-}
+// interface IconProps {
+//   name: string;
+//   [key: string]: any;
+// }
 
 const Icon = ({ name, ...props }: IconProps) => {
   const IconComponent = iconMap[name.toLowerCase()] || AlertTriangle;

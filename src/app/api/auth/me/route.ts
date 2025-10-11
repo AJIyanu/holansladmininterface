@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Cache duration in milliseconds (1 hour)
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+const CACHE_DURATION = 60 * 60;
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("access_token")?.value;
@@ -18,10 +18,10 @@ export async function GET(request: NextRequest) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      // Cache for 1 hour (3600 seconds)
+
       next: {
-        revalidate: 3600,
-        tags: [`user-${token.slice(-8)}`], // Use last 8 chars of token as cache tag
+        revalidate: CACHE_DURATION,
+        tags: [`user-${token.slice(-8)}`],
       },
     });
 
@@ -36,12 +36,17 @@ export async function GET(request: NextRequest) {
       {
         headers: {
           // Set cache headers for browser/CDN caching
-          "Cache-Control": "private, max-age=3600, stale-while-revalidate=300", // 1 hour cache, 5min stale
-          Vary: "Cookie", // Cache varies by cookie (token)
+          "Cache-Control": "private, max-age=3600, stale-while-revalidate=300",
+          Vary: "Cookie",
         },
       }
     );
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const errorMessage =
+      err instanceof Error ? err.message : "An unexpected error occurred";
+    return NextResponse.json(
+      { success: false, error: errorMessage },
+      { status: 500 }
+    );
   }
 }

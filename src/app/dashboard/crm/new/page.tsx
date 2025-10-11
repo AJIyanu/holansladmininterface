@@ -32,10 +32,16 @@ export default async function Page({
   let parties: { id: string; name: string }[] = [];
   if (partiesRes.ok) {
     const data = await partiesRes.json();
-    parties = data.results?.map((p: any) => ({ id: p.id, name: p.name })) ?? [];
+    parties =
+      data.results?.map((p: { id: string; name: string }) => ({
+        id: p.id,
+        name: p.name,
+      })) ?? [];
   }
 
-  async function handleCreateParty(values: any) {
+  async function handleCreateParty(
+    values: unknown
+  ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/parties/`, {
@@ -47,10 +53,13 @@ export default async function Page({
       body: JSON.stringify(values),
       cache: "no-store",
     });
-    if (!res.ok) throw new Error("Failed to create party");
+    if (!res.ok) return { error: "Failed to create party" };
+    return { success: "Party created successfully" };
   }
 
-  async function handleCreateContact(values: any) {
+  async function handleCreateContact(
+    values: unknown
+  ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
     const res = await fetch(
@@ -65,7 +74,8 @@ export default async function Page({
         cache: "no-store",
       }
     );
-    if (!res.ok) throw new Error("Failed to create contact");
+    if (!res.ok) return { error: "Failed to create party" };
+    return { success: "Party created successfully" };
   }
 
   return (
@@ -77,7 +87,7 @@ export default async function Page({
         <PartyForm
           onSubmit={async (values) => {
             "use server";
-            await handleCreateParty(values);
+            return await handleCreateParty(values);
           }}
         />
       ) : (
@@ -85,7 +95,7 @@ export default async function Page({
           parties={parties}
           onSubmit={async (values) => {
             "use server";
-            await handleCreateContact(values);
+            return await handleCreateContact(values);
           }}
         />
       )}

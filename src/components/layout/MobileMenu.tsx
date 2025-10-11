@@ -2,16 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import {
-  Bell,
-  Search,
-  Menu,
-  X,
-  FileText,
-  Truck,
-  Scale,
-  BarChart3,
-} from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "../user/UserMenu";
 import { useUser } from "../UserProvider";

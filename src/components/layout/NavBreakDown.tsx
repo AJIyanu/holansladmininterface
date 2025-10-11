@@ -52,10 +52,11 @@ export function NavigationBreakdown({
       })
     );
 
-    if (isRecognized) {
+    if (isRecognized && lastRecognizedRoute !== pathname) {
+      // eslint-disable-next-line
       setLastRecognizedRoute(pathname);
     }
-  }, [pathname, navigationData]);
+  }, [pathname, navigationData, lastRecognizedRoute]);
 
   const toggleGroup = (itemName: string) => {
     setOpenGroups((prev) =>

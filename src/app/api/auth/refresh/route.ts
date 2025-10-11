@@ -32,12 +32,12 @@ export async function POST(request: NextRequest) {
     response.cookies.set("access_token", data.access, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 15, // 15 minutes
+      maxAge: 60 * 60,
       path: "/",
     });
 
     return response;
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch {
+    return NextResponse.json({ status: 500 });
   }
 }

@@ -21,15 +21,14 @@ import {
 } from "@/components/ui/form";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import { Alert, AlertDescription } from "./ui/alert";
 
 // Zod validation schema
 const loginSchema = z.object({
   email: z.email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    // .regex(/[A-Z]/, "Password must contain at least one capital letter")
-    // .regex(/[0-9]/, "Password must contain at least one number"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  // .regex(/[A-Z]/, "Password must contain at least one capital letter")
+  // .regex(/[0-9]/, "Password must contain at least one number"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -71,7 +70,7 @@ export function LoginForm() {
       } else {
         setError(result.error || "Login failed. Please try again.");
       }
-    } catch (error) {
+    } catch {
       setError("Network error. Please check your connection.");
     }
   };
@@ -99,6 +98,11 @@ export function LoginForm() {
           <h2 className="text-2xl font-semibold text-foreground">
             Welcome back!
           </h2>
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{`{error} There was an error`}</AlertDescription>
+            </Alert>
+          )}
         </div>
 
         {/* Login Form */}

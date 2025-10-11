@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ClientRequest, PaginatedResponse } from "@/types/procurement";
+import { ClientRequest } from "@/types/procurement";
 import DesktopRequestsTable from "./DesktopRequestsTable";
 import TabletRequestsTable from "./TabletRequestsTable";
 import MobileRequestsCards from "./MobileRequestsCards";

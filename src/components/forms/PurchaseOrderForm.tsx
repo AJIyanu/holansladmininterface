@@ -78,7 +78,7 @@ export interface PurchaseOrderDefaultData {
 
 interface PurchaseOrderFormProps {
   defaultData?: PurchaseOrderDefaultData | null;
-  onSubmit?: (result: any) => void;
+  onSubmit?: (result: PurchaseOrderDefaultData) => void;
   onCancel?: () => void;
 }
 
@@ -128,8 +128,6 @@ const UOM_OPTIONS = [
   "meters",
   "feet",
 ];
-
-const API_BASE_URL = "http://localhost:8000/api";
 
 /**
  * PurchaseOrderForm allows creating or updating a Purchase Order.
@@ -215,7 +213,7 @@ export default function PurchaseOrderForm({
         const errorData = await response.json();
         if (errorData && typeof errorData === "object") {
           Object.keys(errorData).forEach((field) => {
-            form.setError(field as any, {
+            form.setError(field as keyof z.infer<typeof purchaseOrderSchema>, {
               message: errorData[field][0] || errorData[field],
             });
           });
@@ -236,7 +234,7 @@ export default function PurchaseOrderForm({
       if (!defaultData) form.reset();
     } catch (error) {
       console.error("Submission error:", error);
-      form.setError("root" as any, {
+      form.setError("root", {
         message: "Failed to save purchase order. Please try again.",
       });
     }
