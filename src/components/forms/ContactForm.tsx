@@ -65,6 +65,8 @@ export function ContactForm({
     },
   });
 
+  const partyId = form.watch("party_id");
+
   async function handleSubmit(values: ContactFormValues) {
     setLoading(true);
 
@@ -201,7 +203,7 @@ export function ContactForm({
                     form.setValue("party_id", val);
                     form.setValue("new_party", undefined);
                   }}
-                  value={form.watch("party_id")}
+                  value={partyId}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select existing party" />

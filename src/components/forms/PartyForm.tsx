@@ -35,7 +35,7 @@ interface PartyFormProps {
   // New props for inline usage
   inline?: boolean;
   onValuesChange?: (values: PartyFormValues) => void;
-  externalForm?: UseFormReturn<any>;
+  externalForm?: UseFormReturn<PartyFormValues>;
 }
 
 export function PartyForm({
@@ -43,7 +43,6 @@ export function PartyForm({
   onSubmit,
   inline = false,
   onValuesChange,
-  externalForm,
 }: PartyFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,21 +62,21 @@ export function PartyForm({
   });
 
   // Watch form values and notify parent when they change (for inline usage)
-  const watchedValues = form.watch();
   useEffect(() => {
     if (inline && onValuesChange) {
-      const subscription = form.watch((values, { name }) => {
-        // Only call onValuesChange if form is valid
-        form.trigger().then((isValid) => {
-          if (isValid && values) {
-            onValuesChange(values as PartyFormValues);
-          }
-        });
+      const subscription = form.watch((values) => {
+        if (values) {
+          form.trigger().then((isValid) => {
+            if (isValid) {
+              onValuesChange(values as PartyFormValues);
+            }
+          });
+        }
       });
 
       return () => subscription.unsubscribe();
     }
-  }, [inline, onValuesChange, form]);
+  }, [inline, onValuesChange]);
 
   async function handleSubmit(values: PartyFormValues) {
     setLoading(true);
