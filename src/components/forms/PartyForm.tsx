@@ -76,6 +76,7 @@ export function PartyForm({
 
       return () => subscription.unsubscribe();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inline, onValuesChange]);
 
   async function handleSubmit(values: PartyFormValues) {

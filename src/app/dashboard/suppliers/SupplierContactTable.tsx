@@ -2,7 +2,19 @@ import DeleteActionButton from "@/components/DeleteButton";
 import { PencilLine } from "lucide-react";
 import Link from "next/link";
 
-export default function SupplierContactTable({ data }: { data: any[] }) {
+interface SupplierContact {
+  id: string;
+  first_name: string;
+  last_name: string;
+  phone: string | null;
+  email: string | null;
+}
+
+export default function SupplierContactTable({
+  data,
+}: {
+  data: SupplierContact[];
+}) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border text-sm">

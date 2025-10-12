@@ -2,7 +2,13 @@ import Link from "next/link";
 import { PenBoxIcon } from "lucide-react";
 import DeleteActionButton from "@/components/DeleteButton";
 
-export default function CustomerTable({ data }: { data: any[] }) {
+interface Customer {
+  id: string;
+  name: string;
+  is_organization: boolean;
+}
+
+export default function CustomerTable({ data }: { data: Customer[] }) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border text-sm">

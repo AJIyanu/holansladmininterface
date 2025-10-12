@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   contactSchema,
@@ -65,7 +65,10 @@ export function ContactForm({
     },
   });
 
-  const partyId = form.watch("party_id");
+  const partyId = useWatch({
+    control: form.control,
+    name: "party_id",
+  });
 
   async function handleSubmit(values: ContactFormValues) {
     setLoading(true);

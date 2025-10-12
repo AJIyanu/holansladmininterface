@@ -26,8 +26,7 @@ export default function RequestNotFound() {
           </h1>
 
           <p className="text-gray-600 mb-6 max-w-md">
-            The request you're looking for doesn't exist or may have been
-            deleted.
+            {`The request you're looking for doesn't exist or may have been deleted.`}
           </p>
 
           <div className="flex items-center gap-3">

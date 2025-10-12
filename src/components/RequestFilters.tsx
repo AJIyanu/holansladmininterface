@@ -31,6 +31,88 @@ interface RequestFiltersProps {
   clients: Array<{ id: string; name: string }>;
 }
 
+interface FilterContentProps {
+  currentSearch: string;
+  currentStatus: string;
+  currentClient: string;
+  updateFilters: (key: string, value: string) => void;
+  hasActiveFilters: string | boolean;
+  clearFilters: () => void;
+  clients: Array<{ id: string; name: string }>;
+}
+
+const FilterContent = ({
+  currentSearch,
+  currentStatus,
+  currentClient,
+  updateFilters,
+  hasActiveFilters,
+  clearFilters,
+  clients,
+}: FilterContentProps) => (
+  <div className="space-y-4">
+    <div className="space-y-2">
+      <label className="text-sm font-medium">Search</label>
+      <div className="relative">
+        <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+        <Input
+          placeholder="Search requests..."
+          value={currentSearch}
+          onChange={(e) => updateFilters("search", e.target.value)}
+          className="pl-10"
+        />
+      </div>
+    </div>
+
+    <div className="space-y-2">
+      <label className="text-sm font-medium">Status</label>
+      <Select
+        value={currentStatus}
+        onValueChange={(value) => updateFilters("status", value)}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="All statuses" />
+        </SelectTrigger>
+        <SelectContent className="bg-white">
+          <SelectItem value="all">All statuses</SelectItem>
+          {STATUS_OPTIONS.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+
+    <div className="space-y-2">
+      <label className="text-sm font-medium">Client</label>
+      <Select
+        value={currentClient}
+        onValueChange={(value) => updateFilters("client", value)}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="All clients" />
+        </SelectTrigger>
+        <SelectContent className="all">
+          <SelectItem value="all">All clients</SelectItem>
+          {clients.map((client) => (
+            <SelectItem key={client.id} value={client.id}>
+              {client.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+
+    {hasActiveFilters && (
+      <Button variant="outline" onClick={clearFilters} className="w-full">
+        <X className="mr-2 h-4 w-4" />
+        Clear Filters
+      </Button>
+    )}
+  </div>
+);
+
 export default function RequestFilters({ clients }: RequestFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -56,70 +138,6 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
   };
 
   const hasActiveFilters = currentSearch || currentStatus || currentClient;
-
-  const FilterContent = () => (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Search</label>
-        <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Search requests..."
-            value={currentSearch}
-            onChange={(e) => updateFilters("search", e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Status</label>
-        <Select
-          value={currentStatus}
-          onValueChange={(value) => updateFilters("status", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="All statuses" />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectItem value="all">All statuses</SelectItem>
-            {STATUS_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Client</label>
-        <Select
-          value={currentClient}
-          onValueChange={(value) => updateFilters("client", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="All clients" />
-          </SelectTrigger>
-          <SelectContent className="all">
-            <SelectItem value="all">All clients</SelectItem>
-            {clients.map((client) => (
-              <SelectItem key={client.id} value={client.id}>
-                {client.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {hasActiveFilters && (
-        <Button variant="outline" onClick={clearFilters} className="w-full">
-          <X className="mr-2 h-4 w-4" />
-          Clear Filters
-        </Button>
-      )}
-    </div>
-  );
 
   return (
     <>
@@ -206,7 +224,15 @@ export default function RequestFilters({ clients }: RequestFiltersProps) {
               <SheetTitle>Filter Requests</SheetTitle>
             </SheetHeader>
             <div className="mt-6">
-              <FilterContent />
+              <FilterContent
+                currentSearch={currentSearch}
+                currentStatus={currentStatus}
+                currentClient={currentClient}
+                updateFilters={updateFilters}
+                hasActiveFilters={hasActiveFilters}
+                clearFilters={clearFilters}
+                clients={clients}
+              />
             </div>
           </SheetContent>
         </Sheet>

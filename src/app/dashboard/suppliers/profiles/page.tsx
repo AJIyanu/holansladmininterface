@@ -3,6 +3,10 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { PartyForm } from "@/components/forms/PartyForm";
+import {
+  PartyFormValues,
+  ContactFormValues,
+} from "@/app/dashboard/crm/schemas/crm";
 
 export default async function Page({
   searchParams,
@@ -23,7 +27,8 @@ export default async function Page({
   );
   const parties = partyRes.ok ? await partyRes.json() : [];
 
-  let existingData: any = null;
+  let existingData: PartyFormValues | ContactFormValues | null = null;
+
   if (id && type === "party") {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/${id}/`,
@@ -48,7 +53,7 @@ export default async function Page({
   }
 
   async function handleParty(
-    values: any
+    values: PartyFormValues
   ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
@@ -86,7 +91,9 @@ export default async function Page({
     return { success: "Party saved and updated successfully" };
   }
 
-  async function handleContact(values: any) {
+  async function handleContact(
+    values: ContactFormValues
+  ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
     let res;
@@ -135,7 +142,12 @@ export default async function Page({
       {type === "contact" || (!type && !id) ? (
         <ContactForm
           initialValues={existingData ?? {}}
-          parties={parties.map((p: any) => ({ id: p.id, name: p.name }))}
+          parties={parties.map(
+            (p: { id: string; name: string; party_type: string }) => ({
+              id: p.id,
+              name: p.name,
+            })
+          )}
           onSubmit={async (values) => {
             "use server";
             return await handleContact(values);

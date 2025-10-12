@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PaginatedResponse, ClientRequest, Party } from "@/types/procurement";
+import { ClientRequest, Party } from "@/types/procurement";
 import RequestsTable from "@/components/tables/RequestsTable";
 import RequestFilters from "@/components/RequestFilters";
 

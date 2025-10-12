@@ -9,15 +9,15 @@ export default async function DashboardLayoutWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  try {
-    const user = await getCurrentUser();
+  const user = await getCurrentUser();
 
-    return (
-      <UserProvider user={user}>
-        <DashboardLayout>{children}</DashboardLayout>
-      </UserProvider>
-    );
-  } catch (error) {
+  if (!user) {
     redirect("/login");
   }
+
+  return (
+    <UserProvider user={user}>
+      <DashboardLayout>{children}</DashboardLayout>
+    </UserProvider>
+  );
 }

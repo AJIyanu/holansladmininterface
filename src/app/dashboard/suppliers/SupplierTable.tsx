@@ -1,9 +1,14 @@
 import DeleteActionButton from "@/components/DeleteButton";
-import { Button } from "@/components/ui/button";
-import { PencilLine, Trash2 } from "lucide-react";
+import { PencilLine } from "lucide-react";
 import Link from "next/link";
 
-export default function SupplierTable({ data }: { data: any[] }) {
+interface Supplier {
+  id: string;
+  name: string;
+  is_organization: boolean;
+}
+
+export default function SupplierTable({ data }: { data: Supplier[] }) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border text-sm">
