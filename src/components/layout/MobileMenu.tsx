@@ -11,7 +11,7 @@ import { sampleNavigationData } from "./Sidebar";
 
 export default function MobileMenu() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user } = useUser();
+  const user = useUser();
 
   return (
     <>
