@@ -3,6 +3,8 @@ import { PurchaseOrder } from "@/types/purchase";
 import { JSX } from "react";
 import { cookies } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page(): Promise<JSX.Element> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/procurement/purchase-orders/`,

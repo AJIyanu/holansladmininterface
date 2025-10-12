@@ -1,5 +1,7 @@
 import RequestPageWrapper from "../components/RequestPageWrapper";
 
+export const dynamic = "force-dynamic";
+
 interface SearchParams {
   id?: string;
 }

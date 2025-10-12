@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import PurchaseOrderForm from "@/components/forms/PurchaseOrderForm";
 import { PurchaseOrderDefaultData } from "@/types/purchase";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   searchParams,
 }: {

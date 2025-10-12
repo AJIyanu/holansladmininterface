@@ -7,6 +7,8 @@ import {
   ContactFormValues,
 } from "@/app/dashboard/crm/schemas/crm";
 
+export const dynamic = "force-dynamic";
+
 interface Party {
   id: string;
   name: string;

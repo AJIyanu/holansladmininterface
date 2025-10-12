@@ -9,6 +9,8 @@ import { ClientRequest, Party } from "@/types/procurement";
 import RequestsTable from "@/components/tables/RequestsTable";
 import RequestFilters from "@/components/RequestFilters";
 
+export const dynamic = "force-dynamic";
+
 export interface SearchParams {
   search?: string;
   status?: string;

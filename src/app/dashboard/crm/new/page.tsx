@@ -1,8 +1,9 @@
-// app/dashboard/crm/new/page.tsx
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { PartyForm } from "@/components/forms/PartyForm";
+
+export const dynamic = "force-dynamic";
 
 export default async function Page({
   searchParams,
