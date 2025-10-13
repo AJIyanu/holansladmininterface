@@ -4,16 +4,15 @@ function getBaseUrl() {
   if (typeof window !== "undefined") return "";
 
   // Server-side
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  if (process.env.NEXTJS_URL) return process.env.NEXTJS_URL;
+  if (process.env.NEXT_PUBLIC_BASE_URL)
+    return `${process.env.NEXT_PUBLIC_BASE_URL}`;
 
   return "http://localhost:3000";
 }
 
 export async function getCurrentUser() {
   try {
-    const cookieStore = await cookies();
-    const cookie = (await cookieStore).toString();
+    const cookie = (await cookies()).toString();
 
     const res = await fetch(`${getBaseUrl()}/api/auth/me`, {
       headers: {
