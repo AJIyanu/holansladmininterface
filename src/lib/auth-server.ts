@@ -21,9 +21,17 @@ export async function getCurrentUser() {
       },
     });
 
-    const user = await res.json();
+    const {
+      user,
+    }: {
+      user: {
+        first_name: string;
+        last_name: string;
+        email: string;
+      };
+    } = await res.json();
 
-    return { user };
+    return user;
   } catch (error) {
     console.error("Error fetching current user:", error);
     throw error;
