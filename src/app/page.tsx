@@ -34,7 +34,7 @@ export default function Home() {
 
         <Link href="/login">
           <Button className="w-80 py-6 px-12 bg-transparent text-white text-xl font-semibold rounded-lg shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-brand-navy border border-brand-navy border-3">
-            Let's Get You in!
+            {"Let's Get You in!"}
           </Button>
         </Link>
       </div>
