@@ -1,134 +1,43 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background flex flex-col items-center md:grid md:grid-cols-fit-3 lg:grid-cols-fit-3 gap-8 p-8">
-      {/* Hero Section */}
-      <section className="bg-brand-navy text-brand-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-6">
-            Welcome to Your Next.js App
-          </h1>
-          <p className="text-xl mb-8 text-brand-white/90">
-            Built with Tailwind CSS and shadcn/ui using your brand colors
-          </p>
-          <Button className="bg-brand-blue text-brand-navy hover:bg-brand-blue/90">
-            Get Started
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+      {/* Background Image */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/cargoshipanim.webm" type="video/webm" />
+        Your browser does not support the video tag.
+      </video>
+
+      <div className="absolute inset-0 bg-white/30" />
+
+      <div className="relative z-10 flex flex-col items-center justify-center gap-8 px-4">
+        {/* Logo */}
+        <div className="flex items-center justify-center mb-8">
+          <Image
+            src="/HolanSL_logo_Full_color_Horizontal.webp"
+            alt="Logo"
+            // layout="fill"
+            // objectFit="contain"
+            width={500}
+            height={500}
+          />
+        </div>
+
+        <Link href="/login">
+          <Button className="w-80 py-6 px-12 bg-transparent text-white text-xl font-semibold rounded-lg shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-brand-navy border border-brand-navy border-3">
+            Let's Get You in!
           </Button>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-            Brand Color Showcase
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* White Card */}
-            <Card className="border-2 border-brand-gray/20">
-              <CardHeader className="bg-brand-white">
-                <CardTitle className="text-brand-navy">White</CardTitle>
-                <CardDescription className="text-brand-gray">
-                  #FFFFFF
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="w-full h-20 bg-brand-white border-2 border-brand-gray/20 rounded"></div>
-              </CardContent>
-            </Card>
-
-            {/* Gray Card */}
-            <Card className="border-2 border-brand-gray/20">
-              <CardHeader className="bg-brand-gray">
-                <CardTitle className="text-brand-white">Gray</CardTitle>
-                <CardDescription className="text-brand-white/80">
-                  #696060
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="w-full h-20 bg-brand-gray rounded"></div>
-              </CardContent>
-            </Card>
-
-            {/* Blue Card */}
-            <Card className="border-2 border-brand-blue/20">
-              <CardHeader className="bg-brand-blue">
-                <CardTitle className="text-brand-navy">Sky Blue</CardTitle>
-                <CardDescription className="text-brand-navy/80">
-                  #69CAF0
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="w-full h-20 bg-brand-blue rounded"></div>
-              </CardContent>
-            </Card>
-
-            {/* Navy Card */}
-            <Card className="border-2 border-brand-navy/20">
-              <CardHeader className="bg-brand-navy">
-                <CardTitle className="text-brand-white">Navy</CardTitle>
-                <CardDescription className="text-brand-white/80">
-                  #04035E
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="w-full h-20 bg-brand-navy rounded"></div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Section */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-8 text-foreground">
-            Interactive Components
-          </h2>
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <Button variant="default">Primary Button</Button>
-            <Button variant="secondary">Secondary Button</Button>
-            <Button
-              variant="outline"
-              className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-brand-navy"
-            >
-              Outline Button
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-brand-navy hover:bg-brand-blue/10"
-            >
-              Ghost Button
-            </Button>
-          </div>
-          <Card className="max-w-md mx-auto">
-            <CardHeader>
-              <CardTitle>shadcn/ui Integration</CardTitle>
-              <CardDescription>
-                All components use your brand colors automatically
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                The color system is configured to use your brand colors
-                throughout all shadcn/ui components. You can also use the custom
-                brand color classes like{" "}
-                <code className="bg-muted px-1 rounded">bg-brand-blue</code>{" "}
-                directly.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-    </main>
+        </Link>
+      </div>
+    </div>
   );
 }

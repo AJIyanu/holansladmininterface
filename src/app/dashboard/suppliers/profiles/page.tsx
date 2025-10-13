@@ -8,6 +8,8 @@ import {
   ContactFormValues,
 } from "@/app/dashboard/crm/schemas/crm";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   searchParams,
 }: {

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import SupplierTable from "./SupplierTable";
 import SupplierContactTable from "./SupplierContactTable";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   searchParams,
 }: {
