@@ -4,24 +4,26 @@ function getBaseUrl() {
   if (typeof window !== "undefined") return "";
 
   // Server-side
-  if (process.env.NEXT_PUBLIC_BASE_URL)
-    return `${process.env.NEXT_PUBLIC_BASE_URL}`;
+  if (process.env.NEXT_PUBLIC_API_URL)
+    return `${process.env.NEXT_PUBLIC_API_URL}`;
 
   return "http://localhost:3000";
 }
 
 export async function getCurrentUser() {
   try {
-    const cookie = (await cookies()).toString();
+    const token = (await cookies()).get("access_token");
 
-    const res = await fetch(`${getBaseUrl()}/api/auth/me`, {
+    const res = await fetch(`${getBaseUrl()}/account/me`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookie,
+        ...(token ? { Authorization: `Bearer ${token.value}` } : {}),
       },
     });
 
-    return await res.json();
+    const user = await res.json();
+
+    return { user };
   } catch (error) {
     console.error("Error fetching current user:", error);
     throw error;

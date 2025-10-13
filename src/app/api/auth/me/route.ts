@@ -35,7 +35,6 @@ export async function GET(request: NextRequest) {
       { user },
       {
         headers: {
-          // Set cache headers for browser/CDN caching
           "Cache-Control": "private, max-age=3600, stale-while-revalidate=300",
           Vary: "Cookie",
         },
