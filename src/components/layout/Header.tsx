@@ -6,7 +6,7 @@ import { UserMenu } from "../user/UserMenu";
 import { getCurrentUser } from "@/lib/auth-server";
 
 export default async function Header() {
-  const { user } = await getCurrentUser();
+  const user = await getCurrentUser();
   // console.log(user);
   return (
     <header className="bg-white/20 backdrop-blur-sm mb-5 px-4 py-3 z-10 relative">
