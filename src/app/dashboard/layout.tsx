@@ -9,9 +9,9 @@ export default async function DashboardLayoutWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  // console.log("🔄 Layout rendering at", new Date().toISOString());
+  console.log("🔄 Layout rendering at", new Date().toISOString());
   const user = await getCurrentUser();
-  // console.log("👤 User fetched:", user);
+  console.log("👤 User fetched:", user);
 
   if (!user) {
     redirect("/login");

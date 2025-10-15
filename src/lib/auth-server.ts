@@ -13,7 +13,7 @@ function getBaseUrl() {
 export async function getCurrentUser() {
   try {
     const token = (await cookies()).get("access_token");
-    console.log("🍪 Access token from cookies:", token?.value);
+    // console.log("🍪 Access token from cookies:", token?.value);
 
     const res = await fetch(`${getBaseUrl()}/account/me`, {
       headers: {
