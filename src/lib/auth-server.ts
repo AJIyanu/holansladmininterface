@@ -13,6 +13,7 @@ function getBaseUrl() {
 export async function getCurrentUser() {
   try {
     const token = (await cookies()).get("access_token");
+    console.log("🍪 Access token from cookies:", token?.value);
 
     const res = await fetch(`${getBaseUrl()}/account/me`, {
       headers: {
@@ -20,16 +21,6 @@ export async function getCurrentUser() {
         ...(token ? { Authorization: `Bearer ${token.value}` } : {}),
       },
     });
-
-    // const {
-    //   user,
-    // }: {
-    //   user: {
-    //     first_name: string;
-    //     last_name: string;
-    //     email: string;
-    //   };
-    // } = await res.json();
 
     return await res.json();
   } catch (error) {
