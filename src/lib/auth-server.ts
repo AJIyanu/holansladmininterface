@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import fetch from "node-fetch";
 
-export const config = { runtime: "nodejs" };
+// export const config = { runtime: "nodejs" };
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return "";
