@@ -22,6 +22,7 @@ export async function getCurrentUser() {
         "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token.value}` } : {}),
       },
+      cache: "no-store",
     });
 
     console.log("📥 Response status:", res.status);
