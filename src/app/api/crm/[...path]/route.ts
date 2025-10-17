@@ -17,6 +17,7 @@ async function proxyRequest(req: NextRequest, method: string, path: string[]) {
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      "X-Auth-Token": `Bearer ${token}`,
     },
     body,
     cache: "no-store", // always fresh
