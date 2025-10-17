@@ -16,7 +16,7 @@ function getBaseUrl() {
 export async function getCurrentUser() {
   try {
     const token = (await cookies()).get("access_token");
-    console.log("🍪 Access token from cookies:", token?.value);
+    // console.log("🍪 Access token from cookies:", token?.value);
 
     const res = await fetch(`${getBaseUrl()}/account/me`, {
       // const res = await fetch(
@@ -31,11 +31,11 @@ export async function getCurrentUser() {
       // cache: "no-store",
     });
 
-    console.log("📥 Response status:", res.status);
-    console.log(
-      "📥 Response headers:",
-      Object.fromEntries(res.headers.entries())
-    );
+    // console.log("📥 Response status:", res.status);
+    // console.log(
+    //   "📥 Response headers:",
+    //   Object.fromEntries(res.headers.entries())
+    // );
 
     return await res.json();
   } catch (error) {
