@@ -12,16 +12,26 @@ async function proxyRequest(req: NextRequest, method: string, path: string[]) {
     body = await req.text();
   }
 
-  const res = await fetch(endpoint, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      "X-Auth-Token": `Bearer ${token}`,
-    },
-    body,
-    cache: "no-store", // always fresh
-  });
+  console.log(
+    `Proxying ${method} request to: ${endpoint} token: ${
+      token ? "yes" : "no"
+    } ${token ? token.substring(0, 10) + "..." : ""}`
+  );
+
+  // const res = await fetch(endpoint, {
+  const res = await fetch(
+    "https://webhook.site/8e7e50bf-e975-4d35-9a30-4684699a5072",
+    {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        "X-Auth-Token": `Bearer ${token}`,
+      },
+      body,
+      cache: "no-store", // always fresh
+    }
+  );
 
   if (res.status === 204) {
     return new NextResponse(null, {
