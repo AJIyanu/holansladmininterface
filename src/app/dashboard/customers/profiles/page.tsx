@@ -6,6 +6,7 @@ import {
   PartyFormValues,
   ContactFormValues,
 } from "@/app/dashboard/crm/schemas/crm";
+import { serverFetch } from "@/lib/server-fetch";
 
 export const dynamic = "force-dynamic";
 
@@ -25,77 +26,58 @@ export default async function Page({
   if (!token) redirect("/login");
 
   // fetch parties for dropdown
-  const partyRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/?party_type=client`,
-    {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    }
+  const partyRes = await serverFetch<Party[]>(
+    "/crm/parties/?party_type=client"
   );
-
-  const parties: Party[] = partyRes.ok ? await partyRes.json() : [];
+  const parties: Party[] = partyRes.success ? partyRes.data ?? [] : [];
 
   let existingData: PartyFormValues | ContactFormValues | null = null;
 
   if (id && type === "party") {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/${id}/`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-      }
-    );
-    if (!res.ok) redirect("/dashboard/customers");
-    existingData = await res.json();
+    const res = await serverFetch<PartyFormValues>(`/crm/parties/${id}/`);
+    if (!res.success) redirect("/dashboard/customers");
+    existingData = res.data ?? null;
   }
   if (id && type === "contact") {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/${id}/`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-      }
-    );
-    if (!res.ok) redirect("/dashboard/customers");
-    existingData = await res.json();
+    const res = await serverFetch<ContactFormValues>(`/crm/contacts/${id}/`);
+    if (!res.success) redirect("/dashboard/customers");
+    existingData = res.data ?? null;
   }
 
   async function handleParty(
     values: PartyFormValues
   ): Promise<{ success?: string; error?: string }> {
     "use server";
-    const token = (await cookies()).get("access_token")?.value;
-    let res;
+
     if (id && type === "party") {
-      res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/${id}/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(values),
-          cache: "no-store",
-        }
-      );
+      const result = await serverFetch(`/crm/parties/${id}/`, {
+        method: "PUT",
+        body: values,
+      });
+
+      if (!result.success) {
+        return {
+          error:
+            result.error?.message ||
+            "Unable to save data. Try again or contact IT",
+        };
+      }
     } else {
       const payload = { ...values, party_type: "client" };
-      res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/parties/`, {
+      const result = await serverFetch(`/crm/parties/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-        cache: "no-store",
+        body: payload,
       });
+
+      if (!result.success) {
+        return {
+          error:
+            result.error?.message ||
+            "Unable to save data. Try again or contact IT",
+        };
+      }
     }
 
-    if (!res.ok)
-      return {
-        error: `Unable to save data. Try again or contact IT`,
-      };
     return { success: "Party saved and updated successfully" };
   }
 
@@ -103,38 +85,35 @@ export default async function Page({
     values: ContactFormValues
   ): Promise<{ success?: string; error?: string }> {
     "use server";
-    const token = (await cookies()).get("access_token")?.value;
-    let res;
+
     if (id && type === "contact") {
-      res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/${id}/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(values),
-          cache: "no-store",
-        }
-      );
-    } else {
-      const payload = { ...values };
-      res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-        cache: "no-store",
+      const result = await serverFetch(`/crm/contacts/${id}/`, {
+        method: "PUT",
+        body: values,
       });
+
+      if (!result.success) {
+        return {
+          error:
+            result.error?.message ||
+            "Unable to save data. Try again or contact IT",
+        };
+      }
+    } else {
+      const result = await serverFetch(`/crm/contacts/`, {
+        method: "POST",
+        body: values,
+      });
+
+      if (!result.success) {
+        return {
+          error:
+            result.error?.message ||
+            "Unable to save data. Try again or contact IT",
+        };
+      }
     }
 
-    if (!res.ok)
-      return {
-        error: `Unable to save data. Try again or contact IT`,
-      };
     return { success: "Party saved and updated successfully" };
   }
 
