@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import CustomerTable from "./CustomerTable";
 import CustomerContactTable from "./CustomerContactTable";
+import { serverFetch } from "@/lib/server-fetch";
 
 export const dynamic = "force-dynamic";
 
@@ -17,27 +18,13 @@ export default async function Page({
   if (!token) redirect("/login");
 
   // fetch parties (client)
-  const partyRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/?party_type=client&page=${page}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    }
-  );
-  const contactRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/?party_type=client&page=${page}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    }
-  );
+  const [partyRes, contactRes] = await Promise.all([
+    serverFetch(`/crm/parties/?party_type=client&page=${page}`),
+    serverFetch(`/crm/contacts/?party_type=client&page=${page}`),
+  ]);
 
-  const parties = partyRes.ok ? await partyRes.json() : [];
-  const contacts = contactRes.ok ? await contactRes.json() : [];
+  const parties = partyRes.success ? partyRes.data ?? [] : [];
+  const contacts = contactRes.success ? contactRes.data ?? [] : [];
 
   //   console.log("PARTIES:", parties);
   return (
