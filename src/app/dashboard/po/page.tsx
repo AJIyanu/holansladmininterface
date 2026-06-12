@@ -1,4 +1,4 @@
-import PurchaseOrderTable from "@/components/tables/PurrchaseOrder";
+import PurchaseOrderTable from "@/components/tables/PurchaseOrder";
 import { PurchaseOrder } from "@/types/purchase";
 import { JSX } from "react";
 import { cookies } from "next/headers";
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Page(): Promise<JSX.Element> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/procurement/purchase-orders/`,
+    `${process.env.DJANGO_API_URL}/procurement/purchase-orders/`,
     {
       credentials: "include",
       // headers: { Cookie: (await cookies()).toString() },
@@ -15,12 +15,12 @@ export default async function Page(): Promise<JSX.Element> {
         "Content-Type": "application/json",
         Authorization: `Bearer ${(await cookies()).get("access_token")?.value}`,
       },
-    }
+    },
   );
 
   console.log(
     "Fetching purchase orders with token:",
-    (await cookies()).get("access_token")
+    (await cookies()).get("access_token"),
   );
 
   let orders: PurchaseOrder[] = [];
@@ -30,7 +30,7 @@ export default async function Page(): Promise<JSX.Element> {
     } else {
       console.error(
         "Failed to fetch purchase orders on server:",
-        res.statusText
+        res.statusText,
       );
     }
   } catch (err) {

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const API_BASE_URL = process.env.DJANGO_API_URL || "http://localhost:8000/api";
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json(
       { success: true, access: data.access },
-      { status: 200 }
+      { status: 200 },
     );
 
     response.cookies.set("access_token", data.access, {

@@ -21,11 +21,11 @@ export default async function Page({
 
   // fetch parties for dropdown
   const partyRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/?party_type=supplier`,
+    `${process.env.DJANGO_API_URL}/crm/parties/?party_type=supplier`,
     {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
-    }
+    },
   );
   const parties = partyRes.ok ? await partyRes.json() : [];
 
@@ -33,49 +33,46 @@ export default async function Page({
 
   if (id && type === "party") {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/${id}/`,
+      `${process.env.DJANGO_API_URL}/crm/parties/${id}/`,
       {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
-      }
+      },
     );
     if (!res.ok) redirect("/dashboard/suppliers");
     existingData = await res.json();
   }
   if (id && type === "contact") {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/${id}/`,
+      `${process.env.DJANGO_API_URL}/crm/contacts/${id}/`,
       {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
-      }
+      },
     );
     if (!res.ok) redirect("/dashboard/suppliers");
     existingData = await res.json();
   }
 
   async function handleParty(
-    values: PartyFormValues
+    values: PartyFormValues,
   ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
     let res;
     if (id && type === "party") {
-      res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/${id}/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(values),
-          cache: "no-store",
-        }
-      );
+      res = await fetch(`${process.env.DJANGO_API_URL}/crm/parties/${id}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(values),
+        cache: "no-store",
+      });
     } else {
       const payload = { ...values, party_type: "supplier" };
-      res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/parties/`, {
+      res = await fetch(`${process.env.DJANGO_API_URL}/crm/parties/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,26 +91,23 @@ export default async function Page({
   }
 
   async function handleContact(
-    values: ContactFormValues
+    values: ContactFormValues,
   ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
     let res;
     if (id && type === "contact") {
-      res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/${id}/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(values),
-          cache: "no-store",
-        }
-      );
+      res = await fetch(`${process.env.DJANGO_API_URL}/crm/contacts/${id}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(values),
+        cache: "no-store",
+      });
     } else {
-      res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/`, {
+      res = await fetch(`${process.env.DJANGO_API_URL}/crm/contacts/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -148,7 +142,7 @@ export default async function Page({
             (p: { id: string; name: string; party_type: string }) => ({
               id: p.id,
               name: p.name,
-            })
+            }),
           )}
           onSubmit={async (values) => {
             "use server";

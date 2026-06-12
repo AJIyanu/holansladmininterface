@@ -19,16 +19,13 @@ export default async function Page({
   if (!token) redirect("/login");
 
   // fetch parties for contact form dropdown
-  const partiesRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    }
-  );
+  const partiesRes = await fetch(`${process.env.DJANGO_API_URL}/crm/parties/`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
 
   let parties: { id: string; name: string }[] = [];
   if (partiesRes.ok) {
@@ -41,11 +38,11 @@ export default async function Page({
   }
 
   async function handleCreateParty(
-    values: unknown
+    values: unknown,
   ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crm/parties/`, {
+    const res = await fetch(`${process.env.DJANGO_API_URL}/crm/parties/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,22 +56,19 @@ export default async function Page({
   }
 
   async function handleCreateContact(
-    values: unknown
+    values: unknown,
   ): Promise<{ success?: string; error?: string }> {
     "use server";
     const token = (await cookies()).get("access_token")?.value;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(values),
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(`${process.env.DJANGO_API_URL}/crm/contacts/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(values),
+      cache: "no-store",
+    });
     if (!res.ok) return { error: "Failed to create party" };
     return { success: "Party created successfully" };
   }

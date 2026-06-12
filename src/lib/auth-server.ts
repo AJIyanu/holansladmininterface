@@ -7,8 +7,7 @@ function getBaseUrl() {
   if (typeof window !== "undefined") return "";
 
   // Server-side
-  if (process.env.NEXT_PUBLIC_API_URL)
-    return `${process.env.NEXT_PUBLIC_API_URL}`;
+  if (process.env.DJANGO_API_URL) return `${process.env.DJANGO_API_URL}`;
 
   return "http://localhost:3000";
 }
@@ -18,7 +17,7 @@ export async function getCurrentUser() {
     const token = (await cookies()).get("access_token");
     // console.log("🍪 Access token from cookies:", token?.value);
 
-    const res = await fetch(`${getBaseUrl()}/account/me`, {
+    const res = await fetch(`${getBaseUrl()}/account/me/`, {
       // const res = await fetch(
       //   `https://webhook.site/8e7e50bf-e975-4d35-9a30-4684699a5072`,
       //   {

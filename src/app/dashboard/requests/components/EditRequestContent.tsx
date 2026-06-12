@@ -11,11 +11,11 @@ async function fetchRequest(id: string): Promise<ClientRequest | null> {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/procurement/client-requests/${id}/`,
+      `${process.env.DJANGO_API_URL}/procurement/client-requests/${id}/`,
       {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
-      }
+      },
     );
 
     if (response.status === 404) {

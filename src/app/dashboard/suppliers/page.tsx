@@ -17,18 +17,18 @@ export default async function Page({
 
   // fetch supplier parties & contacts
   const partyRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/?party_type=supplier&page=${page}`,
+    `${process.env.DJANGO_API_URL}/crm/parties/?party_type=supplier&page=${page}`,
     {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
-    }
+    },
   );
   const contactRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/crm/contacts/?party_type=supplier&page=${page}`,
+    `${process.env.DJANGO_API_URL}/crm/contacts/?party_type=supplier&page=${page}`,
     {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
-    }
+    },
   );
 
   const parties = partyRes.ok ? await partyRes.json() : [];

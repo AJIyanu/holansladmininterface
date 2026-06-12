@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.DJANGO_API_URL;
 
 async function proxyRequest(req: NextRequest, method: string, path: string[]) {
   const endpoint = `${API_BASE_URL}/procurement/${path.join("/")}/`;
@@ -52,7 +52,7 @@ async function proxyRequest(req: NextRequest, method: string, path: string[]) {
 // GET
 export async function GET(
   req: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return proxyRequest(req, "GET", params.path);
@@ -61,7 +61,7 @@ export async function GET(
 // POST
 export async function POST(
   req: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   // console.log("POST request to path:", params.path);
@@ -71,7 +71,7 @@ export async function POST(
 // PUT
 export async function PUT(
   req: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return proxyRequest(req, "PUT", params.path);
@@ -80,7 +80,7 @@ export async function PUT(
 // PATCH
 export async function PATCH(
   req: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return proxyRequest(req, "PATCH", params.path);
@@ -89,7 +89,7 @@ export async function PATCH(
 // DELETE
 export async function DELETE(
   req: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return proxyRequest(req, "DELETE", params.path);

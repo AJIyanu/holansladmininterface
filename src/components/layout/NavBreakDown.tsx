@@ -8,7 +8,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import Icon from "../ui/icon.";
+import Icon from "../ui/icon";
 import Link from "next/link";
 
 interface SubItem {
@@ -49,7 +49,7 @@ export function NavigationBreakdown({
           return navItem.subitems.some((subItem) => subItem.link === pathname);
         }
         return false;
-      })
+      }),
     );
 
     if (isRecognized && lastRecognizedRoute !== pathname) {
@@ -62,7 +62,7 @@ export function NavigationBreakdown({
     setOpenGroups((prev) =>
       prev.includes(itemName)
         ? prev.filter((g) => g !== itemName)
-        : [...prev, itemName]
+        : [...prev, itemName],
     );
   };
 

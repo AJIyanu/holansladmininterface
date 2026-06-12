@@ -10,11 +10,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  // console.log(`${process.env.NEXT_PUBLIC_API_URL}/account/me/`);
+  // console.log(`${process.env.DJANGO_API_URL}/account/me/`);
 
   try {
     // Use Next.js built-in fetch caching with revalidate option
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/me/`, {
+    const res = await fetch(`${process.env.DJANGO_API_URL}/account/me/`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "X-Auth-Token": `Bearer ${token}`,
@@ -39,14 +39,14 @@ export async function GET(request: NextRequest) {
           "Cache-Control": "private, max-age=3600, stale-while-revalidate=300",
           Vary: "Cookie",
         },
-      }
+      },
     );
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "An unexpected error occurred";
     return NextResponse.json(
       { success: false, error: errorMessage },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

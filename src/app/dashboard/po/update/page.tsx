@@ -19,14 +19,14 @@ export default async function Page({
   const token = (await cookies()).get("access_token")?.value;
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/procurement/purchase-orders/${id}/`,
+    `${process.env.DJANGO_API_URL}/procurement/purchase-orders/${id}/`,
     {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       cache: "no-store",
-    }
+    },
   );
 
   if (!res.ok) {

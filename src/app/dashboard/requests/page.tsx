@@ -19,7 +19,7 @@ export interface SearchParams {
 }
 
 async function fetchRequests(
-  searchParams: SearchParams
+  searchParams: SearchParams,
 ): Promise<ClientRequest[]> {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
@@ -34,12 +34,12 @@ async function fetchRequests(
 
   const response = await fetch(
     `${
-      process.env.NEXT_PUBLIC_API_URL
+      process.env.DJANGO_API_URL
     }/procurement/client-requests/?${params.toString()}`,
     {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
-    }
+    },
   );
 
   if (!response.ok) {
@@ -58,11 +58,11 @@ async function fetchClients(): Promise<Party[]> {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/crm/parties/?party_type=client`,
+      `${process.env.DJANGO_API_URL}/crm/parties/?party_type=client`,
       {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
-      }
+      },
     );
 
     if (!response.ok) return [];

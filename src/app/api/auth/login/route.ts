@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const API_BASE_URL = process.env.DJANGO_API_URL || "http://localhost:8000/api";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +17,7 @@ export async function POST(request: NextRequest) {
       const error = await res.json();
       return NextResponse.json(
         { success: false, error: error.detail },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -27,7 +26,7 @@ export async function POST(request: NextRequest) {
     // Create response
     const response = NextResponse.json(
       { success: true, user: data.user },
-      { status: 200 }
+      { status: 200 },
     );
 
     // Set cookies directly
@@ -50,7 +49,7 @@ export async function POST(request: NextRequest) {
       err instanceof Error ? err.message : "An unexpected error occurred";
     return NextResponse.json(
       { success: false, error: errorMessage },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
