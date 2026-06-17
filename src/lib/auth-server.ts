@@ -1,44 +1,45 @@
 import { cookies } from "next/headers";
+import type { CurrentUser } from "@/types/auth";
 // import fetch from "node-fetch";
 
 // export const config = { runtime: "nodejs" };
 
-function getBaseUrl() {
-  if (typeof window !== "undefined") return "";
+// function getBaseUrl() {
+//   if (typeof window !== "undefined") return "";
 
-  // Server-side
-  if (process.env.DJANGO_API_URL) return `${process.env.DJANGO_API_URL}`;
+//   // Server-side
+//   if (process.env.DJANGO_API_URL) return `${process.env.DJANGO_API_URL}`;
 
-  return "http://localhost:3000";
-}
+//   return "http://localhost:3000";
+// }
 
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<CurrentUser | null> {
+  const cookieStore = await cookies();
+
+  const accessToken = cookieStore.get("access_token")?.value;
+
+  if (!accessToken) {
+    return null;
+  }
+
   try {
-    const token = (await cookies()).get("access_token");
-    // console.log("🍪 Access token from cookies:", token?.value);
-
-    const res = await fetch(`${getBaseUrl()}/account/me/`, {
-      // const res = await fetch(
-      //   `https://webhook.site/8e7e50bf-e975-4d35-9a30-4684699a5072`,
-      //   {
+    const response = await fetch(`${process.env.DJANGO_API_URL}/account/me/`, {
       headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token.value}` } : {}),
-        "X-Auth-Token": `Bearer ${token?.value}`,
-        "User-Agent": "Mozilla/5.0 (VercelApp)",
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "X-Auth-Token": `Bearer ${accessToken}`,
       },
-      // cache: "no-store",
+      cache: "no-store",
     });
 
-    // console.log("📥 Response status:", res.status);
-    // console.log(
-    //   "📥 Response headers:",
-    //   Object.fromEntries(res.headers.entries())
-    // );
+    if (!response.ok) {
+      return null;
+    }
 
-    return await res.json();
+    return (await response.json()) as CurrentUser;
   } catch (error) {
-    console.error("Error fetching current user:", error);
-    throw error;
+    console.error("Unable to fetch current user:", error);
+
+    return null;
   }
 }

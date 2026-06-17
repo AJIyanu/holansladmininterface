@@ -1,16 +1,13 @@
 "use client";
-import { createContext, useContext, ReactNode } from "react";
 
-interface User {
-  first_name: string;
-  last_name: string;
-  email: string;
-}
+import { createContext, useContext, type ReactNode } from "react";
 
-const UserContext = createContext<User | null>(null);
+import type { CurrentUser } from "@/types/auth";
+
+const UserContext = createContext<CurrentUser | null>(null);
 
 interface UserProviderProps {
-  user: User | null;
+  user: CurrentUser;
   children: ReactNode;
 }
 
@@ -18,7 +15,12 @@ export default function UserProvider({ user, children }: UserProviderProps) {
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 }
 
-export const useUser = () => {
-  const context = useContext(UserContext);
-  return context;
-};
+export function useUser(): CurrentUser {
+  const user = useContext(UserContext);
+
+  if (!user) {
+    throw new Error("useUser must be used inside UserProvider.");
+  }
+
+  return user;
+}
