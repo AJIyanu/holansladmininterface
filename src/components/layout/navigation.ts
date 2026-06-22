@@ -21,6 +21,9 @@ import {
   UserPlus,
   Users,
   WalletCards,
+  FileClock,
+  LockKeyhole,
+  ShieldCheck,
 } from "lucide-react";
 
 import type { CurrentUser } from "@/types/auth";
@@ -243,23 +246,59 @@ export const dashboardNavigation: NavigationSection[] = [
         children: [
           {
             title: "Staff Accounts",
-            href: "/dashboard/admin/users",
+            href: "/dashboard/admin/staff",
             icon: Users,
-            permission: "account.user.view",
+            permission: "accounts.staffprofile.view",
           },
           {
             title: "Add New Staff",
-            href: "/dashboard/admin/roles",
+            href: "/dashboard/admin/newstaff",
             icon: UserPlus,
-            permission: "account.user.add",
+            permission: "accounts.staffprofile.create",
+          },
+          {
+            title: "Roles & Permissions",
+            href: "/dashboard/admin/roles",
+            icon: ShieldCheck,
+            permission: "accounts.role.view",
+          },
+          {
+            title: "Departments",
+            href: "/dashboard/admin/departments",
+            icon: Building2,
+            permission: "accounts.department.view",
           },
         ],
       },
       {
-        title: "System Settings",
-        href: "/dashboard/admin/settings",
+        title: "Security",
+        icon: LockKeyhole,
+        children: [
+          {
+            title: "Login Activity",
+            href: "/dashboard/admin/security/login-activity",
+            icon: Activity,
+            permission: "accounts.auditlog.view",
+          },
+          {
+            title: "Audit Logs",
+            href: "/dashboard/admin/security/audit-logs",
+            icon: FileClock,
+            permission: "accounts.auditlog.view",
+          },
+        ],
+      },
+      {
+        title: "System",
         icon: Settings,
-        permission: "account.settings.view",
+        children: [
+          {
+            title: "System Settings",
+            href: "/dashboard/admin/settings",
+            icon: Settings,
+            permission: "accounts.settings.view",
+          },
+        ],
       },
     ],
   },

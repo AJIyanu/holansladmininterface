@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,11 +23,12 @@ import {
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { Alert, AlertDescription } from "./ui/alert";
+import { toast } from "sonner";
 
 // Zod validation schema
 const loginSchema = z.object({
   email: z.email("Please enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().min(2, "Password must be at least 2 characters"),
   // .regex(/[A-Z]/, "Password must contain at least one capital letter")
   // .regex(/[0-9]/, "Password must contain at least one number"),
 });
@@ -60,6 +62,20 @@ export function LoginForm() {
 
       const result = await response.json();
 
+      if (result?.error?.reset_required) {
+        toast.warning(
+          result.error.detail ||
+            "Password change required. Please check your email.",
+        );
+
+        setError(
+          result.error.code ||
+            "Password change required. Please check your email.",
+        );
+
+        return;
+      }
+
       if (response.ok && result.success) {
         // Get redirect URL from query params or default to dashboard
         const searchParams = new URLSearchParams(window.location.search);
@@ -68,9 +84,11 @@ export function LoginForm() {
         router.push(redirectTo);
         router.refresh();
       } else {
+        console.error("Login failed:", result.error);
         setError(result.error || "Login failed. Please try again.");
       }
     } catch {
+      console.error("Network error during login.");
       setError("Network error. Please check your connection.");
     }
   };
@@ -100,7 +118,7 @@ export function LoginForm() {
           </h2>
           {error && (
             <Alert variant="destructive">
-              <AlertDescription>{`{error} There was an error`}</AlertDescription>
+              <AlertDescription>{`${error}`}</AlertDescription>
             </Alert>
           )}
         </div>
@@ -142,12 +160,20 @@ export function LoginForm() {
                     <FormLabel className="text-sm font-medium text-muted-foreground">
                       Password
                     </FormLabel>
-                    <button
+                    {/* <button
                       type="button"
                       className="text-sm text-accent hover:text-accent/80 transition-colors"
                     >
                       Forgot password?
-                    </button>
+                    </button> */}
+                    <div className="flex justify-end">
+                      <Link
+                        href="/forgot-password"
+                        className="text-sm font-medium text-[#0B4F8A] hover:underline"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
                   </div>
                   <FormControl>
                     <div className="relative">

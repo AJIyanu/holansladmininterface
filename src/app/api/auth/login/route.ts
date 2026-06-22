@@ -7,22 +7,35 @@ export async function POST(request: NextRequest) {
     const { email, password } = await request.json();
 
     // Call Django login endpoint
+    // console.log("Attempting login with email:", email);
     const res = await fetch(`${API_BASE_URL}/token/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: email, password }),
     });
 
+    // console.log("Django login response status:", res.status);
     if (!res.ok) {
       const error = await res.json();
       return NextResponse.json(
-        { success: false, error: error.detail },
+        { success: false, error: error },
         { status: 400 },
       );
     }
 
     const data = await res.json();
 
+    if (data?.reset_required) {
+      return NextResponse.json(data, {
+        status: res.status,
+      });
+    }
+
+    if (!data.access || !data.refresh) {
+      return NextResponse.json(data, {
+        status: res.status,
+      });
+    }
     // Create response
     const response = NextResponse.json(
       { success: true, user: data.user },

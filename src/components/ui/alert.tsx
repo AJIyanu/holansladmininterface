@@ -8,14 +8,15 @@ const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-green-200 text-green-900 border-green-900",
-        destructive: "border-red-700 text-red-700 bg-red-200",
+        default: "bg-background text-foreground",
+        destructive:
+          "border-red-500 text-red-500 font-semibold dark:border-destructive [&>svg]:text-destructive",
       },
     },
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 const Alert = React.forwardRef<

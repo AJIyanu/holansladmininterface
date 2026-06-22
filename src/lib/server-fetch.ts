@@ -12,7 +12,7 @@ export async function serverFetch<T>(
   const { auth = true, headers, ...rest } = options;
 
   const cookieStore = await cookies();
-  const token = cookieStore.get("access")?.value;
+  const token = cookieStore.get("access_token")?.value;
 
   const url = `${process.env.DJANGO_API_URL}${path}`;
 
@@ -20,7 +20,13 @@ export async function serverFetch<T>(
     ...rest,
     headers: {
       "Content-Type": "application/json",
-      ...(auth && token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(auth && token
+        ? {
+            Authorization: `Bearer ${token}`,
+            "X-Auth-Token": `Bearer ${token}`,
+            "User-Agent": "Mozilla/5.0 (VercelApp)",
+          }
+        : {}),
       ...headers,
     },
     cache: "no-store",
