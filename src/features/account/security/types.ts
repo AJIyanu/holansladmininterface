@@ -162,6 +162,8 @@ export interface AuditLogSearchParams {
   resource?: string;
   action?: string;
   ordering?: string;
+  user?: string;
+  target_user?: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -203,7 +205,8 @@ export interface AuditLogEntry {
 
 export interface RulesInsight {
   source: string;
-  risk_level: string;
+  // risk_level: string;
+  risk_level: "low" | "medium" | "high" | "critical";
   text: string;
 }
 
@@ -309,4 +312,5 @@ export interface LoginActivitySearchParams {
   event_type?: string;
   status?: string;
   ordering?: string;
+  user?: string;
 }

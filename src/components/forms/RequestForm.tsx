@@ -241,8 +241,8 @@ export default function RequestForm({ initialData, mode }: RequestFormProps) {
                                 !watchedClient
                                   ? "Select client first"
                                   : isLoadingContacts
-                                  ? "Loading..."
-                                  : "Select contact person"
+                                    ? "Loading..."
+                                    : "Select contact person"
                               }
                             />
                           </SelectTrigger>

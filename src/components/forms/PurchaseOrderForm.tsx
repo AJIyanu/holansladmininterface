@@ -228,7 +228,7 @@ export default function PurchaseOrderForm({
       setSuccessMessage(
         defaultData
           ? "Purchase order updated successfully."
-          : "Purchase order submitted successfully."
+          : "Purchase order submitted successfully.",
       );
 
       if (!defaultData) form.reset();
@@ -476,7 +476,7 @@ export default function PurchaseOrderForm({
                           variant={"outline"}
                           className={cn(
                             "w-[240px] justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />

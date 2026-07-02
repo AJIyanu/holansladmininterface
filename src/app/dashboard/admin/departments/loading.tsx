@@ -6,14 +6,9 @@ export default function DepartmentsLoading() {
       <Skeleton className="h-10 w-72" />
       <Skeleton className="h-24 w-full" />
 
-      {Array.from({ length: 5 }).map(
-        (_, index) => (
-          <Skeleton
-            key={index}
-            className="h-32 w-full rounded-xl"
-          />
-        ),
-      )}
+      {Array.from({ length: 5 }).map((_, index) => (
+        <Skeleton key={index} className="h-32 w-full rounded-xl" />
+      ))}
     </div>
   );
 }

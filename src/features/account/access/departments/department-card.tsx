@@ -15,10 +15,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,20 +40,13 @@ export default function DepartmentCard({
   department,
   currentUser,
 }: DepartmentCardProps) {
-  const [action, setAction] =
-    useState<DepartmentAction | null>(null);
+  const [action, setAction] = useState<DepartmentAction | null>(null);
 
-  const canEdit = hasPermission(
-    currentUser,
-    "accounts.department.edit",
-  );
+  const canEdit = hasPermission(currentUser, "accounts.department.edit");
 
   const canDelete =
     currentUser.is_superuser ||
-    hasPermission(
-      currentUser,
-      "accounts.department.delete",
-    );
+    hasPermission(currentUser, "accounts.department.delete");
 
   const canManageStaff = hasPermission(
     currentUser,
@@ -73,13 +63,9 @@ export default function DepartmentCard({
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-lg font-semibold">
-                {department.name}
-              </h2>
+              <h2 className="text-lg font-semibold">{department.name}</h2>
 
-              <Badge variant="secondary">
-                {department.code}
-              </Badge>
+              <Badge variant="secondary">{department.code}</Badge>
             </div>
 
             <p className="mt-2 text-sm text-muted-foreground">
@@ -90,43 +76,25 @@ export default function DepartmentCard({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-              >
+              <Button variant="ghost" size="icon">
                 <MoreHorizontal className="size-5" />
               </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent
-              align="end"
-              className="w-60"
-            >
-              <DropdownMenuItem
-                onClick={() =>
-                  setAction("view-staff")
-                }
-              >
+            <DropdownMenuContent align="end" className="w-60">
+              <DropdownMenuItem onClick={() => setAction("view-staff")}>
                 <Eye className="size-4" />
                 View staff
               </DropdownMenuItem>
 
               {canManageStaff && (
                 <>
-                  <DropdownMenuItem
-                    onClick={() =>
-                      setAction("add-staff")
-                    }
-                  >
+                  <DropdownMenuItem onClick={() => setAction("add-staff")}>
                     <UserPlus className="size-4" />
                     Add staff
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem
-                    onClick={() =>
-                      setAction("remove-staff")
-                    }
-                  >
+                  <DropdownMenuItem onClick={() => setAction("remove-staff")}>
                     <UserMinus className="size-4" />
                     Remove staff
                   </DropdownMenuItem>
@@ -155,11 +123,7 @@ export default function DepartmentCard({
                 <>
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem
-                    onClick={() =>
-                      setAction("edit")
-                    }
-                  >
+                  <DropdownMenuItem onClick={() => setAction("edit")}>
                     <Pencil className="size-4" />
                     Edit department
                   </DropdownMenuItem>
@@ -168,9 +132,7 @@ export default function DepartmentCard({
 
               {canDelete && (
                 <DropdownMenuItem
-                  onClick={() =>
-                    setAction("delete")
-                  }
+                  onClick={() => setAction("delete")}
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="size-4" />

@@ -22,13 +22,10 @@ export default function DepartmentsList({
   if (departments.length === 0) {
     return (
       <div className="rounded-xl border border-dashed bg-background px-6 py-16 text-center">
-        <h2 className="font-semibold">
-          No departments found
-        </h2>
+        <h2 className="font-semibold">No departments found</h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          Create a department or change the current
-          filters.
+          Create a department or change the current filters.
         </p>
       </div>
     );
@@ -49,11 +46,7 @@ export default function DepartmentsList({
         />
       ))}
 
-      <ResourcePagination
-        count={count}
-        page={page}
-        pageSize={pageSize}
-      />
+      <ResourcePagination count={count} page={page} pageSize={pageSize} />
     </div>
   );
 }

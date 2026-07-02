@@ -29,7 +29,7 @@ export default function PurchaseOrderDialog({ order, onClose }: Props) {
       try {
         const res = await fetch(
           `/api/procurement/supplier-quotes/${order.supplier_quote}/`,
-          { credentials: "include" }
+          { credentials: "include" },
         );
         if (!res.ok) throw new Error("Failed to fetch quote");
         const q = (await res.json()) as SupplierQuote;

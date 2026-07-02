@@ -1,10 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import {
-  RotateCcw,
-  Search,
-} from "lucide-react";
+import { RotateCcw, Search } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -33,32 +30,22 @@ export default function DepartmentFilters({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [search, setSearch] = useState(
-    initialSearch ?? "",
-  );
+  const [search, setSearch] = useState(initialSearch ?? "");
 
-  function updateQuery(
-    updates: Record<string, string | undefined>,
-  ) {
-    const query = new URLSearchParams(
-      window.location.search,
-    );
+  function updateQuery(updates: Record<string, string | undefined>) {
+    const query = new URLSearchParams(window.location.search);
 
-    Object.entries(updates).forEach(
-      ([key, value]) => {
-        if (!value) {
-          query.delete(key);
-        } else {
-          query.set(key, value);
-        }
-      },
-    );
+    Object.entries(updates).forEach(([key, value]) => {
+      if (!value) {
+        query.delete(key);
+      } else {
+        query.set(key, value);
+      }
+    });
 
     query.set("page", "1");
 
-    router.push(
-      `${pathname}?${query.toString()}`,
-    );
+    router.push(`${pathname}?${query.toString()}`);
   }
 
   return (
@@ -79,9 +66,7 @@ export default function DepartmentFilters({
 
             <Input
               value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
-              }
+              onChange={(event) => setSearch(event.target.value)}
               placeholder="Search departments..."
               className="pl-9"
             />
@@ -100,25 +85,15 @@ export default function DepartmentFilters({
             })
           }
         >
-          <SelectTrigger
-            className={glassControlClass}
-          >
+          <SelectTrigger className={glassControlClass}>
             <SelectValue />
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value="name">
-              Name A–Z
-            </SelectItem>
-            <SelectItem value="-name">
-              Name Z–A
-            </SelectItem>
-            <SelectItem value="code">
-              Code A–Z
-            </SelectItem>
-            <SelectItem value="-code">
-              Code Z–A
-            </SelectItem>
+            <SelectItem value="name">Name A–Z</SelectItem>
+            <SelectItem value="-name">Name Z–A</SelectItem>
+            <SelectItem value="code">Code A–Z</SelectItem>
+            <SelectItem value="-code">Code Z–A</SelectItem>
           </SelectContent>
         </Select>
 
@@ -130,33 +105,21 @@ export default function DepartmentFilters({
             })
           }
         >
-          <SelectTrigger
-            className={glassControlClass}
-          >
+          <SelectTrigger className={glassControlClass}>
             <SelectValue />
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value="10">
-              10 per page
-            </SelectItem>
-            <SelectItem value="20">
-              20 per page
-            </SelectItem>
-            <SelectItem value="50">
-              50 per page
-            </SelectItem>
+            <SelectItem value="10">10 per page</SelectItem>
+            <SelectItem value="20">20 per page</SelectItem>
+            <SelectItem value="50">50 per page</SelectItem>
           </SelectContent>
         </Select>
 
         <Button
           type="button"
           variant="ghost"
-          onClick={() =>
-            router.push(
-              `${pathname}?page=1&page_size=10`,
-            )
-          }
+          onClick={() => router.push(`${pathname}?page=1&page_size=10`)}
         >
           <RotateCcw className="size-4" />
           Clear

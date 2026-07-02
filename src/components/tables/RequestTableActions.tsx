@@ -48,7 +48,7 @@ export default function RequestTableActions({
         `/api/procurement/client-requests/${request.id}/`,
         {
           method: "DELETE",
-        }
+        },
       );
 
       if (!response.ok) {

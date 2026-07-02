@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Loader2,
-  Trash2,
-} from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import ResponsiveActionGuard from "@/components/shared/responsive-action-guard";
@@ -31,18 +25,11 @@ import type {
   PaginatedResponse,
   StaffProfileSummary,
 } from "../shared/access-types";
-import {
-  glassButtonClass,
-  modalClass,
-} from "../shared/glass-styles";
+import { glassButtonClass, modalClass } from "../shared/glass-styles";
 import SelectionList from "../shared/selection-list";
 
 export type DepartmentAction =
-  | "view-staff"
-  | "add-staff"
-  | "remove-staff"
-  | "edit"
-  | "delete";
+  "view-staff" | "add-staff" | "remove-staff" | "edit" | "delete";
 
 interface DepartmentActionDialogProps {
   department: Department;
@@ -67,32 +54,19 @@ export default function DepartmentActionDialog({
 }: DepartmentActionDialogProps) {
   const router = useRouter();
 
-  const [profiles, setProfiles] = useState<
-    StaffProfileSummary[]
-  >([]);
+  const [profiles, setProfiles] = useState<StaffProfileSummary[]>([]);
 
-  const [selected, setSelected] = useState<
-    Array<string | number>
-  >([]);
+  const [selected, setSelected] = useState<Array<string | number>>([]);
 
-  const [name, setName] = useState(
-    department.name,
-  );
+  const [name, setName] = useState(department.name);
 
-  const [code, setCode] = useState(
-    department.code,
-  );
+  const [code, setCode] = useState(department.code);
 
-  const [description, setDescription] =
-    useState(
-      department.description ?? "",
-    );
+  const [description, setDescription] = useState(department.description ?? "");
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [submitting, setSubmitting] =
-    useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!open || !action) {
@@ -102,9 +76,7 @@ export default function DepartmentActionDialog({
     setSelected([]);
     setName(department.name);
     setCode(department.code);
-    setDescription(
-      department.description ?? "",
-    );
+    setDescription(department.description ?? "");
 
     if (
       action !== "view-staff" &&
@@ -118,16 +90,12 @@ export default function DepartmentActionDialog({
       setLoading(true);
 
       try {
-        if (
-          action === "view-staff" ||
-          action === "remove-staff"
-        ) {
-          const response =
-            await accountApi<
-              PaginatedResponse<StaffProfileSummary>
-            >(
-              `/api/account/profiles?department=${department.id}&page_size=1000&ordering=employee_id`,
-            );
+        if (action === "view-staff" || action === "remove-staff") {
+          const response = await accountApi<
+            PaginatedResponse<StaffProfileSummary>
+          >(
+            `/api/account/profiles?department=${department.id}&page_size=1000&ordering=employee_id`,
+          );
 
           setProfiles(response.results);
           return;
@@ -140,25 +108,18 @@ export default function DepartmentActionDialog({
          * /api/account/profiles?exclude_department=${department.id}
          */
 
-        const response =
-          await accountApi<
-            PaginatedResponse<StaffProfileSummary>
-          >(
-            "/api/account/profiles?page_size=1000&ordering=employee_id",
-          );
+        const response = await accountApi<
+          PaginatedResponse<StaffProfileSummary>
+        >("/api/account/profiles?page_size=1000&ordering=employee_id");
 
         setProfiles(
           response.results.filter(
-            (profile) =>
-              profile.department?.id !==
-              department.id,
+            (profile) => profile.department?.id !== department.id,
           ),
         );
       } catch (error) {
         toast.error(
-          error instanceof Error
-            ? error.message
-            : "Unable to load staff.",
+          error instanceof Error ? error.message : "Unable to load staff.",
         );
       } finally {
         setLoading(false);
@@ -175,15 +136,10 @@ export default function DepartmentActionDialog({
     open,
   ]);
 
-  function toggleSelected(
-    id: string | number,
-  ) {
+  function toggleSelected(id: string | number) {
     setSelected((current) =>
       current.includes(id)
-        ? current.filter(
-            (currentId) =>
-              currentId !== id,
-          )
+        ? current.filter((currentId) => currentId !== id)
         : [...current, id],
     );
   }
@@ -197,86 +153,56 @@ export default function DepartmentActionDialog({
 
     try {
       if (action === "edit") {
-        if (
-          name.trim().length < 2 ||
-          code.trim().length < 2
-        ) {
-          throw new Error(
-            "Department name and code are required.",
-          );
+        if (name.trim().length < 2 || code.trim().length < 2) {
+          throw new Error("Department name and code are required.");
         }
 
-        await accountApi(
-          `/api/account/departments/${department.id}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-            body: JSON.stringify({
-              name: name.trim(),
-              code: code
-                .trim()
-                .toUpperCase(),
-              description:
-                description.trim(),
-            }),
+        await accountApi(`/api/account/departments/${department.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({
+            name: name.trim(),
+            code: code.trim().toUpperCase(),
+            description: description.trim(),
+          }),
+        });
       }
 
-      if (
-        action === "add-staff" ||
-        action === "remove-staff"
-      ) {
-        const selectedProfiles =
-          profiles.filter((profile) =>
-            selected.includes(profile.id),
-          );
+      if (action === "add-staff" || action === "remove-staff") {
+        const selectedProfiles = profiles.filter((profile) =>
+          selected.includes(profile.id),
+        );
 
         await Promise.all(
           selectedProfiles.map((profile) =>
-            accountApi(
-              `/api/account/profiles/${profile.id}`,
-              {
-                method: "PATCH",
-                headers: {
-                  "Content-Type":
-                    "application/json",
-                },
-                body: JSON.stringify({
-                  department:
-                    action === "add-staff"
-                      ? department.id
-                      : null,
-                }),
+            accountApi(`/api/account/profiles/${profile.id}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
               },
-            ),
+              body: JSON.stringify({
+                department: action === "add-staff" ? department.id : null,
+              }),
+            }),
           ),
         );
       }
 
       if (action === "delete") {
-        await accountApi(
-          `/api/account/departments/${department.id}`,
-          {
-            method: "DELETE",
-          },
-        );
+        await accountApi(`/api/account/departments/${department.id}`, {
+          method: "DELETE",
+        });
       }
 
-      toast.success(
-        "Department updated successfully.",
-      );
+      toast.success("Department updated successfully.");
 
       onOpenChange(false);
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to update department.",
+        error instanceof Error ? error.message : "Unable to update department.",
       );
     } finally {
       setSubmitting(false);
@@ -287,8 +213,7 @@ export default function DepartmentActionDialog({
     return null;
   }
 
-  const sensitive =
-    action !== "view-staff";
+  const sensitive = action !== "view-staff";
 
   const content = (
     <div className="space-y-5">
@@ -319,17 +244,12 @@ export default function DepartmentActionDialog({
                           </p>
 
                           <p className="text-sm text-muted-foreground">
-                            {profile.job_title} ·{" "}
-                            {profile.employee_id}
+                            {profile.job_title} · {profile.employee_id}
                           </p>
                         </div>
 
-                        <Badge
-                          variant="secondary"
-                        >
-                          {profile.user.is_active
-                            ? "Active"
-                            : "Inactive"}
+                        <Badge variant="secondary">
+                          {profile.user.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                     </div>
@@ -339,18 +259,15 @@ export default function DepartmentActionDialog({
             </ScrollArea>
           )}
 
-          {(action === "add-staff" ||
-            action === "remove-staff") && (
+          {(action === "add-staff" || action === "remove-staff") && (
             <SelectionList
-              items={profiles.map(
-                (profile) => ({
-                  id: profile.id,
-                  title:
-                    `${profile.user.first_name} ${profile.user.last_name}`.trim() ||
-                    profile.user.username,
-                  description: `${profile.employee_id} · ${profile.job_title}`,
-                }),
-              )}
+              items={profiles.map((profile) => ({
+                id: profile.id,
+                title:
+                  `${profile.user.first_name} ${profile.user.last_name}`.trim() ||
+                  profile.user.username,
+                description: `${profile.employee_id} · ${profile.job_title}`,
+              }))}
               selected={selected}
               onToggle={toggleSelected}
               emptyMessage={
@@ -366,33 +283,21 @@ export default function DepartmentActionDialog({
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="text-sm font-medium">
-                    Department name
-                  </label>
+                  <label className="text-sm font-medium">Department name</label>
 
                   <Input
                     value={name}
-                    onChange={(event) =>
-                      setName(
-                        event.target.value,
-                      )
-                    }
+                    onChange={(event) => setName(event.target.value)}
                     className="mt-2 border-white/50 bg-white/30 backdrop-blur-md"
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium">
-                    Department code
-                  </label>
+                  <label className="text-sm font-medium">Department code</label>
 
                   <Input
                     value={code}
-                    onChange={(event) =>
-                      setCode(
-                        event.target.value,
-                      )
-                    }
+                    onChange={(event) => setCode(event.target.value)}
                     maxLength={5}
                     className="mt-2 border-white/50 bg-white/30 uppercase backdrop-blur-md"
                   />
@@ -400,17 +305,11 @@ export default function DepartmentActionDialog({
               </div>
 
               <div>
-                <label className="text-sm font-medium">
-                  Description
-                </label>
+                <label className="text-sm font-medium">Description</label>
 
                 <Textarea
                   value={description}
-                  onChange={(event) =>
-                    setDescription(
-                      event.target.value,
-                    )
-                  }
+                  onChange={(event) => setDescription(event.target.value)}
                   rows={4}
                   className="mt-2 border-white/50 bg-white/30 backdrop-blur-md"
                 />
@@ -429,8 +328,7 @@ export default function DepartmentActionDialog({
                   </p>
 
                   <p className="mt-1 text-sm text-red-600">
-                    Staff should be moved or removed from the
-                    department first.
+                    Staff should be moved or removed from the department first.
                   </p>
                 </div>
               </div>
@@ -442,9 +340,7 @@ export default function DepartmentActionDialog({
               <Button
                 variant="outline"
                 className={glassButtonClass}
-                onClick={() =>
-                  onOpenChange(false)
-                }
+                onClick={() => onOpenChange(false)}
               >
                 Cancel
               </Button>
@@ -453,20 +349,14 @@ export default function DepartmentActionDialog({
                 className={glassButtonClass}
                 disabled={
                   submitting ||
-                  ((action === "add-staff" ||
-                    action ===
-                      "remove-staff") &&
+                  ((action === "add-staff" || action === "remove-staff") &&
                     selected.length === 0)
                 }
                 onClick={submitAction}
               >
-                {submitting && (
-                  <Loader2 className="size-4 animate-spin" />
-                )}
+                {submitting && <Loader2 className="size-4 animate-spin" />}
 
-                {action === "delete"
-                  ? "Delete department"
-                  : "Save changes"}
+                {action === "delete" ? "Delete department" : "Save changes"}
               </Button>
             </div>
           )}
@@ -476,15 +366,10 @@ export default function DepartmentActionDialog({
   );
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={onOpenChange}
-    >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={modalClass}>
         <DialogHeader>
-          <DialogTitle>
-            {titles[action]}
-          </DialogTitle>
+          <DialogTitle>{titles[action]}</DialogTitle>
 
           <DialogDescription>
             {department.name} ({department.code})
@@ -492,11 +377,7 @@ export default function DepartmentActionDialog({
         </DialogHeader>
 
         {sensitive ? (
-          <ResponsiveActionGuard
-            actionName={titles[
-              action
-            ].toLowerCase()}
-          >
+          <ResponsiveActionGuard actionName={titles[action].toLowerCase()}>
             {content}
           </ResponsiveActionGuard>
         ) : (

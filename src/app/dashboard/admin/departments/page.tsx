@@ -30,12 +30,7 @@ export default async function DepartmentsPage({
     redirect("/login");
   }
 
-  if (
-    !hasPermission(
-      user,
-      "accounts.department.view",
-    )
-  ) {
+  if (!hasPermission(user, "accounts.department.view")) {
     redirect("/dashboard/unauthorized");
   }
 
@@ -51,12 +46,9 @@ export default async function DepartmentsPage({
     query.set("search", params.search);
   }
 
-  const departmentResponse =
-    await serverFetch<
-      PaginatedResponse<Department>
-    >(
-      `/account/departments/?${query.toString()}`,
-    );
+  const departmentResponse = await serverFetch<PaginatedResponse<Department>>(
+    `/account/departments/?${query.toString()}`,
+  );
 
   return (
     <div className="bg-blue-100 min-h-screen space-y-6 p-4 sm:p-6 lg:p-8">
@@ -72,15 +64,13 @@ export default async function DepartmentsPage({
           </h1>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            Manage company departments and staff
-            assignments.
+            Manage company departments and staff assignments.
           </p>
         </div>
 
-        {hasPermission(
-          user,
-          "accounts.department.create",
-        ) && <CreateDepartmentDialog />}
+        {hasPermission(user, "accounts.department.create") && (
+          <CreateDepartmentDialog />
+        )}
       </div>
 
       <DepartmentFilters
@@ -90,14 +80,10 @@ export default async function DepartmentsPage({
       />
 
       <DepartmentsList
-        departments={
-          departmentResponse.results
-        }
+        departments={departmentResponse.results}
         count={departmentResponse.count}
         page={Number(params.page ?? 1)}
-        pageSize={Number(
-          params.page_size ?? 10,
-        )}
+        pageSize={Number(params.page_size ?? 10)}
         currentUser={user}
       />
     </div>

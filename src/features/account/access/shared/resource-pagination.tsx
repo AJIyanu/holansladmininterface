@@ -1,10 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import {
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -22,21 +19,14 @@ export default function ResourcePagination({
   const pathname = usePathname();
   const router = useRouter();
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(count / pageSize),
-  );
+  const totalPages = Math.max(1, Math.ceil(count / pageSize));
 
   function changePage(nextPage: number) {
-    const query = new URLSearchParams(
-      window.location.search,
-    );
+    const query = new URLSearchParams(window.location.search);
 
     query.set("page", String(nextPage));
 
-    router.push(
-      `${pathname}?${query.toString()}`,
-    );
+    router.push(`${pathname}?${query.toString()}`);
   }
 
   if (totalPages <= 1) {

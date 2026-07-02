@@ -53,7 +53,10 @@ const auditEvents: FilterOption[] = [
   { value: "ACCOUNT_CREATED", label: "Account created" },
 ];
 
-export default function SecurityFilters({ kind, values }: SecurityFiltersProps) {
+export default function SecurityFilters({
+  kind,
+  values,
+}: SecurityFiltersProps) {
   const pathname = usePathname();
   const router = useRouter();
   const currentSearchParams = useSearchParams();
@@ -88,7 +91,9 @@ export default function SecurityFilters({ kind, values }: SecurityFiltersProps) 
   }
 
   function clearFilters() {
-    router.push(`${pathname}?range=month&page=1&page_size=20&ordering=-created_at`);
+    router.push(
+      `${pathname}?range=month&page=1&page_size=20&ordering=-created_at`,
+    );
   }
 
   const eventOptions = kind === "login" ? loginEvents : auditEvents;
@@ -102,7 +107,11 @@ export default function SecurityFilters({ kind, values }: SecurityFiltersProps) 
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder={kind === "login" ? "Search user, IP or event..." : "Search actor, target or resource..."}
+              placeholder={
+                kind === "login"
+                  ? "Search user, IP or event..."
+                  : "Search actor, target or resource..."
+              }
               className="pl-9"
             />
           </div>
@@ -227,6 +236,7 @@ export default function SecurityFilters({ kind, values }: SecurityFiltersProps) 
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="1">Latest record only</SelectItem>
             <SelectItem value="10">10 per page</SelectItem>
             <SelectItem value="20">20 per page</SelectItem>
             <SelectItem value="50">50 per page</SelectItem>

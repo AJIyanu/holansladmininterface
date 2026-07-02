@@ -16,13 +16,23 @@ import { formatPeriod, percentage, riskBadgeClass } from "./utils";
 function Metric({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-lg border bg-background/70 p-3">
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
       <p className="mt-1 text-xl font-semibold">{value}</p>
     </div>
   );
 }
 
-function ProgressRow({ label, value, total }: { label: string; value: number; total: number }) {
+function ProgressRow({
+  label,
+  value,
+  total,
+}: {
+  label: string;
+  value: number;
+  total: number;
+}) {
   const width = percentage(value, total);
 
   return (
@@ -32,13 +42,20 @@ function ProgressRow({ label, value, total }: { label: string; value: number; to
         <span className="font-medium">{value}</span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-muted">
-        <div className="h-full rounded-full bg-foreground/70" style={{ width: `${width}%` }} />
+        <div
+          className="h-full rounded-full bg-foreground/70"
+          style={{ width: `${width}%` }}
+        />
       </div>
     </div>
   );
 }
 
-export function LoginSummaryCards({ summary }: { summary: LoginActivitySummary }) {
+export function LoginSummaryCards({
+  summary,
+}: {
+  summary: LoginActivitySummary;
+}) {
   const totalAttempts = summary.successful_logins + summary.failed_logins;
   const failureRate = percentage(summary.failed_logins, totalAttempts);
 
@@ -58,12 +75,23 @@ export function LoginSummaryCards({ summary }: { summary: LoginActivitySummary }
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Metric label="Successful" value={summary.successful_logins} />
             <Metric label="Failed" value={summary.failed_logins} />
-            <Metric label="Reset requests" value={summary.password_reset_requests} />
+            <Metric
+              label="Reset requests"
+              value={summary.password_reset_requests}
+            />
             <Metric label="Failure rate" value={`${failureRate}%`} />
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <ProgressRow label="Successful logins" value={summary.successful_logins} total={totalAttempts} />
-            <ProgressRow label="Failed logins" value={summary.failed_logins} total={totalAttempts} />
+            <ProgressRow
+              label="Successful logins"
+              value={summary.successful_logins}
+              total={totalAttempts}
+            />
+            <ProgressRow
+              label="Failed logins"
+              value={summary.failed_logins}
+              total={totalAttempts}
+            />
           </div>
         </CardContent>
       </Card>
@@ -93,7 +121,8 @@ export function LoginSummaryCards({ summary }: { summary: LoginActivitySummary }
                 <AlertTriangle className="size-4" /> Most failed account
               </p>
               <p className="mt-2 font-semibold">
-                {summary.top_failed_account?.display_name ?? "No failed account"}
+                {summary.top_failed_account?.display_name ??
+                  "No failed account"}
               </p>
               <p className="text-sm text-muted-foreground">
                 {summary.top_failed_account?.count ?? 0} failed attempts
@@ -101,14 +130,42 @@ export function LoginSummaryCards({ summary }: { summary: LoginActivitySummary }
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className={summary.risk_indicators.repeated_failures ? riskBadgeClass("high") : riskBadgeClass("low")}>
-              Repeated failures: {summary.risk_indicators.repeated_failures ? "Detected" : "None"}
+            <Badge
+              variant="outline"
+              className={
+                summary.risk_indicators.repeated_failures
+                  ? riskBadgeClass("high")
+                  : riskBadgeClass("low")
+              }
+            >
+              Repeated failures:{" "}
+              {summary.risk_indicators.repeated_failures ? "Detected" : "None"}
             </Badge>
-            <Badge variant="outline" className={summary.risk_indicators.multiple_ips_for_account ? riskBadgeClass("medium") : riskBadgeClass("low")}>
-              Multiple IPs: {summary.risk_indicators.multiple_ips_for_account ? "Detected" : "None"}
+            <Badge
+              variant="outline"
+              className={
+                summary.risk_indicators.multiple_ips_for_account
+                  ? riskBadgeClass("medium")
+                  : riskBadgeClass("low")
+              }
+            >
+              Multiple IPs:{" "}
+              {summary.risk_indicators.multiple_ips_for_account
+                ? "Detected"
+                : "None"}
             </Badge>
-            <Badge variant="outline" className={summary.risk_indicators.unusual_time_activity ? riskBadgeClass("medium") : riskBadgeClass("low")}>
-              Unusual time: {summary.risk_indicators.unusual_time_activity ? "Detected" : "None"}
+            <Badge
+              variant="outline"
+              className={
+                summary.risk_indicators.unusual_time_activity
+                  ? riskBadgeClass("medium")
+                  : riskBadgeClass("low")
+              }
+            >
+              Unusual time:{" "}
+              {summary.risk_indicators.unusual_time_activity
+                ? "Detected"
+                : "None"}
             </Badge>
           </div>
         </CardContent>
@@ -145,7 +202,12 @@ export function AuditSummaryCards({ summary }: { summary: AuditLogSummary }) {
           </div>
           <div className="space-y-3">
             {summary.activity_by_action.map((item) => (
-              <ProgressRow key={item.action} label={item.action} value={item.count} total={actionTotal} />
+              <ProgressRow
+                key={item.action}
+                label={item.action}
+                value={item.count}
+                total={actionTotal}
+              />
             ))}
           </div>
         </CardContent>
@@ -176,10 +238,15 @@ export function AuditSummaryCards({ summary }: { summary: AuditLogSummary }) {
                 <KeyRound className="size-4" /> Most affected target
               </p>
               <p className="mt-2 font-semibold">
-                {summary.most_affected_target?.display_name ?? summary.most_affected_resource?.resource ?? "No target"}
+                {summary.most_affected_target?.display_name ??
+                  summary.most_affected_resource?.resource ??
+                  "No target"}
               </p>
               <p className="text-sm text-muted-foreground">
-                {summary.most_affected_target?.count ?? summary.most_affected_resource?.count ?? 0} events
+                {summary.most_affected_target?.count ??
+                  summary.most_affected_resource?.count ??
+                  0}{" "}
+                events
               </p>
             </div>
           </div>

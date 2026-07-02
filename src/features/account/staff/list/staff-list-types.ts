@@ -60,7 +60,6 @@ export interface StaffListSearchParams {
 }
 
 export type StaffAction =
-  | "view"
   | "edit"
   | "roles"
   | "department"
@@ -68,4 +67,5 @@ export type StaffAction =
   | "audit"
   | "activate"
   | "deactivate"
+  | "reset-password"
   | "delete";

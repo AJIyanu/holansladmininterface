@@ -27,27 +27,19 @@ interface AuditLogsPageProps {
 export default async function AuditLogsPage({
   searchParams,
 }: AuditLogsPageProps) {
-  const currentUser =
-    await getCurrentUser();
+  const currentUser = await getCurrentUser();
 
   if (!currentUser) {
     redirect("/login");
   }
 
-  if (
-    !hasPermission(
-      currentUser,
-      "accounts.auditlog.view",
-    )
-  ) {
+  if (!hasPermission(currentUser, "accounts.auditlog.view")) {
     redirect("/dashboard/unauthorized");
   }
 
   const params = await searchParams;
 
-  const range = normaliseRange(
-    params.range,
-  );
+  const range = normaliseRange(params.range);
 
   const tableQuery = buildQuery(
     {
@@ -56,12 +48,13 @@ export default async function AuditLogsPage({
       page_size: params.page_size,
       search: params.search,
       event_type: params.event_type,
-      event_category:
-        params.event_category,
+      event_category: params.event_category,
       status: params.status,
       resource: params.resource,
       action: params.action,
       ordering: params.ordering,
+      user: params.user,
+      target_user: params.target_user,
     },
     {
       page: "1",
@@ -70,20 +63,13 @@ export default async function AuditLogsPage({
     },
   );
 
-  const logs =
-    await serverFetch<
-      PaginatedResponse<AuditLogEntry>
-    >(
-      `/account/audit-logs/?${tableQuery}`,
-    );
-
-  const page = Number(
-    params.page ?? 1,
+  const logs = await serverFetch<PaginatedResponse<AuditLogEntry>>(
+    `/account/audit-logs/?${tableQuery}`,
   );
 
-  const pageSize = Number(
-    params.page_size ?? 20,
-  );
+  const page = Number(params.page ?? 1);
+
+  const pageSize = Number(params.page_size ?? 20);
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
@@ -98,11 +84,8 @@ export default async function AuditLogsPage({
         </h1>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          Administrative actions and system events
-          for the{" "}
-          {rangeLabels[
-            range
-          ].toLowerCase()}.
+          Administrative actions and system events for the{" "}
+          {rangeLabels[range].toLowerCase()}.
         </p>
       </header>
 
@@ -114,10 +97,7 @@ export default async function AuditLogsPage({
         }}
       />
 
-      <SecuritySummaryPanel
-        kind="audit"
-        range={range}
-      />
+      <SecuritySummaryPanel kind="audit" range={range} />
 
       <AiInsightPanel
         endpoint="/api/account/audit-logs/ai-insight"
@@ -126,18 +106,14 @@ export default async function AuditLogsPage({
 
       <section className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold">
-            Audit records
-          </h2>
+          <h2 className="text-lg font-semibold">Audit records</h2>
 
           <p className="text-sm text-muted-foreground">
             {logs.count} matching records
           </p>
         </div>
 
-        <AuditLogTable
-          entries={logs.results}
-        />
+        <AuditLogTable entries={logs.results} />
 
         <SecurityPagination
           count={logs.count}

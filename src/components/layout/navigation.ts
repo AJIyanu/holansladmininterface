@@ -1,6 +1,6 @@
 import {
   Activity,
-  Archive,
+  // Archive,
   BarChart3,
   Bot,
   Building2,
@@ -24,6 +24,11 @@ import {
   FileClock,
   LockKeyhole,
   ShieldCheck,
+  ListTodo,
+  ClipboardCheck,
+  // ListChecks,
+  Send,
+  ListPlus,
 } from "lucide-react";
 
 import type { CurrentUser } from "@/types/auth";
@@ -42,25 +47,41 @@ export const dashboardNavigation: NavigationSection[] = [
       },
       {
         title: "Tasks Management",
-        icon: ClipboardList,
+        icon: ListTodo,
         children: [
           {
-            title: "New Task",
-            href: "/dashboard/orders/create",
-            icon: FilePlus2,
-            permission: "tasks.task.add",
+            title: "My Tasks",
+            href: "/dashboard/tasks",
+            icon: ClipboardList,
           },
           {
-            title: "Pending Tasks",
-            href: "/dashboard/orders/pending",
-            icon: Activity,
-            permission: "tasks.task.view",
+            title: "Create Task",
+            href: "/dashboard/tasks/new",
+            icon: ListPlus,
           },
           {
-            title: "Task History",
-            href: "/dashboard/orders/history",
-            icon: Archive,
-            permission: "tasks.task.view",
+            title: "Assigned by Me",
+            href: "/dashboard/tasks/created",
+            icon: Send,
+          },
+          {
+            title: "Department Tasks",
+            href: "/dashboard/tasks/department",
+            icon: Building2,
+            permission: [
+              "tasks.department_task.view",
+              "tasks.department_task.manage",
+              "tasks.all_task.view",
+              "tasks.all_task.manage",
+            ],
+            // permissionMode: "some",
+          },
+          {
+            title: "All Tasks",
+            href: "/dashboard/tasks/all",
+            icon: ClipboardCheck,
+            permission: ["tasks.all_task.view", "tasks.all_task.manage"],
+            // permissionMode: "some",
           },
         ],
       },
@@ -72,7 +93,7 @@ export const dashboardNavigation: NavigationSection[] = [
             title: "Perform Analysis",
             href: "/dashboard/orders/create",
             icon: Sparkles,
-            permission: "ai.analysis.add",
+            permission: "ai.analysis.create",
           },
           {
             title: "Chat with AI",
@@ -95,7 +116,7 @@ export const dashboardNavigation: NavigationSection[] = [
             title: "Create Order",
             href: "/dashboard/po/new",
             icon: FilePlus2,
-            permission: "procurement.purchaseorder.add",
+            permission: "procurement.purchaseorder.create",
           },
           {
             title: "Track Orders",
@@ -113,7 +134,7 @@ export const dashboardNavigation: NavigationSection[] = [
             title: "Create Request",
             href: "/dashboard/requests/new",
             icon: FilePlus2,
-            permission: "procurement.clientrequest.add",
+            permission: "procurement.clientrequest.create",
           },
           {
             title: "View Requests",
@@ -131,7 +152,7 @@ export const dashboardNavigation: NavigationSection[] = [
             title: "Create Quotation",
             href: "/dashboard/orders/create",
             icon: FilePlus2,
-            permission: "procurement.quotation.add",
+            permission: "procurement.quotation.create",
           },
           {
             title: "Manage Quotations",
@@ -316,6 +337,7 @@ function filterNavigationItem(
     if (allowedChildren.length === 0) {
       return null;
     }
+    // console.log("Allowed Children for", item.title, ":", allowedChildren);
 
     return {
       ...item,

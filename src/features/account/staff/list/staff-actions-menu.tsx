@@ -3,12 +3,12 @@
 import {
   Activity,
   Building2,
+  KeyRound,
   MoreHorizontal,
   Pencil,
   ShieldCheck,
   Trash2,
   UserCheck,
-  UserRoundCog,
   UserX,
 } from "lucide-react";
 import { useState } from "react";
@@ -38,32 +38,33 @@ export default function StaffActionsMenu({
 }: StaffActionsMenuProps) {
   const [action, setAction] = useState<StaffAction | null>(null);
 
-  const canEdit = hasPermission(currentUser, "accounts.staffprofile.edit");
-
-  const canDelete =
-    currentUser.is_superuser ||
-    hasPermission(currentUser, "accounts.staffprofile.delete");
+  const canEditProfile = hasPermission(
+    currentUser,
+    "accounts.staffprofile.edit",
+  );
 
   const canManageUser = hasPermission(currentUser, "accounts.user.edit");
 
   const canViewAudit = hasPermission(currentUser, "accounts.auditlog.view");
 
+  const canDelete = currentUser.is_superuser === true;
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" aria-label="Open staff actions">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Open staff actions"
+          >
             <MoreHorizontal className="size-5" />
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" className="w-56 bg-white/30 backdrop-blur-md">
-          <DropdownMenuItem onClick={() => setAction("view")}>
-            <UserRoundCog className="size-4" />
-            View profile
-          </DropdownMenuItem>
-
-          {canEdit && (
+        <DropdownMenuContent align="end" className="w-60">
+          {canEditProfile && (
             <>
               <DropdownMenuItem onClick={() => setAction("edit")}>
                 <Pencil className="size-4" />
@@ -98,6 +99,11 @@ export default function StaffActionsMenu({
                 {profile.user.is_active
                   ? "Deactivate account"
                   : "Activate account"}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={() => setAction("reset-password")}>
+                <KeyRound className="size-4" />
+                Send password-reset link
               </DropdownMenuItem>
             </>
           )}
@@ -137,9 +143,10 @@ export default function StaffActionsMenu({
       <StaffActionDialog
         action={action}
         profile={profile}
+        currentUser={currentUser}
         open={action !== null}
-        onOpenChange={(open) => {
-          if (!open) {
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) {
             setAction(null);
           }
         }}

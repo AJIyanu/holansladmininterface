@@ -19,7 +19,10 @@ export default function RulesInsightCard({ insight }: RulesInsightCardProps) {
             <ShieldCheck className="size-5 text-[#0B4F8A]" />
             System insight
           </CardTitle>
-          <Badge variant="outline" className={riskBadgeClass(insight.risk_level)}>
+          <Badge
+            variant="outline"
+            className={riskBadgeClass(insight.risk_level)}
+          >
             {insight.risk_level.toUpperCase()} RISK
           </Badge>
         </div>

@@ -27,27 +27,19 @@ interface LoginActivityPageProps {
 export default async function LoginActivityPage({
   searchParams,
 }: LoginActivityPageProps) {
-  const currentUser =
-    await getCurrentUser();
+  const currentUser = await getCurrentUser();
 
   if (!currentUser) {
     redirect("/login");
   }
 
-  if (
-    !hasPermission(
-      currentUser,
-      "accounts.auditlog.view",
-    )
-  ) {
+  if (!hasPermission(currentUser, "accounts.auditlog.view")) {
     redirect("/dashboard/unauthorized");
   }
 
   const params = await searchParams;
 
-  const range = normaliseRange(
-    params.range,
-  );
+  const range = normaliseRange(params.range);
 
   const tableQuery = buildQuery(
     {
@@ -58,6 +50,7 @@ export default async function LoginActivityPage({
       event_type: params.event_type,
       status: params.status,
       ordering: params.ordering,
+      user: params.user,
     },
     {
       page: "1",
@@ -73,20 +66,13 @@ export default async function LoginActivityPage({
    * Summary and AI components fetch separately and
    * cache results using only the selected range.
    */
-  const activity =
-    await serverFetch<
-      PaginatedResponse<AuditLogEntry>
-    >(
-      `/account/login-activity/?${tableQuery}`,
-    );
-
-  const page = Number(
-    params.page ?? 1,
+  const activity = await serverFetch<PaginatedResponse<AuditLogEntry>>(
+    `/account/login-activity/?${tableQuery}`,
   );
 
-  const pageSize = Number(
-    params.page_size ?? 20,
-  );
+  const page = Number(params.page ?? 1);
+
+  const pageSize = Number(params.page_size ?? 20);
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
@@ -101,11 +87,8 @@ export default async function LoginActivityPage({
         </h1>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          Authentication activity and security
-          signals for the{" "}
-          {rangeLabels[
-            range
-          ].toLowerCase()}.
+          Authentication activity and security signals for the{" "}
+          {rangeLabels[range].toLowerCase()}.
         </p>
       </header>
 
@@ -117,10 +100,7 @@ export default async function LoginActivityPage({
         }}
       />
 
-      <SecuritySummaryPanel
-        kind="login"
-        range={range}
-      />
+      <SecuritySummaryPanel kind="login" range={range} />
 
       <AiInsightPanel
         endpoint="/api/account/login-activity/ai-insight"
@@ -129,18 +109,14 @@ export default async function LoginActivityPage({
 
       <section className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold">
-            Activity records
-          </h2>
+          <h2 className="text-lg font-semibold">Activity records</h2>
 
           <p className="text-sm text-muted-foreground">
             {activity.count} matching records
           </p>
         </div>
 
-        <LoginActivityTable
-          entries={activity.results}
-        />
+        <LoginActivityTable entries={activity.results} />
 
         <SecurityPagination
           count={activity.count}

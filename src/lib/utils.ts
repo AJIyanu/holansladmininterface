@@ -24,7 +24,7 @@ export function formatDateTime(date: string | Date): string {
 }
 
 export function getStatusVariant(
-  status: string
+  status: string,
 ): "default" | "secondary" | "destructive" | "outline" {
   switch (status.toLowerCase()) {
     case "completed":

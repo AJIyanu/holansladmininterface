@@ -14,11 +14,7 @@ import {
 } from "@/components/ui/dialog";
 
 import type { AuditLogEntry } from "./types";
-import {
-  displayUser,
-  formatEventLabel,
-  formatSecurityDate,
-} from "./utils";
+import { displayUser, formatEventLabel, formatSecurityDate } from "./utils";
 
 function DetailField({
   label,
@@ -62,87 +58,52 @@ export default function ActivityDetailDialog({
       <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] max-w-2xl overflow-y-auto overflow-x-hidden p-4 sm:p-6">
         <DialogHeader className="min-w-0">
           <DialogTitle className="[overflow-wrap:anywhere]">
-            {formatEventLabel(
-              entry.event_type,
-            )}
+            {formatEventLabel(entry.event_type)}
           </DialogTitle>
 
           <DialogDescription>
-            {formatSecurityDate(
-              entry.created_at,
-            )}
+            {formatSecurityDate(entry.created_at)}
           </DialogDescription>
         </DialogHeader>
 
         <dl className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
-          <DetailField
-            label="Actor"
-            value={displayUser(entry.user)}
-          />
+          <DetailField label="Actor" value={displayUser(entry.user)} />
 
           <DetailField
             label="Target user"
-            value={displayUser(
-              entry.target_user,
-              "None",
-            )}
+            value={displayUser(entry.target_user, "None")}
           />
 
           <DetailField
             label="Status"
             value={
               <Badge
-                variant={
-                  entry.status === "SUCCESS"
-                    ? "default"
-                    : "destructive"
-                }
+                variant={entry.status === "SUCCESS" ? "default" : "destructive"}
               >
                 {entry.status}
               </Badge>
             }
           />
 
-          <DetailField
-            label="Category"
-            value={entry.event_category}
-          />
+          <DetailField label="Category" value={entry.event_category} />
 
           <DetailField
             label="Attempted username"
             value={entry.username_attempted}
           />
 
-          <DetailField
-            label="IP address"
-            value={entry.ip_address}
-          />
+          <DetailField label="IP address" value={entry.ip_address} />
 
-          <DetailField
-            label="Application"
-            value={entry.app_label}
-          />
+          <DetailField label="Application" value={entry.app_label} />
 
-          <DetailField
-            label="Resource"
-            value={entry.resource}
-          />
+          <DetailField label="Resource" value={entry.resource} />
 
-          <DetailField
-            label="Action"
-            value={entry.action}
-          />
+          <DetailField label="Action" value={entry.action} />
 
-          <DetailField
-            label="Object ID"
-            value={entry.object_id}
-          />
+          <DetailField label="Object ID" value={entry.object_id} />
 
           <div className="min-w-0 sm:col-span-2">
-            <DetailField
-              label="User agent"
-              value={entry.user_agent}
-            />
+            <DetailField label="User agent" value={entry.user_agent} />
           </div>
         </dl>
 
@@ -152,11 +113,7 @@ export default function ActivityDetailDialog({
           </p>
 
           <pre className="max-h-72 min-w-0 whitespace-pre-wrap rounded-lg border bg-muted/50 p-4 text-xs leading-5 [overflow-wrap:anywhere]">
-            {JSON.stringify(
-              entry.metadata ?? {},
-              null,
-              2,
-            )}
+            {JSON.stringify(entry.metadata ?? {}, null, 2)}
           </pre>
         </div>
       </DialogContent>

@@ -6,7 +6,7 @@ export interface NavigationItem {
   title: string;
   href?: string;
   icon: LucideIcon;
-  permission?: string;
+  permission?: string | string[];
   children?: NavigationChildItem[];
 }
 
@@ -14,7 +14,7 @@ export interface NavigationChildItem {
   title: string;
   href: string;
   icon?: LucideIcon;
-  permission?: string;
+  permission?: string | string[];
 }
 
 export interface NavigationSection {

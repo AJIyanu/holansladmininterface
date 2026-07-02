@@ -22,21 +22,14 @@ interface RolesPageProps {
   }>;
 }
 
-export default async function RolesPage({
-  searchParams,
-}: RolesPageProps) {
+export default async function RolesPage({ searchParams }: RolesPageProps) {
   const user = await getCurrentUser();
 
   if (!user) {
     redirect("/login");
   }
 
-  if (
-    !hasPermission(
-      user,
-      "accounts.role.view",
-    )
-  ) {
+  if (!hasPermission(user, "accounts.role.view")) {
     redirect("/dashboard/unauthorized");
   }
 
@@ -52,15 +45,10 @@ export default async function RolesPage({
     query.set("search", params.search);
   }
 
-  const [roleResponse, permissions] =
-    await Promise.all([
-      serverFetch<PaginatedResponse<Role>>(
-        `/account/roles/?${query.toString()}`,
-      ),
-      serverFetch<Permission[]>(
-        "/account/permissions/?ordering=codename",
-      ),
-    ]);
+  const [roleResponse, permissions] = await Promise.all([
+    serverFetch<PaginatedResponse<Role>>(`/account/roles/?${query.toString()}`),
+    serverFetch<Permission[]>("/account/permissions/?ordering=codename"),
+  ]);
 
   return (
     <div className="bg-blue-100 min-h-screen space-y-6 p-4 sm:p-6 lg:p-8">
@@ -76,18 +64,12 @@ export default async function RolesPage({
           </h1>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            Create roles and manage their permissions and
-            staff assignments.
+            Create roles and manage their permissions and staff assignments.
           </p>
         </div>
 
-        {hasPermission(
-          user,
-          "accounts.role.create",
-        ) && (
-          <CreateRoleDialog
-            permissions={permissions}
-          />
+        {hasPermission(user, "accounts.role.create") && (
+          <CreateRoleDialog permissions={permissions} />
         )}
       </div>
 
@@ -102,9 +84,7 @@ export default async function RolesPage({
         permissions={permissions}
         count={roleResponse.count}
         page={Number(params.page ?? 1)}
-        pageSize={Number(
-          params.page_size ?? 10,
-        )}
+        pageSize={Number(params.page_size ?? 10)}
         currentUser={user}
       />
     </div>

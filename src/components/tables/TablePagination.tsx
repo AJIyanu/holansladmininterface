@@ -3,13 +3,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchParams } from "@/app/dashboard/requests/page";
 
-
 interface TablePaginationProps {
   count: number;
   currentPage: number;
   hasNext: boolean;
   hasPrevious: boolean;
-  searchParams: SearchParams//Record<string, string | undefined>;
+  searchParams: SearchParams; //Record<string, string | undefined>;
   createPaginationUrl: (page: number) => string;
 }
 

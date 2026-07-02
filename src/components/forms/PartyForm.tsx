@@ -27,7 +27,7 @@ import { useState, useEffect } from "react";
 interface PartyFormProps {
   initialValues?: Partial<PartyFormValues>;
   onSubmit: (
-    values: PartyFormValues
+    values: PartyFormValues,
   ) => Promise<{ success?: string; error?: string }>;
   loading?: boolean;
   error?: string | null;

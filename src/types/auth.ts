@@ -56,7 +56,10 @@ export function getPrimaryRole(user: CurrentUser): string {
   return user.profile?.job_title || "Staff";
 }
 
-export function hasPermission(user: CurrentUser, permission?: string): boolean {
+export function hasPermission(
+  user: CurrentUser,
+  permission?: string | string[],
+): boolean {
   if (!permission) {
     return true;
   }
@@ -65,5 +68,14 @@ export function hasPermission(user: CurrentUser, permission?: string): boolean {
     return true;
   }
 
+  const userPermissions = new Set(user.permissions ?? []);
+
+  if (Array.isArray(permission)) {
+    return user.permissions.some((permission) =>
+      userPermissions.has(permission),
+    );
+  }
+
+  // console.log("Checking permission for user:", user.username, "Permission:", user.permissions);
   return user.permissions.includes(permission);
 }

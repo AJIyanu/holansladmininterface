@@ -14,10 +14,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,13 +25,8 @@ import {
 import { hasPermission } from "@/lib/permissions";
 import type { CurrentUser } from "@/types/auth";
 
-import type {
-  Permission,
-  Role,
-} from "../shared/access-types";
-import RoleActionDialog, {
-  type RoleAction,
-} from "./role-action-dialog";
+import type { Permission, Role } from "../shared/access-types";
+import RoleActionDialog, { type RoleAction } from "./role-action-dialog";
 
 interface RoleCardProps {
   role: Role;
@@ -51,30 +43,19 @@ export default function RoleCard({
   expanded,
   onToggle,
 }: RoleCardProps) {
-  const [action, setAction] =
-    useState<RoleAction | null>(null);
+  const [action, setAction] = useState<RoleAction | null>(null);
 
-  const rolePermissions = permissions.filter(
-    (permission) =>
-      role.permissions.includes(permission.id),
+  const rolePermissions = permissions.filter((permission) =>
+    role.permissions.includes(permission.id),
   );
 
-  const canEdit = hasPermission(
-    currentUser,
-    "accounts.role.edit",
-  );
+  const canEdit = hasPermission(currentUser, "accounts.role.edit");
 
   const canDelete =
     currentUser.is_superuser ||
-    hasPermission(
-      currentUser,
-      "accounts.role.delete",
-    );
+    hasPermission(currentUser, "accounts.role.delete");
 
-  const canManageStaff = hasPermission(
-    currentUser,
-    "accounts.user.edit",
-  );
+  const canManageStaff = hasPermission(currentUser, "accounts.user.edit");
 
   return (
     <>
@@ -91,24 +72,16 @@ export default function RoleCard({
               </div>
 
               <div className="min-w-0">
-                <h2 className="text-lg font-semibold">
-                  {role.name}
-                </h2>
+                <h2 className="text-lg font-semibold">{role.name}</h2>
 
                 <p className="mt-1 text-sm text-muted-foreground">
                   {role.permissions.length} permission
-                  {role.permissions.length === 1
-                    ? ""
-                    : "s"}
+                  {role.permissions.length === 1 ? "" : "s"}
                 </p>
               </div>
             </button>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onToggle}
-            >
+            <Button variant="ghost" size="icon" onClick={onToggle}>
               {expanded ? (
                 <ChevronUp className="size-5" />
               ) : (
@@ -118,46 +91,28 @@ export default function RoleCard({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                >
+                <Button variant="ghost" size="icon">
                   <MoreHorizontal className="size-5" />
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent
-                align="end"
-                className="w-56"
-              >
+              <DropdownMenuContent align="end" className="w-56">
                 {canEdit && (
                   <>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        setAction("edit")
-                      }
-                    >
+                    <DropdownMenuItem onClick={() => setAction("edit")}>
                       <Pencil className="size-4" />
                       Edit role
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
-                      onClick={() =>
-                        setAction(
-                          "add-permissions",
-                        )
-                      }
+                      onClick={() => setAction("add-permissions")}
                     >
                       <ShieldCheck className="size-4" />
                       Add permissions
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
-                      onClick={() =>
-                        setAction(
-                          "remove-permissions",
-                        )
-                      }
+                      onClick={() => setAction("remove-permissions")}
                     >
                       <ShieldCheck className="size-4" />
                       Remove permissions
@@ -169,20 +124,12 @@ export default function RoleCard({
                   <>
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem
-                      onClick={() =>
-                        setAction("add-staff")
-                      }
-                    >
+                    <DropdownMenuItem onClick={() => setAction("add-staff")}>
                       <UserPlus className="size-4" />
                       Add staff
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem
-                      onClick={() =>
-                        setAction("remove-staff")
-                      }
-                    >
+                    <DropdownMenuItem onClick={() => setAction("remove-staff")}>
                       <UserMinus className="size-4" />
                       Remove staff
                     </DropdownMenuItem>
@@ -194,9 +141,7 @@ export default function RoleCard({
                     <DropdownMenuSeparator />
 
                     <DropdownMenuItem
-                      onClick={() =>
-                        setAction("delete")
-                      }
+                      onClick={() => setAction("delete")}
                       className="text-destructive focus:text-destructive"
                     >
                       <Trash2 className="size-4" />
@@ -220,19 +165,15 @@ export default function RoleCard({
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {rolePermissions.map(
-                    (permission) => (
-                      <Badge
-                        key={permission.id}
-                        variant="secondary"
-                        title={
-                          permission.codename
-                        }
-                      >
-                        {permission.name}
-                      </Badge>
-                    ),
-                  )}
+                  {rolePermissions.map((permission) => (
+                    <Badge
+                      key={permission.id}
+                      variant="secondary"
+                      title={permission.codename}
+                    >
+                      {permission.name}
+                    </Badge>
+                  ))}
                 </div>
               )}
             </div>

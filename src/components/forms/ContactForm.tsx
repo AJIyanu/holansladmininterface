@@ -32,7 +32,7 @@ interface ContactFormProps {
   initialValues?: Partial<ContactFormValues>;
   parties?: { id: string; name: string }[];
   onSubmit: (
-    values: ContactFormValues
+    values: ContactFormValues,
   ) => Promise<{ success?: string; error?: string }>;
   loading?: boolean;
   error?: string | null;

@@ -38,7 +38,7 @@ export function formatEventLabel(value: string): string {
 export function displayUser(
   user: AuditLogEntry["user"] | AuditLogEntry["target_user"],
   fallback = "System",
-): string {
+): string | undefined {
   if (!user) {
     return fallback;
   }

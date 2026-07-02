@@ -1,4 +1,6 @@
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import { refreshAccessToken, setAccessTokenCookie } from "./auth-tokens";
 // import { env } from "@/lib/env";
 
 type ServerFetchOptions = RequestInit & {
@@ -16,7 +18,7 @@ export async function serverFetch<T>(
 
   const url = `${process.env.DJANGO_API_URL}${path}`;
 
-  const res = await fetch(url, {
+  let res = await fetch(url, {
     ...rest,
     headers: {
       "Content-Type": "application/json",
@@ -33,7 +35,30 @@ export async function serverFetch<T>(
   });
 
   if (!res.ok) {
-    throw new Error(`Request failed: ${res.status} ${res.statusText}`);
+    const refreshToken = cookieStore.get("refresh_token")?.value;
+    const newToken = await refreshAccessToken(refreshToken || "");
+    if (newToken?.access) {
+      res = await fetch(url, {
+        ...rest,
+        headers: {
+          "Content-Type": "application/json",
+          ...(auth && token
+            ? {
+                Authorization: `Bearer ${newToken.access}`,
+                "X-Auth-Token": `Bearer ${newToken.access}`,
+                "User-Agent": "Mozilla/5.0 (VercelApp)",
+              }
+            : {}),
+          ...headers,
+        },
+        cache: "no-store",
+      });
+    }
+    // console.log(await res.json());
+    setAccessTokenCookie(NextResponse.json(res), newToken?.access || "");
+    if (!res.ok) {
+      throw new Error(`Request failed: ${res.status} ${res.statusText}`);
+    }
   }
 
   return res.json() as Promise<T>;

@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -14,10 +10,7 @@ import {
   removeSecurityCache,
 } from "./security-session-cache";
 import SummaryUnavailable from "./summary-unavailable";
-import {
-  AuditSummaryCards,
-  LoginSummaryCards,
-} from "./summary-cards";
+import { AuditSummaryCards, LoginSummaryCards } from "./summary-cards";
 import type {
   AuditLogSummary,
   LoginActivitySummary,
@@ -50,15 +43,11 @@ export default function SecuritySummaryPanel({
     LoginActivitySummary | AuditLogSummary | null
   >(null);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [error, setError] = useState<
-    string | null
-  >(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const [requestVersion, setRequestVersion] =
-    useState(0);
+  const [requestVersion, setRequestVersion] = useState(0);
 
   const endpoint =
     kind === "login"
@@ -66,16 +55,12 @@ export default function SecuritySummaryPanel({
       : "/api/account/audit-logs/summary";
 
   const cacheKey = useMemo(
-    () =>
-      `holansl-security:${kind}:summary:${range}`,
+    () => `holansl-security:${kind}:summary:${range}`,
     [kind, range],
   );
 
   const requestUrl = useMemo(
-    () =>
-      `${endpoint}?range=${encodeURIComponent(
-        range,
-      )}`,
+    () => `${endpoint}?range=${encodeURIComponent(range)}`,
     [endpoint, range],
   );
 
@@ -88,21 +73,18 @@ export default function SecuritySummaryPanel({
 
     async function loadSummary() {
       try {
-        const response =
-          await fetchSessionCached<
-            LoginActivitySummary | AuditLogSummary
-          >({
-            cacheKey,
-            url: requestUrl,
-            timeoutMs: 30_000,
-          });
+        const response = await fetchSessionCached<
+          LoginActivitySummary | AuditLogSummary
+        >({
+          cacheKey,
+          url: requestUrl,
+          timeoutMs: 30_000,
+        });
 
         if (!response?.insight?.text) {
           removeSecurityCache(cacheKey);
 
-          throw new Error(
-            "The summary response was incomplete.",
-          );
+          throw new Error("The summary response was incomplete.");
         }
 
         if (active) {
@@ -117,9 +99,7 @@ export default function SecuritySummaryPanel({
           requestError instanceof DOMException &&
           requestError.name === "AbortError"
         ) {
-          setError(
-            "The summary request took too long to respond.",
-          );
+          setError("The summary request took too long to respond.");
         } else {
           setError(
             requestError instanceof Error
@@ -146,17 +126,11 @@ export default function SecuritySummaryPanel({
        */
       active = false;
     };
-  }, [
-    cacheKey,
-    requestUrl,
-    requestVersion,
-  ]);
+  }, [cacheKey, requestUrl, requestVersion]);
 
   function retry() {
     removeSecurityCache(cacheKey);
-    setRequestVersion(
-      (current) => current + 1,
-    );
+    setRequestVersion((current) => current + 1);
   }
 
   if (loading) {
@@ -166,44 +140,31 @@ export default function SecuritySummaryPanel({
   if (!summary || error) {
     return (
       <SummaryUnavailable
-        message={
-          error ??
-          "Activity records are still available below."
-        }
+        message={error ?? "Activity records are still available below."}
         onRetry={retry}
       />
     );
   }
 
   if (kind === "login") {
-    const loginSummary =
-      summary as LoginActivitySummary;
+    const loginSummary = summary as LoginActivitySummary;
 
     return (
       <div className="space-y-4">
-        <LoginSummaryCards
-          summary={loginSummary}
-        />
+        <LoginSummaryCards summary={loginSummary} />
 
-        <RulesInsightCard
-          insight={loginSummary.insight}
-        />
+        <RulesInsightCard insight={loginSummary.insight} />
       </div>
     );
   }
 
-  const auditSummary =
-    summary as AuditLogSummary;
+  const auditSummary = summary as AuditLogSummary;
 
   return (
     <div className="space-y-4">
-      <AuditSummaryCards
-        summary={auditSummary}
-      />
+      <AuditSummaryCards summary={auditSummary} />
 
-      <RulesInsightCard
-        insight={auditSummary.insight}
-      />
+      <RulesInsightCard insight={auditSummary.insight} />
     </div>
   );
 }

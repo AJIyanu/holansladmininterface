@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  AlertCircle,
-  RefreshCw,
-} from "lucide-react";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -22,9 +19,7 @@ export default function SummaryUnavailable({
         <AlertCircle className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
 
         <div className="min-w-0">
-          <p className="font-medium">
-            Summary temporarily unavailable
-          </p>
+          <p className="font-medium">Summary temporarily unavailable</p>
 
           <p className="mt-1 break-words text-sm text-muted-foreground">
             {message}
@@ -33,11 +28,7 @@ export default function SummaryUnavailable({
       </div>
 
       {onRetry && (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onRetry}
-        >
+        <Button type="button" variant="outline" onClick={onRetry}>
           <RefreshCw className="size-4" />
           Retry
         </Button>

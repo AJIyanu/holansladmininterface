@@ -84,8 +84,13 @@ export function LoginForm() {
         router.push(redirectTo);
         router.refresh();
       } else {
-        console.error("Login failed:", result.error);
-        setError(result.error || "Login failed. Please try again.");
+        const errorMessage =
+          typeof result.error === "string"
+            ? result.error
+            : result.error?.detail
+              ? "Your account is inactive, or the email/password you entered is incorrect."
+              : "Login failed. Please try again.";
+        setError(errorMessage);
       }
     } catch {
       console.error("Network error during login.");

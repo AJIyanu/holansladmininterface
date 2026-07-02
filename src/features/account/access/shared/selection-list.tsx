@@ -38,9 +38,7 @@ export default function SelectionList({
     }
 
     return items.filter((item) =>
-      `${item.title} ${item.description ?? ""}`
-        .toLowerCase()
-        .includes(query),
+      `${item.title} ${item.description ?? ""}`.toLowerCase().includes(query),
     );
   }, [items, search]);
 
@@ -51,9 +49,7 @@ export default function SelectionList({
 
         <Input
           value={search}
-          onChange={(event) =>
-            setSearch(event.target.value)
-          }
+          onChange={(event) => setSearch(event.target.value)}
           placeholder={searchPlaceholder}
           className="border-white/50 bg-white/30 pl-9 backdrop-blur-md placeholder:text-muted-foreground/60"
         />
@@ -67,9 +63,7 @@ export default function SelectionList({
         ) : (
           <div className="space-y-2">
             {filteredItems.map((item) => {
-              const checked = selected.includes(
-                item.id,
-              );
+              const checked = selected.includes(item.id);
 
               return (
                 <label
@@ -78,9 +72,7 @@ export default function SelectionList({
                 >
                   <Checkbox
                     checked={checked}
-                    onCheckedChange={() =>
-                      onToggle(item.id)
-                    }
+                    onCheckedChange={() => onToggle(item.id)}
                     className="mt-0.5"
                   />
 

@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Loader2,
-  Plus,
-} from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -31,16 +28,10 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { accountApi } from "../shared/account-api";
-import {
-  glassButtonClass,
-  modalClass,
-} from "../shared/glass-styles";
+import { glassButtonClass, modalClass } from "../shared/glass-styles";
 import SelectionList from "../shared/selection-list";
 import type { Permission } from "../shared/access-types";
-import {
-  roleSchema,
-  type RoleFormValues,
-} from "./role-schema";
+import { roleSchema, type RoleFormValues } from "./role-schema";
 
 interface CreateRoleDialogProps {
   permissions: Permission[];
@@ -61,20 +52,15 @@ export default function CreateRoleDialog({
     },
   });
 
-  const selectedPermissions =
-    form.watch("permissions");
+  const selectedPermissions = form.watch("permissions");
 
   function togglePermission(id: number) {
-    const current =
-      form.getValues("permissions");
+    const current = form.getValues("permissions");
 
     form.setValue(
       "permissions",
       current.includes(id)
-        ? current.filter(
-            (permissionId) =>
-              permissionId !== id,
-          )
+        ? current.filter((permissionId) => permissionId !== id)
         : [...current, id],
       {
         shouldValidate: true,
@@ -82,20 +68,15 @@ export default function CreateRoleDialog({
     );
   }
 
-  async function onSubmit(
-    values: RoleFormValues,
-  ) {
+  async function onSubmit(values: RoleFormValues) {
     try {
-      await accountApi(
-        "/api/account/roles",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
+      await accountApi("/api/account/roles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(values),
+      });
 
       toast.success("Role created successfully.");
 
@@ -104,18 +85,13 @@ export default function CreateRoleDialog({
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to create role.",
+        error instanceof Error ? error.message : "Unable to create role.",
       );
     }
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-[#0B4F8A] text-white hover:bg-[#0B4F8A]/90">
           <Plus className="size-4" />
@@ -128,19 +104,13 @@ export default function CreateRoleDialog({
           <DialogTitle>Create role</DialogTitle>
 
           <DialogDescription>
-            Name the role and select its initial
-            permissions.
+            Name the role and select its initial permissions.
           </DialogDescription>
         </DialogHeader>
 
         <ResponsiveActionGuard actionName="creating a role">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(
-                onSubmit,
-              )}
-              className="space-y-5"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
                 control={form.control}
                 name="name"
@@ -162,26 +132,17 @@ export default function CreateRoleDialog({
               />
 
               <div>
-                <FormLabel>
-                  Permissions
-                </FormLabel>
+                <FormLabel>Permissions</FormLabel>
 
                 <div className="mt-2">
                   <SelectionList
-                    items={permissions.map(
-                      (permission) => ({
-                        id: permission.id,
-                        title: permission.name,
-                        description:
-                          permission.codename,
-                      }),
-                    )}
+                    items={permissions.map((permission) => ({
+                      id: permission.id,
+                      title: permission.name,
+                      description: permission.codename,
+                    }))}
                     selected={selectedPermissions}
-                    onToggle={(id) =>
-                      togglePermission(
-                        Number(id),
-                      )
-                    }
+                    onToggle={(id) => togglePermission(Number(id))}
                     searchPlaceholder="Search permissions..."
                   />
                 </div>
@@ -192,9 +153,7 @@ export default function CreateRoleDialog({
                   type="button"
                   variant="outline"
                   className={glassButtonClass}
-                  onClick={() =>
-                    setOpen(false)
-                  }
+                  onClick={() => setOpen(false)}
                 >
                   Cancel
                 </Button>
@@ -202,15 +161,11 @@ export default function CreateRoleDialog({
                 <Button
                   type="submit"
                   className={glassButtonClass}
-                  disabled={
-                    form.formState.isSubmitting
-                  }
+                  disabled={form.formState.isSubmitting}
                 >
-                  {form.formState
-                    .isSubmitting && (
+                  {form.formState.isSubmitting && (
                     <Loader2 className="size-4 animate-spin" />
                   )}
-
                   Create role
                 </Button>
               </div>

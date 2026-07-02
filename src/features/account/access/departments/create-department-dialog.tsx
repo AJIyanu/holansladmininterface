@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Loader2,
-  Plus,
-} from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -32,10 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { accountApi } from "../shared/account-api";
-import {
-  glassButtonClass,
-  modalClass,
-} from "../shared/glass-styles";
+import { glassButtonClass, modalClass } from "../shared/glass-styles";
 import {
   departmentSchema,
   type DepartmentFormValues,
@@ -47,9 +41,7 @@ export default function CreateDepartmentDialog() {
   const [open, setOpen] = useState(false);
 
   const form = useForm<DepartmentFormValues>({
-    resolver: zodResolver(
-      departmentSchema,
-    ),
+    resolver: zodResolver(departmentSchema),
     defaultValues: {
       name: "",
       code: "",
@@ -57,42 +49,30 @@ export default function CreateDepartmentDialog() {
     },
   });
 
-  async function onSubmit(
-    values: DepartmentFormValues,
-  ) {
+  async function onSubmit(values: DepartmentFormValues) {
     try {
-      await accountApi(
-        "/api/account/departments",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
+      await accountApi("/api/account/departments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(values),
+      });
 
-      toast.success(
-        "Department created successfully.",
-      );
+      toast.success("Department created successfully.");
 
       form.reset();
       setOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to create department.",
+        error instanceof Error ? error.message : "Unable to create department.",
       );
     }
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-[#0B4F8A] text-white hover:bg-[#0B4F8A]/90">
           <Plus className="size-4" />
@@ -102,9 +82,7 @@ export default function CreateDepartmentDialog() {
 
       <DialogContent className={modalClass}>
         <DialogHeader>
-          <DialogTitle>
-            Create department
-          </DialogTitle>
+          <DialogTitle>Create department</DialogTitle>
 
           <DialogDescription>
             Add a department to the company structure.
@@ -113,21 +91,14 @@ export default function CreateDepartmentDialog() {
 
         <ResponsiveActionGuard actionName="creating a department">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(
-                onSubmit,
-              )}
-              className="space-y-5"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        Department name
-                      </FormLabel>
+                      <FormLabel>Department name</FormLabel>
 
                       <FormControl>
                         <Input
@@ -147,9 +118,7 @@ export default function CreateDepartmentDialog() {
                   name="code"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        Department code
-                      </FormLabel>
+                      <FormLabel>Department code</FormLabel>
 
                       <FormControl>
                         <Input
@@ -170,9 +139,7 @@ export default function CreateDepartmentDialog() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Description
-                    </FormLabel>
+                    <FormLabel>Description</FormLabel>
 
                     <FormControl>
                       <Textarea
@@ -193,9 +160,7 @@ export default function CreateDepartmentDialog() {
                   type="button"
                   variant="outline"
                   className={glassButtonClass}
-                  onClick={() =>
-                    setOpen(false)
-                  }
+                  onClick={() => setOpen(false)}
                 >
                   Cancel
                 </Button>
@@ -203,15 +168,11 @@ export default function CreateDepartmentDialog() {
                 <Button
                   type="submit"
                   className={glassButtonClass}
-                  disabled={
-                    form.formState.isSubmitting
-                  }
+                  disabled={form.formState.isSubmitting}
                 >
-                  {form.formState
-                    .isSubmitting && (
+                  {form.formState.isSubmitting && (
                     <Loader2 className="size-4 animate-spin" />
                   )}
-
                   Create department
                 </Button>
               </div>

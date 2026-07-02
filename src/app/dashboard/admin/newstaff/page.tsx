@@ -28,16 +28,15 @@ export default async function AddStaffPage() {
 
   let departments: Department[] = [];
 
-try {
-  const departmentResponse =
-    await serverFetch<PaginatedDepartments>(
+  try {
+    const departmentResponse = await serverFetch<PaginatedDepartments>(
       "/account/departments/?page_size=1000&ordering=name",
     );
 
-  departments = departmentResponse.results;
-} catch {
-  departments = [];
-}
+    departments = departmentResponse.results;
+  } catch {
+    departments = [];
+  }
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8 bg-blue-100">
