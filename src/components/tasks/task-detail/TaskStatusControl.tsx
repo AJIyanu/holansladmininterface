@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  useState,
-  useTransition,
-} from "react";
+import { useState, useTransition } from "react";
 
 import { useRouter } from "next/navigation";
 
-import {
-  Loader2,
-  RefreshCw,
-} from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 
 import { toast } from "sonner";
 
@@ -32,37 +26,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import {
-  getAvailableTaskStatuses,
-} from "@/lib/tasks/task-lifecycle";
-import {
-  getTaskStatusLabel,
-} from "@/lib/tasks/format-task";
+import { getAvailableTaskStatuses } from "@/lib/tasks/task-lifecycle";
+import { getTaskStatusLabel } from "@/lib/tasks/format-task";
 
-import type {
-  TaskDetail,
-  TaskStatus,
-} from "@/types/tasks";
+import type { TaskDetail, TaskStatus } from "@/types/tasks";
 
 interface TaskStatusControlProps {
   task: TaskDetail;
 }
 
-export function TaskStatusControl({
-  task,
-}: TaskStatusControlProps) {
+export function TaskStatusControl({ task }: TaskStatusControlProps) {
   const router = useRouter();
 
-  const availableStatuses =
-    getAvailableTaskStatuses(task.status);
+  const availableStatuses = getAvailableTaskStatuses(task.status);
 
-  const [selectedStatus, setSelectedStatus] =
-    useState<string>(
-      availableStatuses[0] ?? "",
-    );
+  const [selectedStatus, setSelectedStatus] = useState<string>(
+    availableStatuses[0] ?? "",
+  );
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const disabled =
     !task.permissions.can_update_status ||
@@ -75,14 +57,10 @@ export function TaskStatusControl({
     }
 
     startTransition(async () => {
-      const result =
-        await updateTaskStatusAction(
-          task.id,
-          selectedStatus as Exclude<
-            TaskStatus,
-            "CANCELLED"
-          >,
-        );
+      const result = await updateTaskStatusAction(
+        task.id,
+        selectedStatus as Exclude<TaskStatus, "CANCELLED">,
+      );
 
       if (!result.success) {
         toast.error(result.message);
@@ -97,13 +75,10 @@ export function TaskStatusControl({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">
-          Update status
-        </CardTitle>
+        <CardTitle className="text-base">Update status</CardTitle>
 
         <CardDescription>
-          Cancellation is handled separately and
-          requires a reason.
+          Cancellation is handled separately and requires a reason.
         </CardDescription>
       </CardHeader>
 
@@ -124,27 +99,18 @@ export function TaskStatusControl({
               </SelectTrigger>
 
               <SelectContent>
-                {availableStatuses.map(
-                  (status) => (
-                    <SelectItem
-                      key={status}
-                      value={status}
-                    >
-                      {getTaskStatusLabel(status)}
-                    </SelectItem>
-                  ),
-                )}
+                {availableStatuses.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {getTaskStatusLabel(status)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
             <Button
               type="button"
               onClick={submitStatus}
-              disabled={
-                disabled ||
-                isPending ||
-                !selectedStatus
-              }
+              disabled={disabled || isPending || !selectedStatus}
               className="w-full sm:w-auto"
             >
               {isPending ? (
@@ -152,7 +118,6 @@ export function TaskStatusControl({
               ) : (
                 <RefreshCw className="size-4" />
               )}
-
               Update status
             </Button>
           </div>

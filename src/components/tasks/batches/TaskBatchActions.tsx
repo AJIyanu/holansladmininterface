@@ -1,18 +1,10 @@
 "use client";
 
-import {
-  useState,
-  useTransition,
-} from "react";
+import { useState, useTransition } from "react";
 
 import { useRouter } from "next/navigation";
 
-import {
-  Archive,
-  ArchiveRestore,
-  Ban,
-  Loader2,
-} from "lucide-react";
+import { Archive, ArchiveRestore, Ban, Loader2 } from "lucide-react";
 
 import { toast } from "sonner";
 
@@ -42,31 +34,21 @@ interface TaskBatchActionsProps {
   batch: TaskBatchDetail;
 }
 
-export function TaskBatchActions({
-  batch,
-}: TaskBatchActionsProps) {
+export function TaskBatchActions({ batch }: TaskBatchActionsProps) {
   const router = useRouter();
 
-  const [cancelOpen, setCancelOpen] =
-    useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   const [reason, setReason] = useState("");
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const canCancel =
-    batch.can_manage &&
-    !batch.is_cancelled &&
-    !batch.is_archived;
+    batch.can_manage && !batch.is_cancelled && !batch.is_archived;
 
-  const canArchive =
-    batch.can_manage &&
-    canArchiveBatchState(batch);
+  const canArchive = batch.can_manage && canArchiveBatchState(batch);
 
-  const canRestore =
-    batch.can_manage &&
-    batch.is_archived;
+  const canRestore = batch.can_manage && batch.is_archived;
 
   function runAction(
     action: () => Promise<{
@@ -89,11 +71,7 @@ export function TaskBatchActions({
 
   function submitCancellation() {
     runAction(async () => {
-      const result =
-        await cancelTaskBatchAction(
-          batch.id,
-          reason,
-        );
+      const result = await cancelTaskBatchAction(batch.id, reason);
 
       if (result.success) {
         setCancelOpen(false);
@@ -104,11 +82,7 @@ export function TaskBatchActions({
     });
   }
 
-  if (
-    !canCancel &&
-    !canArchive &&
-    !canRestore
-  ) {
+  if (!canCancel && !canArchive && !canRestore) {
     return null;
   }
 
@@ -132,13 +106,7 @@ export function TaskBatchActions({
           <Button
             type="button"
             variant="outline"
-            onClick={() =>
-              runAction(() =>
-                archiveTaskBatchAction(
-                  batch.id,
-                ),
-              )
-            }
+            onClick={() => runAction(() => archiveTaskBatchAction(batch.id))}
             disabled={isPending}
             className="w-full sm:w-auto"
           >
@@ -147,7 +115,6 @@ export function TaskBatchActions({
             ) : (
               <Archive className="size-4" />
             )}
-
             Archive assignment
           </Button>
         ) : null}
@@ -156,13 +123,7 @@ export function TaskBatchActions({
           <Button
             type="button"
             variant="outline"
-            onClick={() =>
-              runAction(() =>
-                restoreTaskBatchAction(
-                  batch.id,
-                ),
-              )
-            }
+            onClick={() => runAction(() => restoreTaskBatchAction(batch.id))}
             disabled={isPending}
             className="w-full sm:w-auto"
           >
@@ -171,40 +132,29 @@ export function TaskBatchActions({
             ) : (
               <ArchiveRestore className="size-4" />
             )}
-
             Restore assignment
           </Button>
         ) : null}
       </div>
 
-      <Dialog
-        open={cancelOpen}
-        onOpenChange={setCancelOpen}
-      >
+      <Dialog open={cancelOpen} onOpenChange={setCancelOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              Cancel task assignment
-            </DialogTitle>
+            <DialogTitle>Cancel task assignment</DialogTitle>
 
             <DialogDescription>
-              Every unfinished individual task in
-              this assignment will be cancelled.
-              Completed tasks remain completed.
+              Every unfinished individual task in this assignment will be
+              cancelled. Completed tasks remain completed.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-2">
-            <Label htmlFor="batch-cancel-reason">
-              Cancellation reason
-            </Label>
+            <Label htmlFor="batch-cancel-reason">Cancellation reason</Label>
 
             <Textarea
               id="batch-cancel-reason"
               value={reason}
-              onChange={(event) =>
-                setReason(event.target.value)
-              }
+              onChange={(event) => setReason(event.target.value)}
               rows={4}
               placeholder="Explain why the assignment is being cancelled"
             />
@@ -214,9 +164,7 @@ export function TaskBatchActions({
             <Button
               type="button"
               variant="outline"
-              onClick={() =>
-                setCancelOpen(false)
-              }
+              onClick={() => setCancelOpen(false)}
               disabled={isPending}
             >
               Keep assignment
@@ -226,16 +174,13 @@ export function TaskBatchActions({
               type="button"
               variant="destructive"
               onClick={submitCancellation}
-              disabled={
-                isPending || !reason.trim()
-              }
+              disabled={isPending || !reason.trim()}
             >
               {isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Ban className="size-4" />
               )}
-
               Confirm cancellation
             </Button>
           </DialogFooter>

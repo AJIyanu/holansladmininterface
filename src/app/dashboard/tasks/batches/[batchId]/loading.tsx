@@ -15,6 +15,10 @@ export default function TaskBatchLoading() {
 
       <Skeleton className="h-56 rounded-lg" />
       <Skeleton className="h-80 rounded-lg" />
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Skeleton className="h-96 rounded-lg" />
+      </div>
     </div>
   );
 }

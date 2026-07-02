@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  useState,
-  useTransition,
-} from "react";
+import { useState, useTransition } from "react";
 
 import { useRouter } from "next/navigation";
 
-import {
-  Loader2,
-  Pencil,
-} from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 
 import { toast } from "sonner";
 
@@ -41,40 +35,26 @@ import {
   toDateTimeLocalValue,
 } from "@/lib/tasks/task-lifecycle";
 
-import type {
-  TaskBatchDetail,
-  TaskPriority,
-} from "@/types/tasks";
+import type { TaskBatchDetail, TaskPriority } from "@/types/tasks";
 
 interface EditTaskBatchDialogProps {
   batch: TaskBatchDetail;
 }
 
-export function EditTaskBatchDialog({
-  batch,
-}: EditTaskBatchDialogProps) {
+export function EditTaskBatchDialog({ batch }: EditTaskBatchDialogProps) {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState(
-    batch.title,
-  );
-  const [description, setDescription] =
-    useState(batch.description);
+  const [title, setTitle] = useState(batch.title);
+  const [description, setDescription] = useState(batch.description);
 
-  const [priority, setPriority] =
-    useState<TaskPriority>(batch.priority);
+  const [priority, setPriority] = useState<TaskPriority>(batch.priority);
 
-  const [startAt, setStartAt] = useState(
-    toDateTimeLocalValue(batch.start_at),
-  );
+  const [startAt, setStartAt] = useState(toDateTimeLocalValue(batch.start_at));
 
-  const [dueAt, setDueAt] = useState(
-    toDateTimeLocalValue(batch.due_at),
-  );
+  const [dueAt, setDueAt] = useState(toDateTimeLocalValue(batch.due_at));
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
 
   function submit() {
     if (!title.trim()) {
@@ -85,28 +65,20 @@ export function EditTaskBatchDialog({
     if (
       startAt &&
       dueAt &&
-      new Date(dueAt).getTime() <
-        new Date(startAt).getTime()
+      new Date(dueAt).getTime() < new Date(startAt).getTime()
     ) {
-      toast.error(
-        "The due date cannot be before the start date.",
-      );
+      toast.error("The due date cannot be before the start date.");
       return;
     }
 
     startTransition(async () => {
-      const result =
-        await updateTaskBatchAction(
-          batch.id,
-          {
-            title,
-            description,
-            priority,
-            start_at:
-              localDateTimeToIso(startAt),
-            due_at: localDateTimeToIso(dueAt),
-          },
-        );
+      const result = await updateTaskBatchAction(batch.id, {
+        title,
+        description,
+        priority,
+        start_at: localDateTimeToIso(startAt),
+        due_at: localDateTimeToIso(dueAt),
+      });
 
       if (!result.success) {
         toast.error(result.message);
@@ -131,50 +103,34 @@ export function EditTaskBatchDialog({
         Edit details
       </Button>
 
-      <Dialog
-        open={open}
-        onOpenChange={setOpen}
-      >
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>
-              Edit task assignment
-            </DialogTitle>
+            <DialogTitle>Edit task assignment</DialogTitle>
 
             <DialogDescription>
-              Changes apply to every individual
-              task in this assignment.
+              Changes apply to every individual task in this assignment.
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-5">
             <div className="space-y-2">
-              <Label htmlFor="batch-title">
-                Title
-              </Label>
+              <Label htmlFor="batch-title">Title</Label>
 
               <Input
                 id="batch-title"
                 value={title}
-                onChange={(event) =>
-                  setTitle(event.target.value)
-                }
+                onChange={(event) => setTitle(event.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="batch-description">
-                Description
-              </Label>
+              <Label htmlFor="batch-description">Description</Label>
 
               <Textarea
                 id="batch-description"
                 value={description}
-                onChange={(event) =>
-                  setDescription(
-                    event.target.value,
-                  )
-                }
+                onChange={(event) => setDescription(event.target.value)}
                 rows={5}
               />
             </div>
@@ -184,65 +140,41 @@ export function EditTaskBatchDialog({
 
               <Select
                 value={priority}
-                onValueChange={(value) =>
-                  setPriority(
-                    value as TaskPriority,
-                  )
-                }
+                onValueChange={(value) => setPriority(value as TaskPriority)}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
 
                 <SelectContent>
-                  <SelectItem value="LOW">
-                    Low
-                  </SelectItem>
-                  <SelectItem value="MEDIUM">
-                    Medium
-                  </SelectItem>
-                  <SelectItem value="HIGH">
-                    High
-                  </SelectItem>
-                  <SelectItem value="URGENT">
-                    Urgent
-                  </SelectItem>
+                  <SelectItem value="LOW">Low</SelectItem>
+                  <SelectItem value="MEDIUM">Medium</SelectItem>
+                  <SelectItem value="HIGH">High</SelectItem>
+                  <SelectItem value="URGENT">Urgent</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="batch-start">
-                  Start
-                </Label>
+                <Label htmlFor="batch-start">Start</Label>
 
                 <Input
                   id="batch-start"
                   type="datetime-local"
                   value={startAt}
-                  onChange={(event) =>
-                    setStartAt(
-                      event.target.value,
-                    )
-                  }
+                  onChange={(event) => setStartAt(event.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="batch-due">
-                  Due
-                </Label>
+                <Label htmlFor="batch-due">Due</Label>
 
                 <Input
                   id="batch-due"
                   type="datetime-local"
                   value={dueAt}
-                  onChange={(event) =>
-                    setDueAt(
-                      event.target.value,
-                    )
-                  }
+                  onChange={(event) => setDueAt(event.target.value)}
                 />
               </div>
             </div>
@@ -258,17 +190,12 @@ export function EditTaskBatchDialog({
               Cancel
             </Button>
 
-            <Button
-              type="button"
-              onClick={submit}
-              disabled={isPending}
-            >
+            <Button type="button" onClick={submit} disabled={isPending}>
               {isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Pencil className="size-4" />
               )}
-
               Save changes
             </Button>
           </DialogFooter>

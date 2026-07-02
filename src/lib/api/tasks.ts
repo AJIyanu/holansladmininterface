@@ -116,7 +116,7 @@ async function resolveServerFetchResult<T>(result: Response | T): Promise<T> {
   return data as T;
 }
 
-async function taskRequest<T>(
+export async function taskRequest<T>(
   endpoint: string,
   init?: RequestInit,
 ): Promise<T> {

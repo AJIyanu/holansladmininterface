@@ -1,16 +1,8 @@
 import Link from "next/link";
 
-import {
-  ExternalLink,
-  UserRound,
-} from "lucide-react";
+import { ExternalLink, UserRound } from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { formatTaskDateTime } from "@/lib/tasks/format-task";
 
@@ -22,15 +14,11 @@ interface TaskBatchAssigneesProps {
   tasks: TaskListItem[];
 }
 
-export function TaskBatchAssignees({
-  tasks,
-}: TaskBatchAssigneesProps) {
+export function TaskBatchAssignees({ tasks }: TaskBatchAssigneesProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">
-          Individual tasks
-        </CardTitle>
+        <CardTitle className="text-base">Individual tasks</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -52,8 +40,7 @@ export function TaskBatchAssignees({
 
                   <div className="min-w-0">
                     <p className="truncate font-medium">
-                      {task.assignee_name ||
-                        "Unassigned staff"}
+                      {task.assignee_name || "Unassigned staff"}
                     </p>
 
                     <p className="truncate text-xs text-muted-foreground">
@@ -62,23 +49,17 @@ export function TaskBatchAssignees({
                         task.assignee_employee_id,
                       ]
                         .filter(Boolean)
-                        .join(" · ") ||
-                        task.assignee_email}
+                        .join(" · ") || task.assignee_email}
                     </p>
 
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Updated{" "}
-                      {formatTaskDateTime(
-                        task.updated_at,
-                      )}
+                      Updated {formatTaskDateTime(task.updated_at)}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between gap-3 sm:justify-end">
-                  <TaskStatusBadge
-                    status={task.status}
-                  />
+                  <TaskStatusBadge status={task.status} />
 
                   <Link
                     href={`/dashboard/tasks/${task.id}`}

@@ -1,6 +1,12 @@
 import Link from "next/link";
 
-import { Building2, CalendarClock, Layers3, UserRound } from "lucide-react";
+import {
+  Building2,
+  Bell,
+  CalendarClock,
+  Layers3,
+  UserRound,
+} from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -75,6 +81,24 @@ export function TaskSummary({ task }: TaskSummaryProps) {
 
         <CardContent>
           <dl className="space-y-4 text-sm">
+            {task.reminders ? (
+              <div className="flex gap-3">
+                <Bell className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+
+                <div>
+                  <dt className="text-muted-foreground">Active reminders</dt>
+
+                  <dd className="font-medium">{task.reminders.active_count}</dd>
+
+                  {task.reminders.next_reminder_at ? (
+                    <p className="text-xs text-muted-foreground">
+                      Next:{" "}
+                      {formatTaskDateTime(task.reminders.next_reminder_at)}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
             <div className="flex gap-3">
               <UserRound className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
 

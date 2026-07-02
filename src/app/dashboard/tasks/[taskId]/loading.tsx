@@ -14,6 +14,10 @@ export default function TaskDetailLoading() {
       </div>
 
       <Skeleton className="h-44 rounded-lg" />
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Skeleton className="h-96 rounded-lg" />
+        <Skeleton className="h-96 rounded-lg" />
+      </div>
     </div>
   );
 }

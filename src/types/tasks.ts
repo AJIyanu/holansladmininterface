@@ -270,3 +270,146 @@ export interface TaskCreateCapabilities {
   canAssignUsers: boolean;
   canAssignDepartment: boolean;
 }
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | {
+      [key: string]: JsonValue;
+    };
+
+export interface TaskCommentPermissions {
+  can_edit: boolean;
+  can_remove: boolean;
+}
+
+export interface TaskComment {
+  id: string;
+  task_id: string;
+
+  author: TaskUserSummary | null;
+  body: string;
+
+  edited_at: string | null;
+
+  is_removed: boolean;
+  removed_at: string | null;
+  removed_by: TaskUserSummary | null;
+  removal_reason: string;
+
+  permissions: TaskCommentPermissions;
+
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskActivity {
+  id: string;
+
+  task_id: string | null;
+  batch_id: string | null;
+
+  actor: TaskUserSummary | null;
+
+  activity_type: string;
+  activity_display: string;
+
+  previous_value: JsonValue;
+  new_value: JsonValue;
+  metadata: JsonValue;
+
+  created_at: string;
+}
+
+export interface TaskCommentListQuery {
+  page?: number;
+  archived?: boolean;
+}
+
+export interface TaskActivityListQuery {
+  page?: number;
+  archived?: boolean;
+  activity_type?: string;
+  include_task_activity?: boolean;
+}
+
+export type TaskReminderState = "SCHEDULED" | "DUE" | "CANCELLED";
+
+export interface TaskReminderChannelCapability {
+  available: boolean;
+  reason: string | null;
+}
+
+export interface TaskReminderCapabilities {
+  enabled: boolean;
+  processing_mode: string;
+  scheduled_external_delivery_enabled: boolean;
+
+  channels: Record<TaskNotificationChannel, TaskReminderChannelCapability>;
+
+  message: string | null;
+}
+
+export interface TaskReminderTask {
+  id: string;
+  title: string;
+  priority: TaskPriority;
+  due_at: string | null;
+  status: TaskStatus;
+}
+
+export interface TaskReminderPermissions {
+  can_edit: boolean;
+  can_cancel: boolean;
+}
+
+export interface TaskReminder {
+  id: string;
+
+  task: TaskReminderTask;
+  user: TaskUserSummary;
+
+  remind_at: string;
+  channels: TaskNotificationChannel[];
+
+  notification_id: string | null;
+  state: TaskReminderState;
+
+  cancelled_at: string | null;
+  cancelled_by: TaskUserSummary | null;
+
+  permissions: TaskReminderPermissions;
+
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskReminderListQuery {
+  task?: string;
+  cancelled?: boolean;
+  due?: boolean;
+
+  remind_before?: string;
+  remind_after?: string;
+
+  search?: string;
+  ordering?: string;
+  page?: number;
+}
+
+export interface CreateTaskReminderPayload {
+  task_id: string;
+  remind_at: string;
+  channels: TaskNotificationChannel[];
+}
+
+export interface UpdateTaskReminderPayload {
+  remind_at?: string;
+  channels?: TaskNotificationChannel[];
+}
+
+export interface CancelTaskReminderPayload {
+  reason?: string;
+}
