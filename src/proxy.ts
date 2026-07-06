@@ -1,16 +1,15 @@
 import { decodeJwt } from "jose";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import {
   clearAuthCookies,
   refreshAccessToken,
-  setAccessTokenCookie,
+  setAuthCookies,
 } from "@/lib/auth-tokens";
 
-const protectedRoutes = ["/dashboard"];
-const authRoutes = ["/login"];
+const protectedPagePrefixes = ["/dashboard"];
 
-function tokenIsExpired(token?: string): boolean {
+function isAccessTokenExpired(token?: string, toleranceSeconds = 30): boolean {
   if (!token) {
     return true;
   }
@@ -22,68 +21,128 @@ function tokenIsExpired(token?: string): boolean {
       return true;
     }
 
-    return payload.exp * 1000 <= Date.now();
+    const expiryTime = payload.exp * 1000;
+    const tolerance = toleranceSeconds * 1000;
+
+    return expiryTime <= Date.now() + tolerance;
   } catch {
     return true;
   }
 }
 
-export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+function isProtectedPage(pathname: string): boolean {
+  return protectedPagePrefixes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
 
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route),
+function isProtectedApiRoute(pathname: string): boolean {
+  return pathname.startsWith("/api/") && !pathname.startsWith("/api/auth/");
+}
+
+function createLoginRedirect(request: NextRequest): NextResponse {
+  const loginUrl = new URL("/login", request.url);
+
+  loginUrl.searchParams.set(
+    "redirect",
+    `${request.nextUrl.pathname}${request.nextUrl.search}`,
   );
 
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+  const response = NextResponse.redirect(loginUrl);
+
+  clearAuthCookies(response);
+
+  return response;
+}
+
+function createApiUnauthorisedResponse(): NextResponse {
+  const response = NextResponse.json(
+    {
+      detail: "Your authentication session has expired.",
+      code: "authentication_required",
+    },
+    {
+      status: 401,
+    },
+  );
+
+  clearAuthCookies(response);
+
+  return response;
+}
+
+export async function proxy(request: NextRequest): Promise<NextResponse> {
+  const { pathname } = request.nextUrl;
+
+  /*
+   * This should also be excluded by the matcher, but keeping this
+   * guard protects the route if the matcher changes later.
+   */
+  if (pathname.startsWith("/api/auth/")) {
+    return NextResponse.next();
+  }
+
+  const protectedPage = isProtectedPage(pathname);
+  const protectedApi = isProtectedApiRoute(pathname);
+  const loginPage = pathname === "/login";
+
+  const requiresAuthentication = protectedPage || protectedApi;
 
   let accessToken = request.cookies.get("access_token")?.value;
 
   const refreshToken = request.cookies.get("refresh_token")?.value;
 
-  let refreshedAccessToken: string | null = null;
+  let refreshedTokens: Awaited<ReturnType<typeof refreshAccessToken>> | null =
+    null;
 
-  if (tokenIsExpired(accessToken) && refreshToken) {
-    // console.log("🔄 Access token expired, attempting to refresh...");
-    const refreshed = await refreshAccessToken(refreshToken);
+  /*
+   * Refresh when the access token is missing, expired, or within
+   * 30 seconds of expiring.
+   */
+  if (refreshToken && isAccessTokenExpired(accessToken)) {
+    refreshedTokens = await refreshAccessToken(refreshToken);
 
-    if (refreshed) {
-      accessToken = refreshed.access;
-      refreshedAccessToken = refreshed.access;
+    if (refreshedTokens?.access) {
+      accessToken = refreshedTokens.access;
 
-      // Makes the refreshed token available to the current request.
-      request.cookies.set("access_token", refreshed.access);
+      /*
+       * Make refreshed tokens available to the Route Handler or
+       * Server Component during this same request.
+       */
+      request.cookies.set("access_token", refreshedTokens.access);
+
+      if (refreshedTokens.refresh) {
+        request.cookies.set("refresh_token", refreshedTokens.refresh);
+      }
+    } else {
+      accessToken = undefined;
     }
   }
 
-  if (isProtectedRoute && !accessToken) {
-    const loginUrl = new URL("/login", request.url);
+  if (requiresAuthentication && !accessToken) {
+    if (protectedApi) {
+      return createApiUnauthorisedResponse();
+    }
 
-    loginUrl.searchParams.set(
-      "redirect",
-      `${pathname}${request.nextUrl.search}`,
-    );
-
-    const response = NextResponse.redirect(loginUrl);
-
-    clearAuthCookies(response);
-
-    return response;
+    return createLoginRedirect(request);
   }
 
-  if (isAuthRoute && accessToken) {
+  if (loginPage && accessToken) {
     const response = NextResponse.redirect(new URL("/dashboard", request.url));
 
-    if (refreshedAccessToken) {
-      setAccessTokenCookie(response, refreshedAccessToken);
+    if (refreshedTokens) {
+      setAuthCookies(response, refreshedTokens);
     }
 
     return response;
   }
 
+  /*
+   * Forward the modified cookies to the current request so that
+   * cookies() and serverFetch() see the refreshed token immediately.
+   */
   const requestHeaders = new Headers(request.headers);
 
-  // Pass modified cookies to the Server Components in this request.
   requestHeaders.set("cookie", request.cookies.toString());
 
   const response = NextResponse.next({
@@ -92,13 +151,25 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  if (refreshedAccessToken) {
-    setAccessTokenCookie(response, refreshedAccessToken);
+  /*
+   * Persist refreshed tokens in the browser for subsequent requests.
+   */
+  if (refreshedTokens) {
+    setAuthCookies(response, refreshedTokens);
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login"],
+  matcher: [
+    /*
+     * Runs for application pages and API routes, but excludes:
+     * - /api/auth/*
+     * - Next.js internal assets
+     * - favicon
+     * - public files containing an extension
+     */
+    "/((?!api/auth(?:/|$)|_next/static|_next/image|favicon.ico|.*\\..*).*)",
+  ],
 };

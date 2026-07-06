@@ -107,6 +107,7 @@ export default async function TaskDetailPage({
 
       getTaskReminderCapabilities(),
     ]);
+    console.log(`Reminder Respone: ${JSON.stringify(remindersResult)}`);
 
     const commentsResponse =
       commentsResult.status === "fulfilled" ? commentsResult.value : null;

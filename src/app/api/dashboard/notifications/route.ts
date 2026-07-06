@@ -85,6 +85,7 @@ export async function GET() {
   ]);
 
   if (listRequest.status === "rejected") {
+    // console.error("Failed to fetch notifications list:", listRequest.reason);
     return NextResponse.json(
       {
         detail: "Notifications could not be loaded.",
@@ -99,6 +100,7 @@ export async function GET() {
   const listResult = await readServerFetchResult<PaginatedNotificationResponse>(
     listRequest.value,
   );
+  // console.log(listResult);
 
   if (!listResult.ok || !listResult.data) {
     return errorResponse(listResult.status, listResult.data);
