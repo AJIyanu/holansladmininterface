@@ -35,7 +35,7 @@ export function TaskRemindersPanel({
     task.can_set_reminder && !task.is_archived && capabilities.enabled;
 
   return (
-    <Card id="task-reminders">
+    <Card id="task-reminders" className="bg-white h-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Bell className="size-5" />

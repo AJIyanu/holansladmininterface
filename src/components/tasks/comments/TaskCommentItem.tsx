@@ -116,7 +116,7 @@ export function TaskCommentItem({
 
   return (
     <>
-      <article className="flex gap-3 border-b py-4 last:border-b-0">
+      <article className="flex gap-3 rounded-lg shadow-md bg-orange-100 border border-orange-300 py-4 mb-1">
         <div className="mt-0.5 shrink-0 rounded-full bg-muted p-2">
           <UserRound className="size-4 text-muted-foreground" />
         </div>

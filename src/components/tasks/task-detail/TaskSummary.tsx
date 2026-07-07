@@ -30,7 +30,7 @@ export function TaskSummary({ task }: TaskSummaryProps) {
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
-      <Card>
+      <Card className="bg-orange-50">
         <CardHeader className="space-y-3">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <CardTitle className="break-words text-xl">
@@ -74,7 +74,7 @@ export function TaskSummary({ task }: TaskSummaryProps) {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-green-100">
         <CardHeader>
           <CardTitle className="text-base">Assignment details</CardTitle>
         </CardHeader>

@@ -66,7 +66,7 @@ export function TaskCommentsSection({
   }
 
   return (
-    <Card id="task-comments">
+    <Card id="task-comments" className="bg-white">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <MessageSquare className="size-5" />
@@ -80,7 +80,7 @@ export function TaskCommentsSection({
 
       <CardContent className="space-y-5">
         {canComment && !disabled ? (
-          <div className="space-y-3 rounded-lg border bg-muted/20 p-4">
+          <div className="space-y-3 rounded-lg shadow-md bg-orange-100 border border-orange-300 p-4">
             <div className="space-y-2">
               <Label htmlFor="new-task-comment">Add comment</Label>
 
@@ -91,7 +91,7 @@ export function TaskCommentsSection({
                 rows={4}
                 maxLength={10_000}
                 placeholder="Add an update or question about this task"
-                className="resize-y placeholder:text-muted-foreground/70"
+                className="resize-y placeholder:text-gray-400"
               />
 
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">

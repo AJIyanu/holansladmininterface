@@ -107,7 +107,7 @@ export default async function TaskDetailPage({
 
       getTaskReminderCapabilities(),
     ]);
-    console.log(`Reminder Respone: ${JSON.stringify(remindersResult)}`);
+    // console.log(`Reminder Respone: ${JSON.stringify(remindersResult)}`);
 
     const commentsResponse =
       commentsResult.status === "fulfilled" ? commentsResult.value : null;
@@ -254,12 +254,15 @@ export default async function TaskDetailPage({
         : "The task could not be loaded.";
 
     return (
+      <div className="flex min-h-screen flex-col items-center justify-center">
+
       <div
         role="alert"
-        className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
-      >
+        className="rounded-lg border border-red-500 bg-red-100 my-auto text-lg p-9 text-red-700"
+        >
         {message}
       </div>
+        </div>
     );
   }
 }

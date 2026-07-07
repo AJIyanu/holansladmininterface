@@ -73,7 +73,7 @@ export function TaskStatusControl({ task }: TaskStatusControlProps) {
   }
 
   return (
-    <Card>
+    <Card className="bg-white">
       <CardHeader>
         <CardTitle className="text-base">Update status</CardTitle>
 

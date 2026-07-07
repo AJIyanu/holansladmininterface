@@ -77,7 +77,7 @@ export function TaskActivityTimeline({
   description = "A chronological record of changes and actions.",
 }: TaskActivityTimelineProps) {
   return (
-    <Card id="task-activity">
+    <Card id="task-activity" className="bg-orange-50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <History className="size-5" />
@@ -110,8 +110,8 @@ export function TaskActivityTimeline({
 
               return (
                 <li key={activity.id} className="relative pb-7 pl-8 last:pb-0">
-                  <span className="absolute -left-[17px] top-0 flex size-8 items-center justify-center rounded-full border bg-background">
-                    <Icon className="size-4 text-muted-foreground" />
+                  <span className="absolute -left-[17px] top-0 flex size-9 items-center justify-center rounded-full border bg-[#F46C0B] border-blue-500">
+                    <Icon className="size-4 text-blue-500" />
                   </span>
 
                   <div className="space-y-1">

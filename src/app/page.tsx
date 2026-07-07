@@ -29,6 +29,8 @@ export default function Home() {
             // objectFit="contain"
             width={500}
             height={500}
+            className="w-full h auto"
+            loading="eager"
           />
         </div>
 
