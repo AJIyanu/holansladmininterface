@@ -14,9 +14,12 @@ import {
 } from "lucide-react";
 
 import {
-  getInitialCrmRegistrationActionState,
   revealCrmRegistrationAction,
 } from "@/features/crm/registration-actions";
+
+import {
+  initialCrmRegistrationActionState,
+} from "@/features/crm/action-states";
 
 interface CrmRevealIdentifierButtonProps {
   identifierId: string;
@@ -48,7 +51,7 @@ export function CrmRevealIdentifierButton({
 
   const [state, formAction] = useActionState(
     revealCrmRegistrationAction,
-    getInitialCrmRegistrationActionState(),
+    initialCrmRegistrationActionState,
   );
 
   return (

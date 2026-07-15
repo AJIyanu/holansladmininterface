@@ -14,9 +14,12 @@ import {
 
 import {
   createCrmPartyAction,
-  getInitialCrmPartyActionState,
   updateCrmPartyAction,
 } from "@/features/crm/actions";
+
+import {
+  initialCrmPartyActionState,
+} from "@/features/crm/action-states";
 import {
   CRM_ENTITY_KIND_OPTIONS,
   CRM_PARTY_ROLE_OPTIONS,
@@ -76,7 +79,7 @@ export function CrmPartyForm({
 
   const [state, formAction] = useActionState(
     action,
-    getInitialCrmPartyActionState(),
+    initialCrmPartyActionState,
   );
 
   const activeRoles =

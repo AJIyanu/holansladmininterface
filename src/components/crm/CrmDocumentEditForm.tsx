@@ -13,9 +13,12 @@ import {
 } from "lucide-react";
 
 import {
-  getInitialCrmDocumentActionState,
   updateCrmDocumentAction,
 } from "@/features/crm/document-actions";
+
+import {
+  initialCrmDocumentActionState,
+} from "@/features/crm/action-states";
 import {
   CRM_VERIFICATION_STATUS_OPTIONS,
 } from "@/features/crm/format";
@@ -61,7 +64,7 @@ export function CrmDocumentEditForm({
 }: CrmDocumentEditFormProps) {
   const [state, formAction] = useActionState(
     updateCrmDocumentAction,
-    getInitialCrmDocumentActionState(),
+    initialCrmDocumentActionState,
   );
 
   return (

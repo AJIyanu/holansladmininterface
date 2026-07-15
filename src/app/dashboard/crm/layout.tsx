@@ -22,7 +22,7 @@ export default async function CrmLayout({
   );
 
   return (
-    <div className="mx-auto w-full max-w-[1600px]">
+    <div className="mx-auto w-full max-w-[1600px] p-5 sm:p-10">
       {children}
     </div>
   );

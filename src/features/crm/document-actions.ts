@@ -10,17 +10,7 @@ import { crmDocumentUpdateSchema, crmDocumentUploadSchema } from "./schemas";
 
 import type { CrmDocumentCategory, CrmVerificationStatus } from "./types";
 
-export interface CrmDocumentActionState {
-  ok: boolean;
-  message: string;
-}
-
-export function getInitialCrmDocumentActionState(): CrmDocumentActionState {
-  return {
-    ok: false,
-    message: "",
-  };
-}
+import type { CrmDocumentActionState } from "./action-states";
 
 function textValue(formData: FormData, key: string): string {
   const value = formData.get(key);

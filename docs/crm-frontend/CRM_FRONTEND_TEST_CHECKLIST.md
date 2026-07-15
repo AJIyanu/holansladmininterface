@@ -1,9 +1,3 @@
-
----
-
-## `docs/crm-frontend/CRM_FRONTEND_TEST_CHECKLIST.md`
-
-```md id="w093fu"
 # CRM Frontend Test Checklist
 
 ## General
@@ -93,3 +87,4 @@
 - [ ] New CRM code does not use `bg-destructive`.
 - [ ] New CRM code does not use `border-border`.
 - [ ] New CRM code uses explicit Tailwind colour codes.
+````

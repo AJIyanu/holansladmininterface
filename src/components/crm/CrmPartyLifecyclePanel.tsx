@@ -19,9 +19,12 @@ import {
 } from "lucide-react";
 
 import {
-  getInitialCrmLifecycleActionState,
   runCrmLifecycleFormAction,
 } from "@/features/crm/lifecycle-actions";
+
+import {
+  initialCrmLifecycleActionState,
+} from "@/features/crm/action-states";
 import {
   CRM_PERMISSIONS,
 } from "@/features/crm/permissions";
@@ -173,7 +176,7 @@ export function CrmPartyLifecyclePanel({
 
   const [state, formAction] = useActionState(
     runCrmLifecycleFormAction,
-    getInitialCrmLifecycleActionState(),
+    initialCrmLifecycleActionState,
   );
 
   const options = useMemo(

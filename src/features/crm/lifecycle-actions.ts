@@ -7,17 +7,7 @@ import { getCrmErrorMessage } from "./errors";
 import { CRM_ROUTES } from "./routes";
 import { crmLifecycleSchema } from "./schemas";
 
-export interface CrmLifecycleActionState {
-  ok: boolean;
-  message: string;
-}
-
-export function getInitialCrmLifecycleActionState(): CrmLifecycleActionState {
-  return {
-    ok: false,
-    message: "",
-  };
-}
+import type { CrmLifecycleActionState } from "./action-states";
 
 function textValue(formData: FormData, key: string): string {
   const value = formData.get(key);

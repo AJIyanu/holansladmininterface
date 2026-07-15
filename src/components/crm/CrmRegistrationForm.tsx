@@ -14,9 +14,12 @@ import {
 
 import {
   createCrmRegistrationAction,
-  getInitialCrmRegistrationActionState,
   updateCrmRegistrationAction,
 } from "@/features/crm/registration-actions";
+
+import {
+  initialCrmRegistrationActionState,
+} from "@/features/crm/action-states";
 import {
   CRM_IDENTIFIER_TYPE_OPTIONS,
 } from "@/features/crm/format";
@@ -78,7 +81,7 @@ export function CrmRegistrationForm({
 
   const [state, formAction] = useActionState(
     action,
-    getInitialCrmRegistrationActionState(),
+    initialCrmRegistrationActionState,
   );
 
   return (

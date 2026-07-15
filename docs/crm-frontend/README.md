@@ -38,3 +38,42 @@ It supports:
 /dashboard/crm/documents/[documentId]/edit
 /dashboard/crm/interactions
 /dashboard/crm/settings/contact-roles
+````
+
+## Removed routes
+
+Old Supplier, Customer, Procurement and Ledger frontend routes were removed because the backend implementations were removed or redesigned.
+
+Do not use:
+
+```text
+party_type
+/crm/contacts/
+/procurement/
+/ledger/
+```
+
+## Colour usage
+
+CRM code uses explicit Tailwind colour codes.
+
+Accepted examples:
+
+```text
+bg-[#F46C0B]
+text-[#0F172A]
+border-[#E2E8F0]
+bg-[#0F4C81]
+```
+
+Avoid unconfigured semantic classes:
+
+```text
+bg-primary
+text-foreground
+bg-destructive
+border-border
+bg-background
+```
+
+````

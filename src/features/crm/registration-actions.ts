@@ -15,18 +15,7 @@ import { crmIdentifierWriteSchema } from "./schemas";
 
 import type { CrmIdentifierType, CrmPartyIdentifierWriteInput } from "./types";
 
-export interface CrmRegistrationActionState {
-  ok: boolean;
-  message: string;
-  revealedValue?: string;
-}
-
-export function getInitialCrmRegistrationActionState(): CrmRegistrationActionState {
-  return {
-    ok: false,
-    message: "",
-  };
-}
+import type { CrmRegistrationActionState } from "./action-states";
 
 function textValue(formData: FormData, key: string): string {
   const value = formData.get(key);

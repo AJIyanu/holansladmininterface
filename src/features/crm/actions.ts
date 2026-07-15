@@ -23,20 +23,7 @@ import type {
   CrmVerificationLevel,
 } from "./types";
 
-export interface CrmPartyActionState {
-  ok: boolean;
-  message: string;
-  duplicateMatches?: CrmDuplicateMatch[];
-}
-
-const initialState: CrmPartyActionState = {
-  ok: false,
-  message: "",
-};
-
-export async function getInitialCrmPartyActionState(): Promise<CrmPartyActionState> {
-  return initialState;
-}
+import type { CrmPartyActionState } from "./action-states";
 
 function textValue(formData: FormData, key: string): string {
   const value = formData.get(key);

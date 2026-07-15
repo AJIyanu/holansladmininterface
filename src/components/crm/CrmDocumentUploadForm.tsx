@@ -15,9 +15,12 @@ import {
 } from "lucide-react";
 
 import {
-  getInitialCrmDocumentActionState,
   uploadCrmDocumentAction,
 } from "@/features/crm/document-actions";
+
+import {
+  initialCrmDocumentActionState,
+} from "@/features/crm/action-states";
 import {
   CRM_DOCUMENT_CATEGORY_OPTIONS,
   CRM_VERIFICATION_STATUS_OPTIONS,
@@ -77,7 +80,7 @@ export function CrmDocumentUploadForm({
 
   const [state, formAction] = useActionState(
     uploadCrmDocumentAction,
-    getInitialCrmDocumentActionState(),
+    initialCrmDocumentActionState
   );
 
   return (
