@@ -607,3 +607,11 @@ export interface CrmContactRoleListQuery {
   page?: number;
   page_size?: number;
 }
+
+export interface CrmContactRoleWriteInput {
+  name: string;
+  slug?: string;
+  description?: string;
+  is_active?: boolean;
+  sort_order?: number;
+}

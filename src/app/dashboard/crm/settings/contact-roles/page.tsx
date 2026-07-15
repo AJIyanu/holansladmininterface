@@ -1,37 +1,31 @@
 import {
-  Settings,
-} from "lucide-react";
-
-import {
-  CrmPageShell,
-} from "@/components/crm/CrmPageShell";
-
+  listCrmContactRoles,
+} from "@/features/crm/api";
 import {
   CRM_PERMISSIONS,
 } from "@/features/crm/permissions";
-
 import {
   requireCrmPermission,
 } from "@/features/crm/server";
 
+import {
+  CrmContactRolesManager,
+} from "@/components/crm/CrmContactRolesManager";
+
 export default async function ContactRolesPage() {
-  await requireCrmPermission(
+  const user = await requireCrmPermission(
     CRM_PERMISSIONS.contactRole.view,
   );
 
+  const data = await listCrmContactRoles({
+    page_size: 100,
+    ordering: "sort_order,name",
+  });
+
   return (
-    <CrmPageShell
-      title="Contact Roles"
-      description="Configure the responsibilities individuals may hold for an organisation."
-      icon={Settings}
-      stageDescription="The contact-role list API and permission guard are ready."
-      capabilities={[
-        "Create contact roles",
-        "Edit labels and descriptions",
-        "Control role ordering",
-        "Deactivate unused roles",
-        "Assign roles through Party affiliations",
-      ]}
+    <CrmContactRolesManager
+      user={user}
+      data={data}
     />
   );
 }

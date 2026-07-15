@@ -351,3 +351,24 @@ export const crmDocumentUpdateSchema = z.object({
 export type CrmDocumentUploadValues = z.infer<typeof crmDocumentUploadSchema>;
 
 export type CrmDocumentUpdateValues = z.infer<typeof crmDocumentUpdateSchema>;
+
+export const crmContactRoleWriteSchema = z.object({
+  name: z.string().trim().min(1, "Contact role name is required.").max(100),
+
+  slug: z
+    .string()
+    .trim()
+    .max(120)
+    .regex(
+      /^[-a-zA-Z0-9_]+$/,
+      "Slug can contain letters, numbers, hyphen and underscore only.",
+    )
+    .optional()
+    .or(z.literal("")),
+
+  description: z.string().trim().optional().or(z.literal("")),
+
+  is_active: z.boolean().optional(),
+
+  sort_order: z.number().int().min(0).max(32767).optional(),
+});

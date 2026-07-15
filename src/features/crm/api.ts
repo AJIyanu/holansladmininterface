@@ -25,6 +25,7 @@ import type {
   CrmPartyWriteInput,
   CrmQuickSupplierInput,
   CrmSensitiveValueResponse,
+  CrmContactRoleWriteInput,
   PaginatedResponse,
 } from "./types";
 
@@ -236,6 +237,39 @@ export async function listCrmContactRoles(
 ): Promise<PaginatedResponse<CrmContactRole>> {
   return serverFetch<PaginatedResponse<CrmContactRole>>(
     buildCrmApiPath(CRM_API_PATHS.contactRoles, query),
+  );
+}
+
+export async function createCrmContactRole(
+  input: CrmContactRoleWriteInput,
+): Promise<CrmContactRole> {
+  return serverFetch<CrmContactRole>(CRM_API_PATHS.contactRoles, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateCrmContactRole(
+  contactRoleId: string,
+  input: Partial<CrmContactRoleWriteInput>,
+): Promise<CrmContactRole> {
+  return serverFetch<CrmContactRole>(
+    detailPath(CRM_API_PATHS.contactRoles, contactRoleId),
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export async function deleteCrmContactRole(
+  contactRoleId: string,
+): Promise<void> {
+  await serverFetch<null>(
+    detailPath(CRM_API_PATHS.contactRoles, contactRoleId),
+    {
+      method: "DELETE",
+    },
   );
 }
 
