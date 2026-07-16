@@ -27,6 +27,7 @@ import type {
   CrmSensitiveValueResponse,
   CrmContactRoleWriteInput,
   PaginatedResponse,
+  CrmPartyInteractionWriteInput,
 } from "./types";
 
 const CRM_API_PATHS = {
@@ -288,4 +289,45 @@ export async function uploadCrmDocument(
     method: "POST",
     body: formData,
   });
+}
+
+export async function createCrmInteraction(
+  input: CrmPartyInteractionWriteInput,
+): Promise<CrmPartyInteraction> {
+  return serverFetch<CrmPartyInteraction>(CRM_API_PATHS.interactions, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export async function getCrmInteraction(
+  interactionId: string,
+): Promise<CrmPartyInteraction> {
+  return serverFetch<CrmPartyInteraction>(
+    detailPath(CRM_API_PATHS.interactions, interactionId),
+  );
+}
+
+export async function updateCrmInteraction(
+  interactionId: string,
+  input: Partial<CrmPartyInteractionWriteInput>,
+): Promise<CrmPartyInteraction> {
+  return serverFetch<CrmPartyInteraction>(
+    detailPath(CRM_API_PATHS.interactions, interactionId),
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export async function deleteCrmInteraction(
+  interactionId: string,
+): Promise<void> {
+  await serverFetch<null>(
+    detailPath(CRM_API_PATHS.interactions, interactionId),
+    {
+      method: "DELETE",
+    },
+  );
 }

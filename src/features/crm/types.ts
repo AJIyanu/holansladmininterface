@@ -615,3 +615,13 @@ export interface CrmContactRoleWriteInput {
   is_active?: boolean;
   sort_order?: number;
 }
+
+export interface CrmPartyInteractionWriteInput {
+  party: UUID;
+  contact_party?: UUID | null;
+  interaction_type: CrmInteractionType;
+  occurred_at: ISODateTime;
+  subject?: string;
+  summary?: string;
+  follow_up_at?: ISODateTime | null;
+}

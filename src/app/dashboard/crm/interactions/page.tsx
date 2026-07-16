@@ -41,9 +41,9 @@ function numberValue(
 export default async function InteractionsPage({
   searchParams,
 }: PageProps) {
-  await requireCrmPermission(
-    CRM_PERMISSIONS.interaction.view,
-  );
+  const user = await requireCrmPermission(
+  CRM_PERMISSIONS.interaction.view,
+);
 
   const resolved = (await searchParams) ?? {};
 
@@ -64,9 +64,10 @@ export default async function InteractionsPage({
   const data = await listCrmInteractions(query);
 
   return (
-    <CrmInteractionsTable
-      data={data}
-      query={query}
-    />
-  );
+  <CrmInteractionsTable
+    user={user}
+    data={data}
+    query={query}
+  />
+);
 }

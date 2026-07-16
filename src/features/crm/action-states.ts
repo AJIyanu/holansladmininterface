@@ -41,3 +41,13 @@ export const initialCrmLifecycleActionState: CrmLifecycleActionState = {
   ok: false,
   message: "",
 };
+
+export interface CrmInteractionActionState {
+  ok: boolean;
+  message: string;
+}
+
+export const initialCrmInteractionActionState: CrmInteractionActionState = {
+  ok: false,
+  message: "",
+};

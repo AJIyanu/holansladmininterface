@@ -22,7 +22,28 @@ import type {
   PaginatedResponse,
 } from "@/features/crm/types";
 
+import {
+  Plus,
+} from "lucide-react";
+
+import {
+  hasPermission,
+} from "@/types/auth";
+import type {
+  CurrentUser,
+} from "@/types/auth";
+
+import {
+  CRM_PERMISSIONS,
+} from "@/features/crm/permissions";
+
 interface CrmInteractionsTableProps {
+  data: PaginatedResponse<CrmPartyInteraction>;
+  query: CrmInteractionListQuery;
+}
+
+interface CrmInteractionsTableProps {
+  user: CurrentUser;
   data: PaginatedResponse<CrmPartyInteraction>;
   query: CrmInteractionListQuery;
 }
@@ -43,6 +64,7 @@ function pageUrl(
 }
 
 export function CrmInteractionsTable({
+  user,
   data,
   query,
 }: CrmInteractionsTableProps) {
@@ -51,6 +73,10 @@ export function CrmInteractionsTable({
     1,
     Math.ceil(data.count / (query.page_size ?? 20)),
   );
+  const canCreate = hasPermission(
+  user,
+  CRM_PERMISSIONS.interaction.create,
+);
 
   return (
     <section className="space-y-5">
@@ -67,6 +93,16 @@ export function CrmInteractionsTable({
           Review calls, emails, WhatsApp messages, meetings,
           marketplace conversations and follow-up activity.
         </p>
+
+        {canCreate ? (
+  <Link
+    href={CRM_ROUTES.newInteraction}
+    className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#D95C06]"
+  >
+    <Plus className="h-4 w-4" />
+    Log interaction
+  </Link>
+) : null}
       </header>
 
       <form

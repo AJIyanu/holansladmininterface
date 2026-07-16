@@ -32,6 +32,12 @@ export const CRM_ROUTES = {
   documentEdit(documentId: string): string {
     return `/dashboard/crm/documents/${documentId}/edit`;
   },
+
+  newInteraction: "/dashboard/crm/interactions/new",
+
+  interactionEdit(interactionId: string): string {
+    return `/dashboard/crm/interactions/${interactionId}/edit`;
+  },
 } as const;
 
 export interface CrmPageDefinition {

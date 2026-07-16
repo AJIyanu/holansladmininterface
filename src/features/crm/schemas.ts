@@ -372,3 +372,34 @@ export const crmContactRoleWriteSchema = z.object({
 
   sort_order: z.number().int().min(0).max(32767).optional(),
 });
+
+export const crmInteractionTypeSchema = z.enum([
+  "CALL",
+  "EMAIL",
+  "WHATSAPP",
+  "MEETING",
+  "MARKETPLACE_MESSAGE",
+  "SITE_VISIT",
+  "OTHER",
+]);
+
+export const crmInteractionWriteSchema = z.object({
+  party: z.string().uuid("Select a valid Party."),
+
+  contact_party: z
+    .string()
+    .uuid("Select a valid contact Party.")
+    .optional()
+    .or(z.literal(""))
+    .nullable(),
+
+  interaction_type: crmInteractionTypeSchema,
+
+  occurred_at: z.string().min(1, "Interaction date and time is required."),
+
+  subject: z.string().trim().max(255).optional().or(z.literal("")),
+
+  summary: z.string().trim().max(5000).optional().or(z.literal("")),
+
+  follow_up_at: z.string().optional().or(z.literal("")).nullable(),
+});
