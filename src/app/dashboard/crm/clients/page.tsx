@@ -17,6 +17,9 @@ import {
 import {
   CrmPartyDirectory,
 } from "@/components/crm/CrmPartyDirectory";
+// import {
+//   CRM_ROUTES,
+// } from "@/features/crm/routes";
 
 type PageProps = {
   searchParams?: Promise<
@@ -47,6 +50,11 @@ export default async function ClientsPage({
       query={query}
       data={data}
       fixedRoleLabel="Client"
+      createButtonLabel="Add Client"
+      createButtonHref={CRM_ROUTES.newPartyWith({
+        mode: "individual",
+        role: "CLIENT",
+      })}
     />
   );
 }

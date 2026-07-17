@@ -49,6 +49,11 @@ export default async function ContactsPage({
       query={query}
       data={data}
       fixedRoleLabel="Individual contacts"
+      createButtonLabel="Add Contact"
+      createButtonHref={CRM_ROUTES.newPartyWith({
+        mode: "individual",
+        role: "OTHER",
+      })}
     />
   );
 }

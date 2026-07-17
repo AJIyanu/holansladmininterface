@@ -48,6 +48,8 @@ export default async function PartiesPage({
       user={user}
       query={query}
       data={data}
+      createButtonLabel="New Party"
+      createButtonHref={CRM_ROUTES.newParty}
     />
   );
 }

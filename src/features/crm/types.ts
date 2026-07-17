@@ -235,6 +235,30 @@ export interface CrmPartyAffiliation {
   updated_at: ISODateTime;
 }
 
+export interface CrmPartyAffiliationWriteInput {
+  person: UUID;
+  organisation: UUID;
+  job_title?: string;
+  department?: string;
+  start_date?: ISODate | null;
+  end_date?: ISODate | null;
+  is_current?: boolean;
+  is_primary_contact?: boolean;
+  notes?: string;
+  contact_role_ids?: UUID[];
+}
+
+export interface CrmPartyAffiliationListQuery {
+  person?: UUID;
+  organisation?: UUID;
+  is_current?: boolean;
+  is_primary_contact?: boolean;
+  contact_role?: UUID;
+  ordering?: string;
+  page?: number;
+  page_size?: number;
+}
+
 export interface CrmPartyListItem {
   id: UUID;
   display_name: string;
@@ -624,4 +648,17 @@ export interface CrmPartyInteractionWriteInput {
   subject?: string;
   summary?: string;
   follow_up_at?: ISODateTime | null;
+}
+
+export interface CrmPartyAffiliationWriteInput {
+  person: UUID;
+  organisation: UUID;
+  job_title?: string;
+  department?: string;
+  start_date?: ISODate | null;
+  end_date?: ISODate | null;
+  is_current?: boolean;
+  is_primary_contact?: boolean;
+  notes?: string;
+  contact_role_ids?: UUID[];
 }

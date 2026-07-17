@@ -28,10 +28,14 @@ import type {
   CrmContactRoleWriteInput,
   PaginatedResponse,
   CrmPartyInteractionWriteInput,
+  CrmPartyAffiliationWriteInput,
+  CrmPartyAffiliation,
+  CrmPartyAffiliationListQuery,
 } from "./types";
 
 const CRM_API_PATHS = {
   parties: "/crm/parties/",
+  affiliations: "/crm/affiliations/",
   identifiers: "/crm/identifiers/",
   documents: "/crm/documents/",
   interactions: "/crm/interactions/",
@@ -326,6 +330,64 @@ export async function deleteCrmInteraction(
 ): Promise<void> {
   await serverFetch<null>(
     detailPath(CRM_API_PATHS.interactions, interactionId),
+    {
+      method: "DELETE",
+    },
+  );
+}
+
+// export async function createCrmAffiliation(
+//   input: CrmPartyAffiliationWriteInput,
+// ): Promise<unknown> {
+//   return serverFetch(CRM_API_PATHS.affiliations, {
+//     method: "POST",
+//     body: JSON.stringify(input),
+//   });
+// }
+
+export async function listCrmAffiliations(
+  query: CrmPartyAffiliationListQuery = {},
+): Promise<PaginatedResponse<CrmPartyAffiliation>> {
+  return serverFetch<PaginatedResponse<CrmPartyAffiliation>>(
+    buildCrmApiPath(CRM_API_PATHS.affiliations, query),
+  );
+}
+
+export async function getCrmAffiliation(
+  affiliationId: string,
+): Promise<CrmPartyAffiliation> {
+  return serverFetch<CrmPartyAffiliation>(
+    detailPath(CRM_API_PATHS.affiliations, affiliationId),
+  );
+}
+
+export async function createCrmAffiliation(
+  input: CrmPartyAffiliationWriteInput,
+): Promise<CrmPartyAffiliation> {
+  return serverFetch<CrmPartyAffiliation>(CRM_API_PATHS.affiliations, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateCrmAffiliation(
+  affiliationId: string,
+  input: Partial<CrmPartyAffiliationWriteInput>,
+): Promise<CrmPartyAffiliation> {
+  return serverFetch<CrmPartyAffiliation>(
+    detailPath(CRM_API_PATHS.affiliations, affiliationId),
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export async function deleteCrmAffiliation(
+  affiliationId: string,
+): Promise<void> {
+  await serverFetch<null>(
+    detailPath(CRM_API_PATHS.affiliations, affiliationId),
     {
       method: "DELETE",
     },

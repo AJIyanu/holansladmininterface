@@ -47,6 +47,11 @@ export default async function ProspectsPage({
       query={query}
       data={data}
       fixedRoleLabel="Prospect"
+      createButtonLabel="Add Prospect"
+      createButtonHref={CRM_ROUTES.newPartyWith({
+        mode: "individual",
+        role: "PROSPECT",
+      })}
     />
   );
 }

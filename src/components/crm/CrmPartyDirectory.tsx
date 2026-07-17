@@ -50,6 +50,8 @@ interface CrmPartyDirectoryProps {
   query: CrmPartyListQuery;
   data: PaginatedResponse<CrmPartyListItem>;
   fixedRoleLabel?: string;
+  createButtonLabel?: string;
+  createButtonHref?: string;
 }
 
 function currentSearchValue(
@@ -197,13 +199,15 @@ function PartyMobileCard({
 }
 
 export function CrmPartyDirectory({
-  title,
-  description,
-  basePath,
   user,
-  query,
   data,
+  query,
+  title,
+  basePath,
   fixedRoleLabel,
+  description,
+  createButtonLabel = "New Party",
+  createButtonHref = CRM_ROUTES.newParty,
 }: CrmPartyDirectoryProps) {
   const canCreate = hasPermission(
     user,
@@ -242,11 +246,11 @@ export function CrmPartyDirectory({
 
           {canCreate ? (
             <Link
-              href={CRM_ROUTES.newParty}
+              href={createButtonHref}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#D95C06]"
             >
               <Plus className="h-4 w-4" />
-              New Party
+              {createButtonLabel}
             </Link>
           ) : null}
         </div>

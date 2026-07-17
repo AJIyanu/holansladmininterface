@@ -49,12 +49,12 @@ export const CRM_PERMISSIONS = {
     delete: "crm.contactrole.delete",
   },
 
-  affiliation: {
-    view: "crm.partyaffiliation.view",
-    create: "crm.partyaffiliation.create",
-    edit: "crm.partyaffiliation.edit",
-    delete: "crm.partyaffiliation.delete",
-  },
+  // affiliation: {
+  //   view: "crm.partyaffiliation.view",
+  //   create: "crm.partyaffiliation.create",
+  //   edit: "crm.partyaffiliation.edit",
+  //   delete: "crm.partyaffiliation.delete",
+  // },
 
   note: {
     view: "crm.partynote.view",
@@ -106,6 +106,13 @@ export const CRM_PERMISSIONS = {
 
   mergeHistory: {
     view: "crm.partymergerecord.view",
+  },
+
+  affiliation: {
+    view: "crm.partyaffiliation.view",
+    create: "crm.partyaffiliation.create",
+    edit: "crm.partyaffiliation.edit",
+    delete: "crm.partyaffiliation.delete",
   },
 } as const;
 

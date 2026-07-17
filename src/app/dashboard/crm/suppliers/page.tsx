@@ -47,6 +47,11 @@ export default async function SuppliersPage({
       query={query}
       data={data}
       fixedRoleLabel="Supplier"
+      createButtonLabel="Add Supplier"
+      createButtonHref={CRM_ROUTES.newPartyWith({
+        mode: "trading_name",
+        role: "SUPPLIER",
+      })}
     />
   );
 }

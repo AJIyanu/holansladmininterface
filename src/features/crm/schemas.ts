@@ -403,3 +403,25 @@ export const crmInteractionWriteSchema = z.object({
 
   follow_up_at: z.string().optional().or(z.literal("")).nullable(),
 });
+
+export const crmAffiliationWriteSchema = z.object({
+  person: z.string().uuid("Select a valid person."),
+
+  organisation: z.string().uuid("Select a valid organisation."),
+
+  job_title: z.string().trim().max(150).optional().or(z.literal("")),
+
+  department: z.string().trim().max(150).optional().or(z.literal("")),
+
+  start_date: z.string().optional().or(z.literal("")).nullable(),
+
+  end_date: z.string().optional().or(z.literal("")).nullable(),
+
+  is_current: z.boolean().optional(),
+
+  is_primary_contact: z.boolean().optional(),
+
+  notes: z.string().trim().optional().or(z.literal("")),
+
+  contact_role_ids: z.array(z.string().uuid()).optional(),
+});

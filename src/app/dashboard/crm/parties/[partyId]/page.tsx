@@ -11,6 +11,8 @@ import {
 
 import {
   getCrmParty,
+  listCrmContactRoles,
+  listCrmParties,
 } from "@/features/crm/api";
 import {
   formatCrmDateTime,
@@ -34,6 +36,10 @@ import {
   CrmPartyLifecyclePanel,
 } from "@/components/crm/CrmPartyLifecyclePanel";
 
+import {
+  CrmAffiliationsPanel,
+} from "@/components/crm/CrmAffiliationsPanel";
+
 type PageProps = {
   params: Promise<{
     partyId: string;
@@ -49,6 +55,27 @@ export default async function PartyDetailPage({
 
   const { partyId } = await params;
   const party = await getCrmParty(partyId);
+
+  const [organisations, individuals, contactRoles] =
+  await Promise.all([
+    listCrmParties({
+      page_size: 100,
+      status: "ACTIVE",
+      entity_kind: "ORGANISATION",
+      ordering: "display_name",
+    }),
+    listCrmParties({
+      page_size: 100,
+      status: "ACTIVE",
+      entity_kind: "INDIVIDUAL",
+      ordering: "display_name",
+    }),
+    listCrmContactRoles({
+      page_size: 100,
+      is_active: true,
+      ordering: "sort_order,name",
+    }),
+  ]);
 
   const canEdit = hasPermission(
     user,
@@ -123,9 +150,32 @@ export default async function PartyDetailPage({
             }}
           />
         </div>
+
+        {party.entity_kind === "ORGANISATION" ||
+          party.entity_kind === "TRADING_NAME" ? (
+            <Link
+              href={CRM_ROUTES.newPartyWith({
+                mode: "individual",
+                organisation: party.id,
+              })}
+              className="inline-flex rounded-lg bg-[#F46C0B] px-4 py-2 text-sm font-semibold text-white hover:bg-[#D95C06]"
+            >
+              Add contact person
+            </Link>
+          ) : null}
       </header>
 
       <CrmPartyLifecyclePanel party={party} user={user} />
+
+      <CrmAffiliationsPanel
+          party={party}
+          user={user}
+          organisations={organisations.results}
+          individuals={individuals.results.filter(
+            (individual) => individual.id !== party.id,
+          )}
+          contactRoles={contactRoles.results}
+        />
 
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">

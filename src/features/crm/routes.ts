@@ -2,6 +2,17 @@ import { CRM_ANY_VIEW_PERMISSIONS, CRM_PERMISSIONS } from "./permissions";
 
 import type { CrmPermissionInput } from "./permissions";
 
+export type CrmNewPartyShortcutMode =
+  | "individual"
+  | "organisation"
+  | "trading_name";
+
+export interface CrmNewPartyShortcutParams {
+  mode?: CrmNewPartyShortcutMode;
+  role?: string;
+  organisation?: string;
+}
+
 export const CRM_ROUTES = {
   root: "/dashboard/crm",
 
@@ -37,6 +48,28 @@ export const CRM_ROUTES = {
 
   interactionEdit(interactionId: string): string {
     return `/dashboard/crm/interactions/${interactionId}/edit`;
+  },
+
+  newPartyWith(params: CrmNewPartyShortcutParams = {}): string {
+    const searchParams = new URLSearchParams();
+
+    if (params.mode) {
+      searchParams.set("mode", params.mode);
+    }
+
+    if (params.role) {
+      searchParams.set("role", params.role);
+    }
+
+    if (params.organisation) {
+      searchParams.set("organisation", params.organisation);
+    }
+
+    const query = searchParams.toString();
+
+    return query
+      ? `/dashboard/crm/parties/new?${query}`
+      : "/dashboard/crm/parties/new";
   },
 } as const;
 
