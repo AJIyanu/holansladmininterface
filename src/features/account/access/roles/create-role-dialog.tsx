@@ -29,7 +29,8 @@ import { Input } from "@/components/ui/input";
 
 import { accountApi } from "../shared/account-api";
 import { glassButtonClass, modalClass } from "../shared/glass-styles";
-import SelectionList from "../shared/selection-list";
+// import SelectionList from "../shared/selection-list";
+import PermissionMatrixSelector from "../shared/permission-matrix-selector";
 import type { Permission } from "../shared/access-types";
 import { roleSchema, type RoleFormValues } from "./role-schema";
 
@@ -52,20 +53,29 @@ export default function CreateRoleDialog({
     },
   });
 
+  // const selectedPermissions = form.watch("permissions");
+
+  // function togglePermission(id: number) {
+  //   const current = form.getValues("permissions");
+
+  //   form.setValue(
+  //     "permissions",
+  //     current.includes(id)
+  //       ? current.filter((permissionId) => permissionId !== id)
+  //       : [...current, id],
+  //     {
+  //       shouldValidate: true,
+  //     },
+  //   );
+  // }
+
   const selectedPermissions = form.watch("permissions");
 
-  function togglePermission(id: number) {
-    const current = form.getValues("permissions");
-
-    form.setValue(
-      "permissions",
-      current.includes(id)
-        ? current.filter((permissionId) => permissionId !== id)
-        : [...current, id],
-      {
-        shouldValidate: true,
-      },
-    );
+  function setSelectedPermissions(permissionIds: number[]) {
+    form.setValue("permissions", permissionIds, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   }
 
   async function onSubmit(values: RoleFormValues) {
@@ -135,15 +145,11 @@ export default function CreateRoleDialog({
                 <FormLabel>Permissions</FormLabel>
 
                 <div className="mt-2">
-                  <SelectionList
-                    items={permissions.map((permission) => ({
-                      id: permission.id,
-                      title: permission.name,
-                      description: permission.codename,
-                    }))}
+                  <PermissionMatrixSelector
+                    permissions={permissions}
                     selected={selectedPermissions}
-                    onToggle={(id) => togglePermission(Number(id))}
-                    searchPlaceholder="Search permissions..."
+                    onSelectedChange={setSelectedPermissions}
+                    emptyMessage="No permissions are available."
                   />
                 </div>
               </div>

@@ -25,6 +25,7 @@ import type {
 } from "../shared/access-types";
 import { glassButtonClass, modalClass } from "../shared/glass-styles";
 import SelectionList from "../shared/selection-list";
+import PermissionMatrixSelector from "../shared/permission-matrix-selector";
 
 export type RoleAction =
   | "edit"
@@ -134,6 +135,10 @@ export default function RoleActionDialog({
         : [...current, id],
     );
   }
+
+  function setSelectedPermissionIds(permissionIds: number[]) {
+  setSelected(permissionIds);
+}
 
   async function submitAction() {
     if (!action) {
@@ -262,24 +267,18 @@ export default function RoleActionDialog({
               </div>
             )}
 
-            {(action === "add-permissions" ||
-              action === "remove-permissions") && (
-              <SelectionList
-                items={availablePermissions.map((permission) => ({
-                  id: permission.id,
-                  title: permission.name,
-                  description: permission.codename,
-                }))}
-                selected={selected}
-                onToggle={toggleSelected}
-                emptyMessage={
-                  action === "add-permissions"
-                    ? "All permissions are already assigned."
-                    : "This role has no permissions to remove."
-                }
-                searchPlaceholder="Search permissions..."
-              />
-            )}
+            {(action === "add-permissions" || action === "remove-permissions") && (
+  <PermissionMatrixSelector
+    permissions={availablePermissions}
+    selected={selected.map(Number)}
+    onSelectedChange={setSelectedPermissionIds}
+    emptyMessage={
+      action === "add-permissions"
+        ? "All permissions are already assigned."
+        : "This role has no permissions to remove."
+    }
+  />
+)}
 
             {(action === "add-staff" || action === "remove-staff") &&
               (loading ? (

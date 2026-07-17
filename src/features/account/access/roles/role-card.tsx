@@ -27,6 +27,7 @@ import type { CurrentUser } from "@/types/auth";
 
 import type { Permission, Role } from "../shared/access-types";
 import RoleActionDialog, { type RoleAction } from "./role-action-dialog";
+import PermissionGroupedSummary from "../shared/permission-grouped-summary";
 
 interface RoleCardProps {
   role: Role;
@@ -154,30 +155,20 @@ export default function RoleCard({
           </div>
 
           {expanded && (
-            <div className="border-t bg-muted/20 p-5">
-              <h3 className="mb-3 text-sm font-semibold">
-                Assigned permissions
-              </h3>
+  <div className="mt-5 space-y-4">
+    <div>
+      <h3 className="text-sm font-semibold text-[#0F172A]">
+        Assigned permissions
+      </h3>
 
-              {rolePermissions.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  This role has no permissions.
-                </p>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {rolePermissions.map((permission) => (
-                    <Badge
-                      key={permission.id}
-                      variant="secondary"
-                      title={permission.codename}
-                    >
-                      {permission.name}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+      <p className="mt-1 text-xs text-[#64748B]">
+        Permissions are grouped by section and sorted by action.
+      </p>
+    </div>
+
+    <PermissionGroupedSummary permissions={rolePermissions} />
+  </div>
+)}
         </CardContent>
       </Card>
 
