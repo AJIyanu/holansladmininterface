@@ -12,11 +12,7 @@ export type ISODateTime = string;
 export type CrmEntityKind = "ORGANISATION" | "INDIVIDUAL" | "TRADING_NAME";
 
 export type CrmPartyStatus =
-  | "ACTIVE"
-  | "INACTIVE"
-  | "SUSPENDED"
-  | "BLOCKED"
-  | "MERGED";
+  "ACTIVE" | "INACTIVE" | "SUSPENDED" | "BLOCKED" | "MERGED";
 
 export type CrmVerificationLevel = "MINIMAL" | "BASIC" | "VERIFIED";
 
@@ -77,11 +73,7 @@ export type CrmInteractionType =
   | "OTHER";
 
 export type CrmNoteType =
-  | "GENERAL"
-  | "PROCUREMENT"
-  | "ACCOUNTS"
-  | "RISK"
-  | "CONFIDENTIAL";
+  "GENERAL" | "PROCUREMENT" | "ACCOUNTS" | "RISK" | "CONFIDENTIAL";
 
 export type CrmDocumentCategory =
   | "REGISTRATION"
@@ -96,10 +88,7 @@ export type CrmDocumentCategory =
 export type CrmStorageProvider = "GOOGLE_DRIVE" | "SUPABASE";
 
 export type CrmVerificationStatus =
-  | "UNVERIFIED"
-  | "PENDING"
-  | "VERIFIED"
-  | "REJECTED";
+  "UNVERIFIED" | "PENDING" | "VERIFIED" | "REJECTED";
 
 export type CrmPaymentMethod = "BANK_TRANSFER" | "MOBILE_MONEY" | "OTHER";
 

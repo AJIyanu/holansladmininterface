@@ -63,12 +63,10 @@ export function crmPartyQueryFromSearchParams(
     search: firstValue(searchParams.search),
     role: roleValues.length ? roleValues : undefined,
     entity_kind: firstValue(searchParams.entity_kind) as
-      | CrmEntityKind
-      | undefined,
+      CrmEntityKind | undefined,
     status: firstValue(searchParams.status) as CrmPartyStatus | undefined,
     verification_level: firstValue(searchParams.verification_level) as
-      | CrmVerificationLevel
-      | undefined,
+      CrmVerificationLevel | undefined,
     is_archived: toBoolean(firstValue(searchParams.is_archived)),
     ordering: firstValue(searchParams.ordering),
     page: toPositiveInteger(firstValue(searchParams.page)),
@@ -99,8 +97,7 @@ export function crmIdentifierQueryFromSearchParams(
   return {
     party: firstValue(searchParams.party),
     identifier_type: firstValue(searchParams.identifier_type) as
-      | CrmIdentifierType
-      | undefined,
+      CrmIdentifierType | undefined,
     issuing_country: firstValue(searchParams.issuing_country),
     is_verified: toBoolean(firstValue(searchParams.is_verified)),
     is_active: toBoolean(firstValue(searchParams.is_active)),
@@ -116,14 +113,11 @@ export function crmDocumentQueryFromSearchParams(
   return {
     party: firstValue(searchParams.party),
     category: firstValue(searchParams.category) as
-      | CrmDocumentCategory
-      | undefined,
+      CrmDocumentCategory | undefined,
     storage_provider: firstValue(searchParams.storage_provider) as
-      | CrmStorageProvider
-      | undefined,
+      CrmStorageProvider | undefined,
     verification_status: firstValue(searchParams.verification_status) as
-      | CrmVerificationStatus
-      | undefined,
+      CrmVerificationStatus | undefined,
     is_confidential: toBoolean(firstValue(searchParams.is_confidential)),
     is_active: toBoolean(firstValue(searchParams.is_active)),
     expires_at: firstValue(searchParams.expires_at),

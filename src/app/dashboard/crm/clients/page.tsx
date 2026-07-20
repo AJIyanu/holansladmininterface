@@ -1,38 +1,20 @@
-import {
-  listCrmParties,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
-import {
-  crmPartyQueryFromSearchParams,
-} from "@/features/crm/search-params";
+import { listCrmParties } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { CRM_ROUTES } from "@/features/crm/routes";
+import { requireCrmPermission } from "@/features/crm/server";
+import { crmPartyQueryFromSearchParams } from "@/features/crm/search-params";
 
-import {
-  CrmPartyDirectory,
-} from "@/components/crm/CrmPartyDirectory";
+import { CrmPartyDirectory } from "@/components/crm/CrmPartyDirectory";
 // import {
 //   CRM_ROUTES,
 // } from "@/features/crm/routes";
 
 type PageProps = {
-  searchParams?: Promise<
-    Record<string, string | string[] | undefined>
-  >;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function ClientsPage({
-  searchParams,
-}: PageProps) {
-  const user = await requireCrmPermission(
-    CRM_PERMISSIONS.party.view,
-  );
+export default async function ClientsPage({ searchParams }: PageProps) {
+  const user = await requireCrmPermission(CRM_PERMISSIONS.party.view);
 
   const query = crmPartyQueryFromSearchParams(
     (await searchParams) ?? {},

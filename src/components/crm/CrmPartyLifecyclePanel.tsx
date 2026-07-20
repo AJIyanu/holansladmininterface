@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  useActionState,
-  useMemo,
-  useState,
-} from "react";
-import {
-  useFormStatus,
-} from "react-dom";
+import { useActionState, useMemo, useState } from "react";
+import { useFormStatus } from "react-dom";
 import {
   AlertTriangle,
   Archive,
@@ -18,27 +12,15 @@ import {
   X,
 } from "lucide-react";
 
-import {
-  runCrmLifecycleFormAction,
-} from "@/features/crm/lifecycle-actions";
+import { runCrmLifecycleFormAction } from "@/features/crm/lifecycle-actions";
 
-import {
-  initialCrmLifecycleActionState,
-} from "@/features/crm/action-states";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
+import { initialCrmLifecycleActionState } from "@/features/crm/action-states";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
 
-import {
-  hasPermission,
-} from "@/types/auth";
-import type {
-  CurrentUser,
-} from "@/types/auth";
+import { hasPermission } from "@/types/auth";
+import type { CurrentUser } from "@/types/auth";
 
-import type {
-  CrmPartyDetail,
-} from "@/features/crm/types";
+import type { CrmPartyDetail } from "@/features/crm/types";
 
 interface CrmPartyLifecyclePanelProps {
   party: CrmPartyDetail;
@@ -47,12 +29,7 @@ interface CrmPartyLifecyclePanelProps {
 
 interface LifecycleOption {
   action:
-    | "deactivate"
-    | "reactivate"
-    | "suspend"
-    | "block"
-    | "archive"
-    | "restore";
+    "deactivate" | "reactivate" | "suspend" | "block" | "archive" | "restore";
   label: string;
   description: string;
   permission: string;
@@ -68,17 +45,13 @@ function SubmitButton() {
       disabled={status.pending}
       className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D95C06] disabled:cursor-not-allowed disabled:bg-[#FDBA74]"
     >
-      {status.pending ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : null}
+      {status.pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
       Confirm action
     </button>
   );
 }
 
-function lifecycleOptionsForParty(
-  party: CrmPartyDetail,
-): LifecycleOption[] {
+function lifecycleOptionsForParty(party: CrmPartyDetail): LifecycleOption[] {
   const options: LifecycleOption[] = [];
 
   if (party.is_archived) {
@@ -87,8 +60,7 @@ function lifecycleOptionsForParty(
       label: "Restore",
       description: "Return this Party from archive.",
       permission: CRM_PERMISSIONS.party.archive,
-      className:
-        "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]",
+      className: "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]",
     });
 
     return options;
@@ -99,8 +71,7 @@ function lifecycleOptionsForParty(
     label: "Archive",
     description: "Hide this Party from normal active use.",
     permission: CRM_PERMISSIONS.party.archive,
-    className:
-      "border-[#CBD5E1] bg-[#F8FAFC] text-[#334155]",
+    className: "border-[#CBD5E1] bg-[#F8FAFC] text-[#334155]",
   });
 
   if (party.status === "ACTIVE") {
@@ -109,8 +80,7 @@ function lifecycleOptionsForParty(
       label: "Deactivate",
       description: "Mark this Party inactive.",
       permission: CRM_PERMISSIONS.party.deactivate,
-      className:
-        "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C]",
+      className: "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C]",
     });
 
     options.push({
@@ -118,8 +88,7 @@ function lifecycleOptionsForParty(
       label: "Suspend",
       description: "Temporarily suspend this Party.",
       permission: CRM_PERMISSIONS.party.block,
-      className:
-        "border-[#FDE68A] bg-[#FFFBEB] text-[#92400E]",
+      className: "border-[#FDE68A] bg-[#FFFBEB] text-[#92400E]",
     });
 
     options.push({
@@ -127,31 +96,24 @@ function lifecycleOptionsForParty(
       label: "Block",
       description: "Block this Party from new use.",
       permission: CRM_PERMISSIONS.party.block,
-      className:
-        "border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]",
+      className: "border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]",
     });
   }
 
-  if (
-    party.status === "INACTIVE" ||
-    party.status === "SUSPENDED"
-  ) {
+  if (party.status === "INACTIVE" || party.status === "SUSPENDED") {
     options.push({
       action: "reactivate",
       label: "Reactivate",
       description: "Return this Party to active use.",
       permission: CRM_PERMISSIONS.party.deactivate,
-      className:
-        "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]",
+      className: "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]",
     });
   }
 
   return options;
 }
 
-function iconForAction(
-  action: LifecycleOption["action"],
-) {
+function iconForAction(action: LifecycleOption["action"]) {
   switch (action) {
     case "restore":
     case "reactivate":
@@ -171,8 +133,7 @@ export function CrmPartyLifecyclePanel({
   party,
   user,
 }: CrmPartyLifecyclePanelProps) {
-  const [selected, setSelected] =
-    useState<LifecycleOption | null>(null);
+  const [selected, setSelected] = useState<LifecycleOption | null>(null);
 
   const [state, formAction] = useActionState(
     runCrmLifecycleFormAction,
@@ -200,8 +161,7 @@ export function CrmPartyLifecyclePanel({
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-[#64748B]">
-            These actions are permission-controlled and audited
-            by the backend.
+            These actions are permission-controlled and audited by the backend.
           </p>
         </div>
 
@@ -232,9 +192,7 @@ export function CrmPartyLifecyclePanel({
             >
               <Icon className="h-5 w-5" />
 
-              <p className="mt-3 text-sm font-bold">
-                {option.label}
-              </p>
+              <p className="mt-3 text-sm font-bold">{option.label}</p>
 
               <p className="mt-1 text-xs leading-5 opacity-90">
                 {option.description}
@@ -273,17 +231,9 @@ export function CrmPartyLifecyclePanel({
             </div>
 
             <form action={formAction} className="mt-5 space-y-4">
-              <input
-                type="hidden"
-                name="party_id"
-                value={party.id}
-              />
+              <input type="hidden" name="party_id" value={party.id} />
 
-              <input
-                type="hidden"
-                name="action"
-                value={selected.action}
-              />
+              <input type="hidden" name="action" value={selected.action} />
 
               <div>
                 <label

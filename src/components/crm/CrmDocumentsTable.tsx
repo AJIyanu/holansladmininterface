@@ -1,20 +1,10 @@
 import Link from "next/link";
-import {
-  Edit,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 
-import {
-  hasPermission,
-} from "@/types/auth";
-import type {
-  CurrentUser,
-} from "@/types/auth";
+import { hasPermission } from "@/types/auth";
+import type { CurrentUser } from "@/types/auth";
 
-import {
-  deleteCrmDocumentAction,
-} from "@/features/crm/document-actions";
+import { deleteCrmDocumentAction } from "@/features/crm/document-actions";
 import {
   canBrowserPreviewDocument,
   documentMimeLabel,
@@ -22,15 +12,9 @@ import {
   formatCrmDateTime,
   formatFileSize,
 } from "@/features/crm/format";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
-import {
-  buildDashboardUrl,
-} from "@/features/crm/search-params";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { CRM_ROUTES } from "@/features/crm/routes";
+import { buildDashboardUrl } from "@/features/crm/search-params";
 
 import type {
   CrmDocumentListQuery,
@@ -39,9 +23,7 @@ import type {
   PaginatedResponse,
 } from "@/features/crm/types";
 
-import {
-  CrmDocumentPreviewButton,
-} from "./CrmDocumentPreviewButton";
+import { CrmDocumentPreviewButton } from "./CrmDocumentPreviewButton";
 
 interface CrmDocumentsTableProps {
   user: CurrentUser;
@@ -50,10 +32,7 @@ interface CrmDocumentsTableProps {
   query: CrmDocumentListQuery;
 }
 
-function pageUrl(
-  query: CrmDocumentListQuery,
-  page: number,
-): string {
+function pageUrl(query: CrmDocumentListQuery, page: number): string {
   return buildDashboardUrl(CRM_ROUTES.documents, {
     party: query.party,
     category: query.category,
@@ -63,25 +42,18 @@ function pageUrl(
         ? undefined
         : String(query.is_confidential),
     is_active:
-      query.is_active === undefined
-        ? undefined
-        : String(query.is_active),
+      query.is_active === undefined ? undefined : String(query.is_active),
     search: query.search,
     ordering: query.ordering,
     page,
   });
 }
 
-function DocumentStatusBadge({
-  document,
-}: {
-  document: CrmPartyDocument;
-}) {
+function DocumentStatusBadge({ document }: { document: CrmPartyDocument }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       <span className="rounded-full border border-[#DBEAFE] bg-[#EFF6FF] px-2.5 py-1 text-xs font-semibold text-[#1D4ED8]">
-        {document.verification_status_display ||
-          document.verification_status}
+        {document.verification_status_display || document.verification_status}
       </span>
 
       {document.is_confidential ? (
@@ -105,25 +77,13 @@ export function CrmDocumentsTable({
   partiesById,
   query,
 }: CrmDocumentsTableProps) {
-  const canCreate = hasPermission(
-    user,
-    CRM_PERMISSIONS.document.create,
-  );
+  const canCreate = hasPermission(user, CRM_PERMISSIONS.document.create);
 
-  const canEdit = hasPermission(
-    user,
-    CRM_PERMISSIONS.document.edit,
-  );
+  const canEdit = hasPermission(user, CRM_PERMISSIONS.document.edit);
 
-  const canDelete = hasPermission(
-    user,
-    CRM_PERMISSIONS.document.delete,
-  );
+  const canDelete = hasPermission(user, CRM_PERMISSIONS.document.delete);
 
-  const canDownload = hasPermission(
-    user,
-    CRM_PERMISSIONS.document.download,
-  );
+  const canDownload = hasPermission(user, CRM_PERMISSIONS.document.download);
 
   const currentPage = query.page ?? 1;
   const totalPages = Math.max(
@@ -145,8 +105,8 @@ export function CrmDocumentsTable({
             </h1>
 
             <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-              Upload, preview and manage Party documents stored
-              through the backend document provider.
+              Upload, preview and manage Party documents stored through the
+              backend document provider.
             </p>
           </div>
 
@@ -184,9 +144,7 @@ export function CrmDocumentsTable({
             <option value="TAX">Tax</option>
             <option value="BANK">Bank</option>
             <option value="CONTRACT">Contract</option>
-            <option value="CORRESPONDENCE">
-              Correspondence
-            </option>
+            <option value="CORRESPONDENCE">Correspondence</option>
             <option value="IDENTITY">Identity</option>
             <option value="QUOTE">Quote</option>
             <option value="OTHER">Other</option>
@@ -238,8 +196,7 @@ export function CrmDocumentsTable({
 
             <tbody className="divide-y divide-[#E2E8F0]">
               {data.results.map((document) => {
-                const party =
-                  partiesById[String(document.party)];
+                const party = partiesById[String(document.party)];
 
                 return (
                   <tr key={document.id}>
@@ -254,9 +211,7 @@ export function CrmDocumentsTable({
                         {formatFileSize(document.size_bytes)}
                       </p>
 
-                      {!canBrowserPreviewDocument(
-                        document.mime_type,
-                      ) ? (
+                      {!canBrowserPreviewDocument(document.mime_type) ? (
                         <p className="mt-1 text-xs text-[#94A3B8]">
                           Metadata preview only
                         </p>
@@ -283,29 +238,21 @@ export function CrmDocumentsTable({
                     </td>
 
                     <td className="px-4 py-4 align-top text-sm text-[#475569]">
-                      <p>
-                        Uploaded:{" "}
-                        {formatCrmDateTime(document.created_at)}
-                      </p>
+                      <p>Uploaded: {formatCrmDateTime(document.created_at)}</p>
                       <p className="mt-1">
-                        Expires:{" "}
-                        {formatCrmDate(document.expires_at)}
+                        Expires: {formatCrmDate(document.expires_at)}
                       </p>
                     </td>
 
                     <td className="px-4 py-4 align-top">
                       <div className="flex justify-end gap-2">
                         {canDownload ? (
-                          <CrmDocumentPreviewButton
-                            document={document}
-                          />
+                          <CrmDocumentPreviewButton document={document} />
                         ) : null}
 
                         {canEdit ? (
                           <Link
-                            href={CRM_ROUTES.documentEdit(
-                              document.id,
-                            )}
+                            href={CRM_ROUTES.documentEdit(document.id)}
                             className="inline-flex items-center gap-1 rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs font-semibold text-[#334155] hover:border-[#0F4C81] hover:text-[#0F4C81]"
                           >
                             <Edit className="h-3.5 w-3.5" />
@@ -386,9 +333,7 @@ export function CrmDocumentsTable({
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {canDownload ? (
-                    <CrmDocumentPreviewButton
-                      document={document}
-                    />
+                    <CrmDocumentPreviewButton document={document} />
                   ) : null}
 
                   {canEdit ? (
@@ -409,22 +354,14 @@ export function CrmDocumentsTable({
       <div className="flex flex-col gap-3 rounded-2xl border border-[#E2E8F0] bg-white p-4 text-sm text-[#475569] shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <p>
           Page{" "}
-          <span className="font-semibold text-[#0F172A]">
-            {currentPage}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-[#0F172A]">
-            {totalPages}
-          </span>{" "}
-          · {data.count} total documents
+          <span className="font-semibold text-[#0F172A]">{currentPage}</span> of{" "}
+          <span className="font-semibold text-[#0F172A]">{totalPages}</span> ·{" "}
+          {data.count} total documents
         </p>
 
         <div className="flex gap-2">
           <Link
-            href={pageUrl(
-              query,
-              Math.max(1, currentPage - 1),
-            )}
+            href={pageUrl(query, Math.max(1, currentPage - 1))}
             aria-disabled={currentPage <= 1}
             className={`rounded-lg border px-3 py-2 font-semibold ${
               currentPage <= 1
@@ -436,10 +373,7 @@ export function CrmDocumentsTable({
           </Link>
 
           <Link
-            href={pageUrl(
-              query,
-              Math.min(totalPages, currentPage + 1),
-            )}
+            href={pageUrl(query, Math.min(totalPages, currentPage + 1))}
             aria-disabled={currentPage >= totalPages}
             className={`rounded-lg border px-3 py-2 font-semibold ${
               currentPage >= totalPages

@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  useActionState,
-  useMemo,
-  useState,
-} from "react";
+import { useActionState, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  useFormStatus,
-} from "react-dom";
+import { useFormStatus } from "react-dom";
 import {
   AlertTriangle,
   Building2,
@@ -22,16 +16,12 @@ import {
   createCrmPartyAction,
   updateCrmPartyAction,
 } from "@/features/crm/actions";
-import {
-  initialCrmPartyActionState,
-} from "@/features/crm/action-states";
+import { initialCrmPartyActionState } from "@/features/crm/action-states";
 import {
   CRM_PARTY_ROLE_OPTIONS,
   CRM_VERIFICATION_LEVEL_OPTIONS,
 } from "@/features/crm/format";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
+import { CRM_ROUTES } from "@/features/crm/routes";
 
 import type {
   CrmContactRole,
@@ -50,21 +40,11 @@ interface CrmPartyFormProps {
   defaultOrganisationId?: string;
 }
 
-type CreateMode =
-  | "INDIVIDUAL"
-  | "ORGANISATION"
-  | "TRADING_NAME";
+type CreateMode = "INDIVIDUAL" | "ORGANISATION" | "TRADING_NAME";
 
-type AffiliationMode =
-  | "NONE"
-  | "EXISTING_ORGANISATION"
-  | "CREATE_ORGANISATION";
+type AffiliationMode = "NONE" | "EXISTING_ORGANISATION" | "CREATE_ORGANISATION";
 
-function SubmitButton({
-  mode,
-}: {
-  mode: "create" | "edit";
-}) {
+function SubmitButton({ mode }: { mode: "create" | "edit" }) {
   const status = useFormStatus();
 
   return (
@@ -73,9 +53,7 @@ function SubmitButton({
       disabled={status.pending}
       className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D95C06] disabled:cursor-not-allowed disabled:bg-[#FDBA74]"
     >
-      {status.pending ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : null}
+      {status.pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
       {mode === "create" ? "Create Party" : "Save Changes"}
     </button>
   );
@@ -119,22 +97,16 @@ function ModeCard({
       <div className="flex items-start gap-3">
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-            active
-              ? "bg-[#F46C0B] text-white"
-              : "bg-[#F8FAFC] text-[#475569]"
+            active ? "bg-[#F46C0B] text-white" : "bg-[#F8FAFC] text-[#475569]"
           }`}
         >
           {icon}
         </div>
 
         <div>
-          <p className="font-semibold text-[#0F172A]">
-            {title}
-          </p>
+          <p className="font-semibold text-[#0F172A]">{title}</p>
 
-          <p className="mt-1 text-sm leading-6 text-[#64748B]">
-            {description}
-          </p>
+          <p className="mt-1 text-sm leading-6 text-[#64748B]">{description}</p>
         </div>
       </div>
     </button>
@@ -144,7 +116,6 @@ function ModeCard({
 function RoleCheckboxes({
   name = "roles",
   activeRoles,
-  
 }: {
   name?: string;
   activeRoles?: string[];
@@ -184,10 +155,7 @@ function VerificationSelect({
       className={textInputClass()}
     >
       {CRM_VERIFICATION_LEVEL_OPTIONS.map((option) => (
-        <option
-          key={`${name}-${option.value}`}
-          value={option.value}
-        >
+        <option key={`${name}-${option.value}`} value={option.value}>
           {option.label}
         </option>
       ))}
@@ -210,51 +178,37 @@ function SourceFields({
         </h2>
 
         <p className="mt-1 text-sm text-[#64748B]">
-          Record where this Party came from, especially for
-          online sellers or market suppliers.
+          Record where this Party came from, especially for online sellers or
+          market suppliers.
         </p>
       </div>
 
       <div>
-        <label
-          className={labelClass()}
-          htmlFor={`${prefix}source_type`}
-        >
+        <label className={labelClass()} htmlFor={`${prefix}source_type`}>
           Source type
         </label>
 
         <select
           id={`${prefix}source_type`}
           name={`${prefix}source_type`}
-          defaultValue={
-            marketplace ? "ONLINE_MARKETPLACE" : "DIRECT_CONTACT"
-          }
+          defaultValue={marketplace ? "ONLINE_MARKETPLACE" : "DIRECT_CONTACT"}
           className={`${textInputClass()} mt-1`}
         >
           <option value="DIRECT_CONTACT">Direct contact</option>
-          <option value="ONLINE_MARKETPLACE">
-            Online marketplace
-          </option>
+          <option value="ONLINE_MARKETPLACE">Online marketplace</option>
           <option value="PHYSICAL_MARKET">Physical market</option>
           <option value="REFERRAL">Referral</option>
           <option value="WEBSITE">Website</option>
           <option value="SOCIAL_MEDIA">Social media</option>
-          <option value="TRADE_DIRECTORY">
-            Trade directory
-          </option>
-          <option value="PREVIOUS_TRANSACTION">
-            Previous transaction
-          </option>
+          <option value="TRADE_DIRECTORY">Trade directory</option>
+          <option value="PREVIOUS_TRANSACTION">Previous transaction</option>
           <option value="EVENT">Event</option>
           <option value="OTHER">Other</option>
         </select>
       </div>
 
       <div>
-        <label
-          className={labelClass()}
-          htmlFor={`${prefix}platform_name`}
-        >
+        <label className={labelClass()} htmlFor={`${prefix}platform_name`}>
           Platform name
         </label>
 
@@ -314,11 +268,7 @@ function SourceFields({
   );
 }
 
-function CommonContactFields({
-  prefix = "",
-}: {
-  prefix?: string;
-}) {
+function CommonContactFields({ prefix = "" }: { prefix?: string }) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
       <div className="md:col-span-2">
@@ -365,9 +315,7 @@ function OrganisationProfileFields({
   return (
     <section className="grid gap-4 md:grid-cols-2">
       <div className="md:col-span-2">
-        <h2 className="text-base font-semibold text-[#0F172A]">
-          {title}
-        </h2>
+        <h2 className="text-base font-semibold text-[#0F172A]">{title}</h2>
       </div>
 
       <input
@@ -420,24 +368,18 @@ function OrganisationProfileFields({
   );
 }
 
-function EditModeFields({
-  initialParty,
-}: {
-  initialParty: CrmPartyDetail;
-}) {
+function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
   const activeRoles = initialParty.roles
     .filter((role) => role.is_active)
     .map((role) => role.role);
 
-  const organisationProfile =
-    initialParty.organisation_profile ?? null;
+  const organisationProfile = initialParty.organisation_profile ?? null;
 
   const personProfile = initialParty.person_profile ?? null;
 
   const primaryEmail =
     initialParty.contact_methods.find(
-      (method) =>
-        method.method_type === "EMAIL" && method.is_primary,
+      (method) => method.method_type === "EMAIL" && method.is_primary,
     )?.value ??
     initialParty.contact_methods.find(
       (method) => method.method_type === "EMAIL",
@@ -446,23 +388,19 @@ function EditModeFields({
 
   const primaryPhone =
     initialParty.contact_methods.find(
-      (method) =>
-        method.method_type === "PHONE" && method.is_primary,
+      (method) => method.method_type === "PHONE" && method.is_primary,
+    )?.value ??
+    initialParty.contact_methods.find(
+      (method) => method.method_type === "MOBILE" && method.is_primary,
     )?.value ??
     initialParty.contact_methods.find(
       (method) =>
-        method.method_type === "MOBILE" && method.is_primary,
-    )?.value ??
-    initialParty.contact_methods.find(
-      (method) =>
-        method.method_type === "PHONE" ||
-        method.method_type === "MOBILE",
+        method.method_type === "PHONE" || method.method_type === "MOBILE",
     )?.value ??
     "";
 
   const primarySourceNotes =
-    initialParty.sources.find((source) => source.is_primary)
-      ?.notes ?? "";
+    initialParty.sources.find((source) => source.is_primary)?.notes ?? "";
 
   return (
     <>
@@ -488,10 +426,7 @@ function EditModeFields({
         </div>
 
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="verification_level"
-          >
+          <label className={labelClass()} htmlFor="verification_level">
             Verification level
           </label>
 
@@ -504,9 +439,7 @@ function EditModeFields({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-base font-semibold text-[#0F172A]">
-          Roles
-        </h2>
+        <h2 className="text-base font-semibold text-[#0F172A]">Roles</h2>
 
         <RoleCheckboxes activeRoles={activeRoles} />
       </section>
@@ -571,9 +504,7 @@ function EditModeFields({
 
           <input
             name="trading_name"
-            defaultValue={
-              organisationProfile?.trading_name ?? ""
-            }
+            defaultValue={organisationProfile?.trading_name ?? ""}
             placeholder="Trading name"
             className={textInputClass()}
           />
@@ -594,9 +525,7 @@ function EditModeFields({
 
           <input
             name="registration_country"
-            defaultValue={
-              organisationProfile?.registration_country ?? ""
-            }
+            defaultValue={organisationProfile?.registration_country ?? ""}
             maxLength={2}
             placeholder="Registration country"
             className={`${textInputClass()} uppercase`}
@@ -605,9 +534,7 @@ function EditModeFields({
           <input
             name="incorporation_date"
             type="date"
-            defaultValue={
-              organisationProfile?.incorporation_date ?? ""
-            }
+            defaultValue={organisationProfile?.incorporation_date ?? ""}
             className={textInputClass()}
           />
 
@@ -615,9 +542,7 @@ function EditModeFields({
             <textarea
               name="business_description"
               rows={3}
-              defaultValue={
-                organisationProfile?.business_description ?? ""
-              }
+              defaultValue={organisationProfile?.business_description ?? ""}
               placeholder="Business description"
               className={textareaClass()}
             />
@@ -654,10 +579,7 @@ function EditModeFields({
         </div>
 
         <div className="md:col-span-2">
-          <label
-            className={labelClass()}
-            htmlFor="source_notes"
-          >
+          <label className={labelClass()} htmlFor="source_notes">
             Source notes
           </label>
 
@@ -685,23 +607,17 @@ export function CrmPartyForm({
   defaultOrganisationId,
 }: CrmPartyFormProps) {
   const action =
-    mode === "create"
-      ? createCrmPartyAction
-      : updateCrmPartyAction;
+    mode === "create" ? createCrmPartyAction : updateCrmPartyAction;
 
   const [state, formAction] = useActionState(
     action,
     initialCrmPartyActionState,
   );
 
-  const [createMode, setCreateMode] =
-  useState<CreateMode>(defaultCreateMode);
+  const [createMode, setCreateMode] = useState<CreateMode>(defaultCreateMode);
 
-const [affiliationMode, setAffiliationMode] =
-  useState<AffiliationMode>(
-    defaultOrganisationId
-      ? "EXISTING_ORGANISATION"
-      : defaultAffiliationMode,
+  const [affiliationMode, setAffiliationMode] = useState<AffiliationMode>(
+    defaultOrganisationId ? "EXISTING_ORGANISATION" : defaultAffiliationMode,
   );
 
   const defaultIndividualDisplayName = useMemo(
@@ -715,11 +631,7 @@ const [affiliationMode, setAffiliationMode] =
       className="space-y-6 rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm sm:p-6"
     >
       {initialParty ? (
-        <input
-          type="hidden"
-          name="party_id"
-          value={initialParty.id}
-        />
+        <input type="hidden" name="party_id" value={initialParty.id} />
       ) : null}
 
       {state.message ? (
@@ -738,9 +650,7 @@ const [affiliationMode, setAffiliationMode] =
                     <li key={match.party.id}>
                       Existing Party:{" "}
                       <Link
-                        href={CRM_ROUTES.partyDetail(
-                          match.party.id,
-                        )}
+                        href={CRM_ROUTES.partyDetail(match.party.id)}
                         className="font-semibold underline"
                       >
                         {match.party.display_name}
@@ -758,11 +668,7 @@ const [affiliationMode, setAffiliationMode] =
         <EditModeFields initialParty={initialParty} />
       ) : (
         <>
-          <input
-            type="hidden"
-            name="create_mode"
-            value={createMode}
-          />
+          <input type="hidden" name="create_mode" value={createMode} />
 
           <input
             type="hidden"
@@ -781,8 +687,8 @@ const [affiliationMode, setAffiliationMode] =
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-[#64748B]">
-                Start with an individual by default, or create an
-                organisation / marketplace trading profile directly.
+                Start with an individual by default, or create an organisation /
+                marketplace trading profile directly.
               </p>
             </div>
 
@@ -822,19 +728,14 @@ const [affiliationMode, setAffiliationMode] =
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-semibold text-[#0F172A]">
-              Role
-            </h2>
+            <h2 className="text-base font-semibold text-[#0F172A]">Role</h2>
 
             <RoleCheckboxes activeRoles={defaultRoles} />
           </section>
 
           <section className="grid gap-4 md:grid-cols-2">
             <div>
-              <label
-                className={labelClass()}
-                htmlFor="verification_level"
-              >
+              <label className={labelClass()} htmlFor="verification_level">
                 Verification level
               </label>
 
@@ -904,8 +805,8 @@ const [affiliationMode, setAffiliationMode] =
                   </h2>
 
                   <p className="mt-1 text-sm leading-6 text-[#64748B]">
-                    Link this person to an organisation now, or
-                    leave them as an independent individual.
+                    Link this person to an organisation now, or leave them as an
+                    independent individual.
                   </p>
                 </div>
 
@@ -925,14 +826,9 @@ const [affiliationMode, setAffiliationMode] =
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setAffiliationMode(
-                        "EXISTING_ORGANISATION",
-                      )
-                    }
+                    onClick={() => setAffiliationMode("EXISTING_ORGANISATION")}
                     className={`rounded-xl border p-4 text-left text-sm ${
-                      affiliationMode ===
-                      "EXISTING_ORGANISATION"
+                      affiliationMode === "EXISTING_ORGANISATION"
                         ? "border-[#F46C0B] bg-[#FFF7ED] text-[#9A3412]"
                         : "border-[#E2E8F0] bg-white text-[#334155]"
                     }`}
@@ -943,9 +839,7 @@ const [affiliationMode, setAffiliationMode] =
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setAffiliationMode("CREATE_ORGANISATION")
-                    }
+                    onClick={() => setAffiliationMode("CREATE_ORGANISATION")}
                     className={`rounded-xl border p-4 text-left text-sm ${
                       affiliationMode === "CREATE_ORGANISATION"
                         ? "border-[#F46C0B] bg-[#FFF7ED] text-[#9A3412]"
@@ -957,8 +851,7 @@ const [affiliationMode, setAffiliationMode] =
                   </button>
                 </div>
 
-                {affiliationMode ===
-                "EXISTING_ORGANISATION" ? (
+                {affiliationMode === "EXISTING_ORGANISATION" ? (
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="md:col-span-2">
                       <label
@@ -969,24 +862,16 @@ const [affiliationMode, setAffiliationMode] =
                       </label>
 
                       <select
-                          id="existing_organisation_id"
-                          name="existing_organisation_id"
-                          required={
-                            affiliationMode ===
-                            "EXISTING_ORGANISATION"
-                          }
-                          defaultValue={defaultOrganisationId ?? ""}
-                          className={`${textInputClass()} mt-1`}
-                        >
-                        <option value="">
-                          Select organisation
-                        </option>
+                        id="existing_organisation_id"
+                        name="existing_organisation_id"
+                        required={affiliationMode === "EXISTING_ORGANISATION"}
+                        defaultValue={defaultOrganisationId ?? ""}
+                        className={`${textInputClass()} mt-1`}
+                      >
+                        <option value="">Select organisation</option>
 
                         {organisations.map((party) => (
-                          <option
-                            key={party.id}
-                            value={party.id}
-                          >
+                          <option key={party.id} value={party.id}>
                             {party.display_name}
                           </option>
                         ))}
@@ -995,8 +880,7 @@ const [affiliationMode, setAffiliationMode] =
                   </div>
                 ) : null}
 
-                {affiliationMode ===
-                "CREATE_ORGANISATION" ? (
+                {affiliationMode === "CREATE_ORGANISATION" ? (
                   <div className="space-y-5 rounded-xl border border-[#FED7AA] bg-white p-4">
                     <OrganisationProfileFields
                       prefix="new_org_"
@@ -1010,7 +894,10 @@ const [affiliationMode, setAffiliationMode] =
                         Organisation role
                       </h3>
 
-                      <RoleCheckboxes activeRoles={defaultRoles} name="new_org_roles" />
+                      <RoleCheckboxes
+                        activeRoles={defaultRoles}
+                        name="new_org_roles"
+                      />
                     </section>
 
                     <input
@@ -1045,17 +932,12 @@ const [affiliationMode, setAffiliationMode] =
                       name="contact_role_ids"
                       className={textInputClass()}
                     >
-                      <option value="">
-                        Select contact role
-                      </option>
+                      <option value="">Select contact role</option>
 
                       {contactRoles
                         .filter((role) => role.is_active)
                         .map((role) => (
-                          <option
-                            key={role.id}
-                            value={role.id}
-                          >
+                          <option key={role.id} value={role.id}>
                             {role.name}
                           </option>
                         ))}
@@ -1103,10 +985,9 @@ const [affiliationMode, setAffiliationMode] =
                   </h2>
 
                   <p className="mt-1 text-sm leading-6 text-[#64748B]">
-                    Use this for Jumia, eBay, Amazon, Instagram,
-                    local market sellers, or informal trading
-                    profiles where a registered organisation or
-                    named person is not needed.
+                    Use this for Jumia, eBay, Amazon, Instagram, local market
+                    sellers, or informal trading profiles where a registered
+                    organisation or named person is not needed.
                   </p>
                 </div>
 

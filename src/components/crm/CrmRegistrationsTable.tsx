@@ -1,34 +1,15 @@
 import Link from "next/link";
 
-import {
-  Edit,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 
-import {
-  hasPermission,
-} from "@/types/auth";
-import type {
-  CurrentUser,
-} from "@/types/auth";
+import { hasPermission } from "@/types/auth";
+import type { CurrentUser } from "@/types/auth";
 
-import {
-  deleteCrmRegistrationAction,
-} from "@/features/crm/registration-actions";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
-import {
-  buildDashboardUrl,
-} from "@/features/crm/search-params";
-import {
-  formatCrmDate,
-  formatCrmEnum,
-} from "@/features/crm/format";
+import { deleteCrmRegistrationAction } from "@/features/crm/registration-actions";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { CRM_ROUTES } from "@/features/crm/routes";
+import { buildDashboardUrl } from "@/features/crm/search-params";
+import { formatCrmDate, formatCrmEnum } from "@/features/crm/format";
 
 import type {
   CrmIdentifierListQuery,
@@ -37,9 +18,7 @@ import type {
   PaginatedResponse,
 } from "@/features/crm/types";
 
-import {
-  CrmRevealIdentifierButton,
-} from "./CrmRevealIdentifierButton";
+import { CrmRevealIdentifierButton } from "./CrmRevealIdentifierButton";
 
 interface CrmRegistrationsTableProps {
   user: CurrentUser;
@@ -48,22 +27,15 @@ interface CrmRegistrationsTableProps {
   query: CrmIdentifierListQuery;
 }
 
-function pageUrl(
-  query: CrmIdentifierListQuery,
-  page: number,
-): string {
+function pageUrl(query: CrmIdentifierListQuery, page: number): string {
   return buildDashboardUrl(CRM_ROUTES.registrations, {
     party: query.party,
     identifier_type: query.identifier_type,
     issuing_country: query.issuing_country,
     is_verified:
-      query.is_verified === undefined
-        ? undefined
-        : String(query.is_verified),
+      query.is_verified === undefined ? undefined : String(query.is_verified),
     is_active:
-      query.is_active === undefined
-        ? undefined
-        : String(query.is_active),
+      query.is_active === undefined ? undefined : String(query.is_active),
     ordering: query.ordering,
     page,
   });
@@ -75,25 +47,13 @@ export function CrmRegistrationsTable({
   partiesById,
   query,
 }: CrmRegistrationsTableProps) {
-  const canCreate = hasPermission(
-    user,
-    CRM_PERMISSIONS.identifier.create,
-  );
+  const canCreate = hasPermission(user, CRM_PERMISSIONS.identifier.create);
 
-  const canEdit = hasPermission(
-    user,
-    CRM_PERMISSIONS.identifier.edit,
-  );
+  const canEdit = hasPermission(user, CRM_PERMISSIONS.identifier.edit);
 
-  const canDelete = hasPermission(
-    user,
-    CRM_PERMISSIONS.identifier.delete,
-  );
+  const canDelete = hasPermission(user, CRM_PERMISSIONS.identifier.delete);
 
-  const canReveal = hasPermission(
-    user,
-    CRM_PERMISSIONS.identifier.reveal,
-  );
+  const canReveal = hasPermission(user, CRM_PERMISSIONS.identifier.reveal);
 
   const currentPage = query.page ?? 1;
   const totalPages = Math.max(
@@ -115,8 +75,8 @@ export function CrmRegistrationsTable({
             </h1>
 
             <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-              Manage encrypted registration, tax, VAT,
-              import/export and marketplace seller identifiers.
+              Manage encrypted registration, tax, VAT, import/export and
+              marketplace seller identifiers.
             </p>
           </div>
 
@@ -151,24 +111,18 @@ export function CrmRegistrationsTable({
             className="h-11 rounded-lg border border-[#CBD5E1] bg-white px-3 text-sm text-[#0F172A] outline-none focus:border-[#F46C0B] focus:ring-2 focus:ring-[#FED7AA]"
           >
             <option value="">Any type</option>
-            <option value="COMPANY_REGISTRATION">
-              Company registration
-            </option>
+            <option value="COMPANY_REGISTRATION">Company registration</option>
             <option value="TAX_ID">Tax ID</option>
             <option value="VAT">VAT</option>
             <option value="IMPORT_EXPORT">Import/export</option>
-            <option value="MARKETPLACE_SELLER">
-              Marketplace seller
-            </option>
+            <option value="MARKETPLACE_SELLER">Marketplace seller</option>
             <option value="OTHER">Other</option>
           </select>
 
           <select
             name="is_verified"
             defaultValue={
-              query.is_verified === undefined
-                ? ""
-                : String(query.is_verified)
+              query.is_verified === undefined ? "" : String(query.is_verified)
             }
             className="h-11 rounded-lg border border-[#CBD5E1] bg-white px-3 text-sm text-[#0F172A] outline-none focus:border-[#F46C0B] focus:ring-2 focus:ring-[#FED7AA]"
           >
@@ -211,8 +165,7 @@ export function CrmRegistrationsTable({
 
             <tbody className="divide-y divide-[#E2E8F0]">
               {data.results.map((identifier) => {
-                const party =
-                  partiesById[String(identifier.party)];
+                const party = partiesById[String(identifier.party)];
 
                 return (
                   <tr key={identifier.id}>
@@ -250,9 +203,7 @@ export function CrmRegistrationsTable({
                       </p>
 
                       <p className="mt-1 text-xs text-[#64748B]">
-                        {identifier.is_verified
-                          ? "Verified"
-                          : "Not verified"}
+                        {identifier.is_verified ? "Verified" : "Not verified"}
                       </p>
                     </td>
 
@@ -349,9 +300,7 @@ export function CrmRegistrationsTable({
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {canReveal ? (
-                    <CrmRevealIdentifierButton
-                      identifierId={identifier.id}
-                    />
+                    <CrmRevealIdentifierButton identifierId={identifier.id} />
                   ) : null}
 
                   {canEdit ? (
@@ -372,14 +321,9 @@ export function CrmRegistrationsTable({
       <div className="flex flex-col gap-3 rounded-2xl border border-[#E2E8F0] bg-white p-4 text-sm text-[#475569] shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <p>
           Page{" "}
-          <span className="font-semibold text-[#0F172A]">
-            {currentPage}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-[#0F172A]">
-            {totalPages}
-          </span>{" "}
-          · {data.count} total registrations
+          <span className="font-semibold text-[#0F172A]">{currentPage}</span> of{" "}
+          <span className="font-semibold text-[#0F172A]">{totalPages}</span> ·{" "}
+          {data.count} total registrations
         </p>
 
         <div className="flex gap-2">
@@ -396,10 +340,7 @@ export function CrmRegistrationsTable({
           </Link>
 
           <Link
-            href={pageUrl(
-              query,
-              Math.min(totalPages, currentPage + 1),
-            )}
+            href={pageUrl(query, Math.min(totalPages, currentPage + 1))}
             aria-disabled={currentPage >= totalPages}
             className={`rounded-lg border px-3 py-2 font-semibold ${
               currentPage >= totalPages

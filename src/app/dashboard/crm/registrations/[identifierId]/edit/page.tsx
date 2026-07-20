@@ -1,17 +1,8 @@
-import {
-  getCrmIdentifier,
-  listCrmParties,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { getCrmIdentifier, listCrmParties } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
 
-import {
-  CrmRegistrationForm,
-} from "@/components/crm/CrmRegistrationForm";
+import { CrmRegistrationForm } from "@/components/crm/CrmRegistrationForm";
 
 type PageProps = {
   params: Promise<{
@@ -19,12 +10,8 @@ type PageProps = {
   }>;
 };
 
-export default async function EditRegistrationPage({
-  params,
-}: PageProps) {
-  await requireCrmPermission(
-    CRM_PERMISSIONS.identifier.edit,
-  );
+export default async function EditRegistrationPage({ params }: PageProps) {
+  await requireCrmPermission(CRM_PERMISSIONS.identifier.edit);
 
   const { identifierId } = await params;
 
@@ -48,8 +35,8 @@ export default async function EditRegistrationPage({
         </h1>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-          Update registration metadata. Leave the value field
-          blank unless you need to replace the encrypted value.
+          Update registration metadata. Leave the value field blank unless you
+          need to replace the encrypted value.
         </p>
       </header>
 

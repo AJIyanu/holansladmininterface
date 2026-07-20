@@ -1,34 +1,15 @@
 import Link from "next/link";
 
-import {
-  Edit,
-  Plus,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { Edit, Plus, Search, Trash2 } from "lucide-react";
 
-import {
-  hasPermission,
-} from "@/types/auth";
-import type {
-  CurrentUser,
-} from "@/types/auth";
+import { hasPermission } from "@/types/auth";
+import type { CurrentUser } from "@/types/auth";
 
-import {
-  deleteCrmPartyAction,
-} from "@/features/crm/actions";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
-import {
-  buildDashboardUrl,
-} from "@/features/crm/search-params";
-import {
-  formatCrmDateTime,
-} from "@/features/crm/format";
+import { deleteCrmPartyAction } from "@/features/crm/actions";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { CRM_ROUTES } from "@/features/crm/routes";
+import { buildDashboardUrl } from "@/features/crm/search-params";
+import { formatCrmDateTime } from "@/features/crm/format";
 
 import type {
   CrmPartyListItem,
@@ -54,9 +35,7 @@ interface CrmPartyDirectoryProps {
   createButtonHref?: string;
 }
 
-function currentSearchValue(
-  query: CrmPartyListQuery,
-): string {
+function currentSearchValue(query: CrmPartyListQuery): string {
   return query.search ?? "";
 }
 
@@ -82,15 +61,9 @@ function PartyActions({
   party: CrmPartyListItem;
   user: CurrentUser;
 }) {
-  const canEdit = hasPermission(
-    user,
-    CRM_PERMISSIONS.party.edit,
-  );
+  const canEdit = hasPermission(user, CRM_PERMISSIONS.party.edit);
 
-  const canDelete = hasPermission(
-    user,
-    CRM_PERMISSIONS.party.delete,
-  );
+  const canDelete = hasPermission(user, CRM_PERMISSIONS.party.delete);
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -113,11 +86,7 @@ function PartyActions({
 
       {canDelete ? (
         <form action={deleteCrmPartyAction}>
-          <input
-            type="hidden"
-            name="party_id"
-            value={party.id}
-          />
+          <input type="hidden" name="party_id" value={party.id} />
 
           <button
             type="submit"
@@ -167,18 +136,14 @@ function PartyMobileCard({
           <dt className="text-xs font-medium uppercase tracking-wide text-[#94A3B8]">
             Email
           </dt>
-          <dd className="text-[#334155]">
-            {party.primary_email || "—"}
-          </dd>
+          <dd className="text-[#334155]">{party.primary_email || "—"}</dd>
         </div>
 
         <div>
           <dt className="text-xs font-medium uppercase tracking-wide text-[#94A3B8]">
             Phone
           </dt>
-          <dd className="text-[#334155]">
-            {party.primary_phone || "—"}
-          </dd>
+          <dd className="text-[#334155]">{party.primary_phone || "—"}</dd>
         </div>
 
         <div>
@@ -209,10 +174,7 @@ export function CrmPartyDirectory({
   createButtonLabel = "New Party",
   createButtonHref = CRM_ROUTES.newParty,
 }: CrmPartyDirectoryProps) {
-  const canCreate = hasPermission(
-    user,
-    CRM_PERMISSIONS.party.create,
-  );
+  const canCreate = hasPermission(user, CRM_PERMISSIONS.party.create);
 
   const currentPage = query.page ?? 1;
   const totalPages = Math.max(
@@ -346,9 +308,7 @@ export function CrmPartyDirectory({
                   </p>
 
                   <div className="mt-2">
-                    <CrmVerificationBadge
-                      level={party.verification_level}
-                    />
+                    <CrmVerificationBadge level={party.verification_level} />
                   </div>
                 </td>
 
@@ -393,11 +353,7 @@ export function CrmPartyDirectory({
 
       <div className="grid gap-4 lg:hidden">
         {data.results.map((party) => (
-          <PartyMobileCard
-            key={party.id}
-            party={party}
-            user={user}
-          />
+          <PartyMobileCard key={party.id} party={party} user={user} />
         ))}
 
         {data.results.length === 0 ? (
@@ -410,23 +366,14 @@ export function CrmPartyDirectory({
       <div className="flex flex-col gap-3 rounded-2xl border border-[#E2E8F0] bg-white p-4 text-sm text-[#475569] shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <p>
           Showing page{" "}
-          <span className="font-semibold text-[#0F172A]">
-            {currentPage}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-[#0F172A]">
-            {totalPages}
-          </span>{" "}
-          · {data.count} total records
+          <span className="font-semibold text-[#0F172A]">{currentPage}</span> of{" "}
+          <span className="font-semibold text-[#0F172A]">{totalPages}</span> ·{" "}
+          {data.count} total records
         </p>
 
         <div className="flex gap-2">
           <Link
-            href={pageUrl(
-              basePath,
-              query,
-              Math.max(1, currentPage - 1),
-            )}
+            href={pageUrl(basePath, query, Math.max(1, currentPage - 1))}
             aria-disabled={currentPage <= 1}
             className={`rounded-lg border px-3 py-2 font-semibold ${
               currentPage <= 1

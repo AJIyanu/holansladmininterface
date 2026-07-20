@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  AlertTriangle,
-  RotateCcw,
-} from "lucide-react";
+import { AlertTriangle, RotateCcw } from "lucide-react";
 
 interface CrmErrorPageProps {
   error: Error & {
@@ -12,10 +9,7 @@ interface CrmErrorPageProps {
   reset: () => void;
 }
 
-export default function CrmErrorPage({
-  error,
-  reset,
-}: CrmErrorPageProps) {
+export default function CrmErrorPage({ error, reset }: CrmErrorPageProps) {
   return (
     <div className="flex min-h-[420px] items-center justify-center">
       <div className="w-full max-w-xl rounded-2xl border border-[#FECACA] bg-white p-6 text-center shadow-sm">
@@ -28,8 +22,7 @@ export default function CrmErrorPage({
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-[#475569]">
-          {error.message ||
-            "The CRM service is temporarily unavailable."}
+          {error.message || "The CRM service is temporarily unavailable."}
         </p>
 
         <button

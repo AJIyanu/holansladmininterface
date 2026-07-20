@@ -9,12 +9,8 @@ import {
   XCircle,
 } from "lucide-react";
 
-import {
-  hasPermission,
-} from "@/types/auth";
-import type {
-  CurrentUser,
-} from "@/types/auth";
+import { hasPermission } from "@/types/auth";
+import type { CurrentUser } from "@/types/auth";
 
 import {
   createPersonUnderOrganisationAction,
@@ -29,12 +25,8 @@ import {
   CRM_VERIFICATION_LEVEL_OPTIONS,
   formatCrmDate,
 } from "@/features/crm/format";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { CRM_ROUTES } from "@/features/crm/routes";
 
 import type {
   CrmContactRole,
@@ -180,9 +172,7 @@ function AffiliationFields({
         <input
           type="checkbox"
           name="is_primary_contact"
-          defaultChecked={
-            affiliation?.is_primary_contact ?? false
-          }
+          defaultChecked={affiliation?.is_primary_contact ?? false}
           className="h-4 w-4 rounded border-[#CBD5E1] accent-[#F46C0B]"
         />
         Primary contact
@@ -265,14 +255,10 @@ function AffiliationCard({
               {affiliation.person_name}
             </Link>
 
-            <span className="text-sm text-[#64748B]">
-              ↔
-            </span>
+            <span className="text-sm text-[#64748B]">↔</span>
 
             <Link
-              href={CRM_ROUTES.partyDetail(
-                affiliation.organisation,
-              )}
+              href={CRM_ROUTES.partyDetail(affiliation.organisation)}
               className="font-semibold text-[#0F4C81] hover:text-[#F46C0B]"
             >
               {affiliation.organisation_name}
@@ -330,30 +316,15 @@ function AffiliationCard({
             Edit affiliation
           </summary>
 
-          <form
-            action={updateCrmAffiliationAction}
-            className="mt-4 space-y-4"
-          >
-            <input
-              type="hidden"
-              name="affiliation_id"
-              value={affiliation.id}
-            />
-            <input
-              type="hidden"
-              name="person_id"
-              value={affiliation.person}
-            />
+          <form action={updateCrmAffiliationAction} className="mt-4 space-y-4">
+            <input type="hidden" name="affiliation_id" value={affiliation.id} />
+            <input type="hidden" name="person_id" value={affiliation.person} />
             <input
               type="hidden"
               name="organisation_id"
               value={affiliation.organisation}
             />
-            <input
-              type="hidden"
-              name="return_party_id"
-              value={returnPartyId}
-            />
+            <input type="hidden" name="return_party_id" value={returnPartyId} />
 
             <AffiliationFields
               affiliation={affiliation}
@@ -449,25 +420,13 @@ export function CrmAffiliationsPanel({
   individuals,
   contactRoles,
 }: CrmAffiliationsPanelProps) {
-  const canView = hasPermission(
-    user,
-    CRM_PERMISSIONS.affiliation.view,
-  );
+  const canView = hasPermission(user, CRM_PERMISSIONS.affiliation.view);
 
-  const canCreate = hasPermission(
-    user,
-    CRM_PERMISSIONS.affiliation.create,
-  );
+  const canCreate = hasPermission(user, CRM_PERMISSIONS.affiliation.create);
 
-  const canEdit = hasPermission(
-    user,
-    CRM_PERMISSIONS.affiliation.edit,
-  );
+  const canEdit = hasPermission(user, CRM_PERMISSIONS.affiliation.edit);
 
-  const canDelete = hasPermission(
-    user,
-    CRM_PERMISSIONS.affiliation.delete,
-  );
+  const canDelete = hasPermission(user, CRM_PERMISSIONS.affiliation.delete);
 
   if (!canView) {
     return null;
@@ -490,9 +449,7 @@ export function CrmAffiliationsPanel({
         </p>
 
         <h2 className="mt-1 text-xl font-bold text-[#0F172A]">
-          {isIndividual
-            ? "Affiliated organisations"
-            : "Organisation contacts"}
+          {isIndividual ? "Affiliated organisations" : "Organisation contacts"}
         </h2>
 
         <p className="mt-2 text-sm leading-6 text-[#64748B]">
@@ -537,16 +494,10 @@ export function CrmAffiliationsPanel({
               action={linkExistingPersonToOrganisationAction}
               className="mt-5 space-y-4"
             >
-              <input
-                type="hidden"
-                name="organisation_id"
-                value={party.id}
-              />
+              <input type="hidden" name="organisation_id" value={party.id} />
 
               <div>
-                <label className={labelClass()}>
-                  Existing individual
-                </label>
+                <label className={labelClass()}>Existing individual</label>
 
                 <select
                   name="person_id"
@@ -555,10 +506,7 @@ export function CrmAffiliationsPanel({
                 >
                   <option value="">Select person</option>
                   {individuals.map((individual) => (
-                    <option
-                      key={individual.id}
-                      value={individual.id}
-                    >
+                    <option key={individual.id} value={individual.id}>
                       {individual.display_name}
                     </option>
                   ))}
@@ -589,11 +537,7 @@ export function CrmAffiliationsPanel({
               action={createPersonUnderOrganisationAction}
               className="mt-5 space-y-5"
             >
-              <input
-                type="hidden"
-                name="organisation_id"
-                value={party.id}
-              />
+              <input type="hidden" name="organisation_id" value={party.id} />
 
               <div className="grid gap-4 md:grid-cols-2">
                 <input
@@ -690,16 +634,10 @@ export function CrmAffiliationsPanel({
             action={linkIndividualToOrganisationAction}
             className="mt-5 space-y-4"
           >
-            <input
-              type="hidden"
-              name="person_id"
-              value={party.id}
-            />
+            <input type="hidden" name="person_id" value={party.id} />
 
             <div>
-              <label className={labelClass()}>
-                Organisation
-              </label>
+              <label className={labelClass()}>Organisation</label>
 
               <select
                 name="organisation_id"
@@ -709,10 +647,7 @@ export function CrmAffiliationsPanel({
                 <option value="">Select organisation</option>
 
                 {organisations.map((organisation) => (
-                  <option
-                    key={organisation.id}
-                    value={organisation.id}
-                  >
+                  <option key={organisation.id} value={organisation.id}>
                     {organisation.display_name}
                   </option>
                 ))}

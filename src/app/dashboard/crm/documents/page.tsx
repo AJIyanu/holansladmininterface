@@ -1,37 +1,18 @@
-import {
-  getCrmParty,
-  listCrmDocuments,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
-import {
-  crmDocumentQueryFromSearchParams,
-} from "@/features/crm/search-params";
+import { getCrmParty, listCrmDocuments } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
+import { crmDocumentQueryFromSearchParams } from "@/features/crm/search-params";
 
-import {
-  CrmDocumentsTable,
-} from "@/components/crm/CrmDocumentsTable";
+import { CrmDocumentsTable } from "@/components/crm/CrmDocumentsTable";
 
 type PageProps = {
-  searchParams?: Promise<
-    Record<string, string | string[] | undefined>
-  >;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function DocumentsPage({
-  searchParams,
-}: PageProps) {
-  const user = await requireCrmPermission(
-    CRM_PERMISSIONS.document.view,
-  );
+export default async function DocumentsPage({ searchParams }: PageProps) {
+  const user = await requireCrmPermission(CRM_PERMISSIONS.document.view);
 
-  const query = crmDocumentQueryFromSearchParams(
-    (await searchParams) ?? {},
-  );
+  const query = crmDocumentQueryFromSearchParams((await searchParams) ?? {});
 
   const data = await listCrmDocuments(query);
 
@@ -57,19 +38,16 @@ export default async function DocumentsPage({
                 primary_email:
                   party.contact_methods.find(
                     (method) =>
-                      method.method_type === "EMAIL" &&
-                      method.is_primary,
+                      method.method_type === "EMAIL" && method.is_primary,
                   )?.value ?? "",
                 primary_phone:
                   party.contact_methods.find(
                     (method) =>
-                      method.method_type === "PHONE" &&
-                      method.is_primary,
+                      method.method_type === "PHONE" && method.is_primary,
                   )?.value ?? "",
                 primary_source:
-                  party.sources.find(
-                    (source) => source.is_primary,
-                  )?.reference_label ?? "",
+                  party.sources.find((source) => source.is_primary)
+                    ?.reference_label ?? "",
                 created_at: party.created_at,
                 updated_at: party.updated_at,
               };
@@ -81,9 +59,7 @@ export default async function DocumentsPage({
       : [];
 
   const partiesById = Object.fromEntries(
-    parties
-      .filter(Boolean)
-      .map((party) => [party!.id, party!]),
+    parties.filter(Boolean).map((party) => [party!.id, party!]),
   );
 
   return (

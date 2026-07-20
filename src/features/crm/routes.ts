@@ -3,9 +3,7 @@ import { CRM_ANY_VIEW_PERMISSIONS, CRM_PERMISSIONS } from "./permissions";
 import type { CrmPermissionInput } from "./permissions";
 
 export type CrmNewPartyShortcutMode =
-  | "individual"
-  | "organisation"
-  | "trading_name";
+  "individual" | "organisation" | "trading_name";
 
 export interface CrmNewPartyShortcutParams {
   mode?: CrmNewPartyShortcutMode;

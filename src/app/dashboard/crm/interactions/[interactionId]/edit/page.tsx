@@ -1,17 +1,8 @@
-import {
-  getCrmInteraction,
-  listCrmParties,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { getCrmInteraction, listCrmParties } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
 
-import {
-  CrmInteractionForm,
-} from "@/components/crm/CrmInteractionForm";
+import { CrmInteractionForm } from "@/components/crm/CrmInteractionForm";
 
 type PageProps = {
   params: Promise<{
@@ -19,12 +10,8 @@ type PageProps = {
   }>;
 };
 
-export default async function EditInteractionPage({
-  params,
-}: PageProps) {
-  await requireCrmPermission(
-    CRM_PERMISSIONS.interaction.edit,
-  );
+export default async function EditInteractionPage({ params }: PageProps) {
+  await requireCrmPermission(CRM_PERMISSIONS.interaction.edit);
 
   const { interactionId } = await params;
 

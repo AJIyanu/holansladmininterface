@@ -1,14 +1,7 @@
 "use client";
 
-import {
-  useState,
-} from "react";
-import {
-  Download,
-  Eye,
-  FileText,
-  X,
-} from "lucide-react";
+import { useState } from "react";
+import { Download, Eye, FileText, X } from "lucide-react";
 
 import {
   canBrowserPreviewDocument,
@@ -16,9 +9,7 @@ import {
   formatFileSize,
 } from "@/features/crm/format";
 
-import type {
-  CrmPartyDocument,
-} from "@/features/crm/types";
+import type { CrmPartyDocument } from "@/features/crm/types";
 
 interface CrmDocumentPreviewButtonProps {
   document: CrmPartyDocument;
@@ -29,9 +20,7 @@ export function CrmDocumentPreviewButton({
 }: CrmDocumentPreviewButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const downloadUrl = `/api/crm/documents/${document.id}/download`;
-  const canPreview = canBrowserPreviewDocument(
-    document.mime_type,
-  );
+  const canPreview = canBrowserPreviewDocument(document.mime_type);
 
   return (
     <>
@@ -97,12 +86,11 @@ export function CrmDocumentPreviewButton({
                     <FileText className="mt-0.5 h-5 w-5 shrink-0" />
                     <div>
                       <p className="font-semibold">
-                        Browser preview is not available for
-                        this file type.
+                        Browser preview is not available for this file type.
                       </p>
                       <p className="mt-1">
-                        The document can still be downloaded
-                        securely after backend permission checks.
+                        The document can still be downloaded securely after
+                        backend permission checks.
                       </p>
                     </div>
                   </div>

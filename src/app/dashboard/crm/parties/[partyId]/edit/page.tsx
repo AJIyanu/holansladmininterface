@@ -1,16 +1,8 @@
-import {
-  getCrmParty,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { getCrmParty } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
 
-import {
-  CrmPartyForm,
-} from "@/components/crm/CrmPartyForm";
+import { CrmPartyForm } from "@/components/crm/CrmPartyForm";
 
 type PageProps = {
   params: Promise<{
@@ -18,12 +10,8 @@ type PageProps = {
   }>;
 };
 
-export default async function EditPartyPage({
-  params,
-}: PageProps) {
-  await requireCrmPermission(
-    CRM_PERMISSIONS.party.edit,
-  );
+export default async function EditPartyPage({ params }: PageProps) {
+  await requireCrmPermission(CRM_PERMISSIONS.party.edit);
 
   const { partyId } = await params;
   const party = await getCrmParty(partyId);
@@ -39,11 +27,11 @@ export default async function EditPartyPage({
           Edit {party.display_name}
         </h1>
 
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-          Update the Party identity, roles and basic contact
-          information. Detailed related records will be managed
-          from the workspace in Stage 3.
-        </p>
+        {/* <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
+          Update the Party identity, roles and basic contact information.
+          Detailed related records will be managed from the workspace in Stage
+          3.
+        </p> */}
       </header>
 
       <CrmPartyForm mode="edit" initialParty={party} />

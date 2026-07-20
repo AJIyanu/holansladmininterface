@@ -1,6 +1,4 @@
-import {
-  formatCrmEnum,
-} from "@/features/crm/format";
+import { formatCrmEnum } from "@/features/crm/format";
 
 import type {
   CrmPartyListItem,
@@ -23,9 +21,7 @@ function statusClass(status: CrmPartyStatus): string {
   }
 }
 
-function verificationClass(
-  level: CrmVerificationLevel,
-): string {
+function verificationClass(level: CrmVerificationLevel): string {
   switch (level) {
     case "VERIFIED":
       return "bg-[#DBEAFE] text-[#1D4ED8] border-[#BFDBFE]";
@@ -36,11 +32,7 @@ function verificationClass(
   }
 }
 
-export function CrmStatusBadge({
-  status,
-}: {
-  status: CrmPartyStatus;
-}) {
+export function CrmStatusBadge({ status }: { status: CrmPartyStatus }) {
   return (
     <span
       className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(status)}`}
@@ -64,21 +56,11 @@ export function CrmVerificationBadge({
   );
 }
 
-export function CrmRoleBadges({
-  party,
-}: {
-  party: CrmPartyListItem;
-}) {
-  const activeRoles = party.roles.filter(
-    (role) => role.is_active,
-  );
+export function CrmRoleBadges({ party }: { party: CrmPartyListItem }) {
+  const activeRoles = party.roles.filter((role) => role.is_active);
 
   if (activeRoles.length === 0) {
-    return (
-      <span className="text-xs text-[#94A3B8]">
-        No active role
-      </span>
-    );
+    return <span className="text-xs text-[#94A3B8]">No active role</span>;
   }
 
   return (

@@ -8,27 +8,16 @@ import {
   Eye,
   X,
 } from "lucide-react";
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import {
-  documentMimeLabel,
-  formatFileSize,
-} from "@/features/crm/format";
+import { documentMimeLabel, formatFileSize } from "@/features/crm/format";
 
 interface CrmFilePreviewProps {
   file: File | null;
   onClear?: () => void;
 }
 
-function FileTypeIcon({
-  mimeType,
-}: {
-  mimeType: string;
-}) {
+function FileTypeIcon({ mimeType }: { mimeType: string }) {
   if (mimeType.startsWith("image/")) {
     return <ImageIcon className="h-8 w-8" />;
   }
@@ -37,19 +26,14 @@ function FileTypeIcon({
     return <FileText className="h-8 w-8" />;
   }
 
-  if (
-    mimeType.includes("spreadsheet") ||
-    mimeType.includes("excel")
-  ) {
+  if (mimeType.includes("spreadsheet") || mimeType.includes("excel")) {
     return <FileSpreadsheet className="h-8 w-8" />;
   }
 
   return <File className="h-8 w-8" />;
 }
 
-function isPreviewable(
-  mimeType: string,
-): boolean {
+function isPreviewable(mimeType: string): boolean {
   return (
     mimeType.startsWith("image/") ||
     mimeType === "application/pdf" ||
@@ -57,9 +41,7 @@ function isPreviewable(
   );
 }
 
-function useObjectUrl(
-  file: File | null,
-): string | null {
+function useObjectUrl(file: File | null): string | null {
   return useMemo(() => {
     if (!file) {
       return null;
@@ -69,10 +51,7 @@ function useObjectUrl(
   }, [file]);
 }
 
-export function CrmFilePreview({
-  file,
-  onClear,
-}: CrmFilePreviewProps) {
+export function CrmFilePreview({ file, onClear }: CrmFilePreviewProps) {
   const [isOpen, setIsOpen] = useState(false);
   const objectUrl = useObjectUrl(file);
 
@@ -118,8 +97,7 @@ export function CrmFilePreview({
             </p>
 
             <p className="mt-1 text-sm text-[#64748B]">
-              {documentMimeLabel(file.type)} ·{" "}
-              {formatFileSize(file.size)}
+              {documentMimeLabel(file.type)} · {formatFileSize(file.size)}
             </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
@@ -158,8 +136,7 @@ export function CrmFilePreview({
                 </h2>
 
                 <p className="text-sm text-[#64748B]">
-                  {documentMimeLabel(file.type)} ·{" "}
-                  {formatFileSize(file.size)}
+                  {documentMimeLabel(file.type)} · {formatFileSize(file.size)}
                 </p>
               </div>
 
@@ -189,9 +166,9 @@ export function CrmFilePreview({
                 />
               ) : (
                 <div className="rounded-xl border border-[#FED7AA] bg-[#FFF7ED] p-5 text-sm leading-6 text-[#9A3412]">
-                  This file type cannot be rendered directly in the
-                  browser. The document can still be uploaded and
-                  downloaded securely after it is saved.
+                  This file type cannot be rendered directly in the browser. The
+                  document can still be uploaded and downloaded securely after
+                  it is saved.
                 </div>
               )}
             </div>

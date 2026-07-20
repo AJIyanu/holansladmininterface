@@ -1,27 +1,16 @@
 "use client";
 
-import {
-  useActionState,
-} from "react";
+import { useActionState } from "react";
 import Link from "next/link";
-import {
-  useFormStatus,
-} from "react-dom";
-import {
-  AlertTriangle,
-  Loader2,
-} from "lucide-react";
+import { useFormStatus } from "react-dom";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 import {
   createCrmInteractionAction,
   updateCrmInteractionAction,
 } from "@/features/crm/interaction-actions";
-import {
-  initialCrmInteractionActionState,
-} from "@/features/crm/action-states";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
+import { initialCrmInteractionActionState } from "@/features/crm/action-states";
+import { CRM_ROUTES } from "@/features/crm/routes";
 
 import type {
   CrmPartyInteraction,
@@ -47,9 +36,7 @@ function labelClass(): string {
   return "text-sm font-medium text-[#334155]";
 }
 
-function dateTimeLocalValue(
-  value: string | null | undefined,
-): string {
+function dateTimeLocalValue(value: string | null | undefined): string {
   if (!value) {
     return "";
   }
@@ -67,11 +54,7 @@ function nowDateTimeLocal(): string {
   return new Date().toISOString().slice(0, 16);
 }
 
-function SubmitButton({
-  mode,
-}: {
-  mode: "create" | "edit";
-}) {
+function SubmitButton({ mode }: { mode: "create" | "edit" }) {
   const status = useFormStatus();
 
   return (
@@ -80,12 +63,8 @@ function SubmitButton({
       disabled={status.pending}
       className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D95C06] disabled:cursor-not-allowed disabled:bg-[#FDBA74]"
     >
-      {status.pending ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : null}
-      {mode === "create"
-        ? "Log interaction"
-        : "Save interaction"}
+      {status.pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+      {mode === "create" ? "Log interaction" : "Save interaction"}
     </button>
   );
 }
@@ -97,9 +76,7 @@ export function CrmInteractionForm({
   defaultPartyId,
 }: CrmInteractionFormProps) {
   const action =
-    mode === "create"
-      ? createCrmInteractionAction
-      : updateCrmInteractionAction;
+    mode === "create" ? createCrmInteractionAction : updateCrmInteractionAction;
 
   const [state, formAction] = useActionState(
     action,
@@ -140,11 +117,7 @@ export function CrmInteractionForm({
             id="party"
             name="party"
             required
-            defaultValue={
-              initialInteraction?.party ??
-              defaultPartyId ??
-              ""
-            }
+            defaultValue={initialInteraction?.party ?? defaultPartyId ?? ""}
             className={`${fieldClass()} mt-1`}
           >
             <option value="">Select Party</option>
@@ -157,10 +130,7 @@ export function CrmInteractionForm({
         </div>
 
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="contact_party"
-          >
+          <label className={labelClass()} htmlFor="contact_party">
             Contact person
           </label>
 
@@ -182,10 +152,7 @@ export function CrmInteractionForm({
         </div>
 
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="interaction_type"
-          >
+          <label className={labelClass()} htmlFor="interaction_type">
             Type
           </label>
 
@@ -193,28 +160,21 @@ export function CrmInteractionForm({
             id="interaction_type"
             name="interaction_type"
             required
-            defaultValue={
-              initialInteraction?.interaction_type ?? "WHATSAPP"
-            }
+            defaultValue={initialInteraction?.interaction_type ?? "WHATSAPP"}
             className={`${fieldClass()} mt-1`}
           >
             <option value="CALL">Call</option>
             <option value="EMAIL">Email</option>
             <option value="WHATSAPP">WhatsApp</option>
             <option value="MEETING">Meeting</option>
-            <option value="MARKETPLACE_MESSAGE">
-              Marketplace message
-            </option>
+            <option value="MARKETPLACE_MESSAGE">Marketplace message</option>
             <option value="SITE_VISIT">Site visit</option>
             <option value="OTHER">Other</option>
           </select>
         </div>
 
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="occurred_at"
-          >
+          <label className={labelClass()} htmlFor="occurred_at">
             When it happened
           </label>
 
@@ -262,10 +222,7 @@ export function CrmInteractionForm({
         </div>
 
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="follow_up_at"
-          >
+          <label className={labelClass()} htmlFor="follow_up_at">
             Follow-up date
           </label>
 
@@ -273,9 +230,7 @@ export function CrmInteractionForm({
             id="follow_up_at"
             name="follow_up_at"
             type="datetime-local"
-            defaultValue={dateTimeLocalValue(
-              initialInteraction?.follow_up_at,
-            )}
+            defaultValue={dateTimeLocalValue(initialInteraction?.follow_up_at)}
             className={`${fieldClass()} mt-1`}
           />
         </div>

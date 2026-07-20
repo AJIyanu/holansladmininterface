@@ -1,20 +1,10 @@
 import Link from "next/link";
 
-import {
-  CalendarClock,
-  MessageSquare,
-} from "lucide-react";
+import { CalendarClock, MessageSquare } from "lucide-react";
 
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
-import {
-  buildDashboardUrl,
-} from "@/features/crm/search-params";
-import {
-  formatCrmDateTime,
-  formatCrmEnum,
-} from "@/features/crm/format";
+import { CRM_ROUTES } from "@/features/crm/routes";
+import { buildDashboardUrl } from "@/features/crm/search-params";
+import { formatCrmDateTime, formatCrmEnum } from "@/features/crm/format";
 
 import type {
   CrmInteractionListQuery,
@@ -22,20 +12,12 @@ import type {
   PaginatedResponse,
 } from "@/features/crm/types";
 
-import {
-  Plus,
-} from "lucide-react";
+import { Plus } from "lucide-react";
 
-import {
-  hasPermission,
-} from "@/types/auth";
-import type {
-  CurrentUser,
-} from "@/types/auth";
+import { hasPermission } from "@/types/auth";
+import type { CurrentUser } from "@/types/auth";
 
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
 
 interface CrmInteractionsTableProps {
   data: PaginatedResponse<CrmPartyInteraction>;
@@ -48,10 +30,7 @@ interface CrmInteractionsTableProps {
   query: CrmInteractionListQuery;
 }
 
-function pageUrl(
-  query: CrmInteractionListQuery,
-  page: number,
-): string {
+function pageUrl(query: CrmInteractionListQuery, page: number): string {
   return buildDashboardUrl(CRM_ROUTES.interactions, {
     party: query.party,
     contact_party: query.contact_party,
@@ -73,10 +52,7 @@ export function CrmInteractionsTable({
     1,
     Math.ceil(data.count / (query.page_size ?? 20)),
   );
-  const canCreate = hasPermission(
-  user,
-  CRM_PERMISSIONS.interaction.create,
-);
+  const canCreate = hasPermission(user, CRM_PERMISSIONS.interaction.create);
 
   return (
     <section className="space-y-5">
@@ -90,19 +66,19 @@ export function CrmInteractionsTable({
         </h1>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-          Review calls, emails, WhatsApp messages, meetings,
-          marketplace conversations and follow-up activity.
+          Review calls, emails, WhatsApp messages, meetings, marketplace
+          conversations and follow-up activity.
         </p>
 
         {canCreate ? (
-  <Link
-    href={CRM_ROUTES.newInteraction}
-    className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#D95C06]"
-  >
-    <Plus className="h-4 w-4" />
-    Log interaction
-  </Link>
-) : null}
+          <Link
+            href={CRM_ROUTES.newInteraction}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#D95C06]"
+          >
+            <Plus className="h-4 w-4" />
+            Log interaction
+          </Link>
+        ) : null}
       </header>
 
       <form
@@ -127,9 +103,7 @@ export function CrmInteractionsTable({
             <option value="EMAIL">Email</option>
             <option value="WHATSAPP">WhatsApp</option>
             <option value="MEETING">Meeting</option>
-            <option value="MARKETPLACE_MESSAGE">
-              Marketplace message
-            </option>
+            <option value="MARKETPLACE_MESSAGE">Marketplace message</option>
             <option value="SITE_VISIT">Site visit</option>
             <option value="OTHER">Other</option>
           </select>
@@ -161,8 +135,7 @@ export function CrmInteractionsTable({
                   {interaction.follow_up_at ? (
                     <span className="inline-flex items-center gap-1 rounded-full border border-[#DBEAFE] bg-[#EFF6FF] px-2.5 py-1 text-xs font-semibold text-[#1D4ED8]">
                       <CalendarClock className="h-3.5 w-3.5" />
-                      Follow-up{" "}
-                      {formatCrmDateTime(interaction.follow_up_at)}
+                      Follow-up {formatCrmDateTime(interaction.follow_up_at)}
                     </span>
                   ) : null}
                 </div>
@@ -177,9 +150,7 @@ export function CrmInteractionsTable({
               </div>
 
               <div className="shrink-0 text-sm text-[#64748B] lg:text-right">
-                <p>
-                  {formatCrmDateTime(interaction.occurred_at)}
-                </p>
+                <p>{formatCrmDateTime(interaction.occurred_at)}</p>
 
                 <p className="mt-1">
                   Staff:{" "}
@@ -217,22 +188,14 @@ export function CrmInteractionsTable({
       <div className="flex flex-col gap-3 rounded-2xl border border-[#E2E8F0] bg-white p-4 text-sm text-[#475569] shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <p>
           Page{" "}
-          <span className="font-semibold text-[#0F172A]">
-            {currentPage}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-[#0F172A]">
-            {totalPages}
-          </span>{" "}
-          · {data.count} total interactions
+          <span className="font-semibold text-[#0F172A]">{currentPage}</span> of{" "}
+          <span className="font-semibold text-[#0F172A]">{totalPages}</span> ·{" "}
+          {data.count} total interactions
         </p>
 
         <div className="flex gap-2">
           <Link
-            href={pageUrl(
-              query,
-              Math.max(1, currentPage - 1),
-            )}
+            href={pageUrl(query, Math.max(1, currentPage - 1))}
             aria-disabled={currentPage <= 1}
             className={`rounded-lg border px-3 py-2 font-semibold ${
               currentPage <= 1
@@ -244,10 +207,7 @@ export function CrmInteractionsTable({
           </Link>
 
           <Link
-            href={pageUrl(
-              query,
-              Math.min(totalPages, currentPage + 1),
-            )}
+            href={pageUrl(query, Math.min(totalPages, currentPage + 1))}
             aria-disabled={currentPage >= totalPages}
             className={`rounded-lg border px-3 py-2 font-semibold ${
               currentPage >= totalPages

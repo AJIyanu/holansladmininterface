@@ -1,19 +1,9 @@
 "use client";
 
-import {
-  CheckSquare,
-  Eraser,
-  Search,
-  ShieldCheck,
-} from "lucide-react";
-import {
-  useMemo,
-  useState,
-} from "react";
+import { CheckSquare, Eraser, Search, ShieldCheck } from "lucide-react";
+import { useMemo, useState } from "react";
 
-import type {
-  Permission,
-} from "./access-types";
+import type { Permission } from "./access-types";
 
 interface PermissionMatrixSelectorProps {
   permissions: Permission[];
@@ -167,31 +157,19 @@ function inferAction(permission: Permission): PermissionAction {
     return "Deactivate";
   }
 
-  if (
-    value.includes("restore") ||
-    value.includes("reactivate")
-  ) {
+  if (value.includes("restore") || value.includes("reactivate")) {
     return "Restore";
   }
 
-  if (
-    value.includes("assign") ||
-    value.includes("allocate")
-  ) {
+  if (value.includes("assign") || value.includes("allocate")) {
     return "Assign";
   }
 
-  if (
-    value.includes("download") ||
-    value.includes("export")
-  ) {
+  if (value.includes("download") || value.includes("export")) {
     return "Download";
   }
 
-  if (
-    value.includes("reveal") ||
-    value.includes("sensitive")
-  ) {
+  if (value.includes("reveal") || value.includes("sensitive")) {
     return "Reveal";
   }
 
@@ -249,9 +227,7 @@ function resourceKeyFromPermission(permission: Permission): string {
   return codename;
 }
 
-function decoratePermission(
-  permission: Permission,
-): DecoratedPermission {
+function decoratePermission(permission: Permission): DecoratedPermission {
   const action = inferAction(permission);
   const resourceKey = resourceKeyFromPermission(permission);
   const resourceLabel = humaniseToken(resourceKey);
@@ -262,7 +238,8 @@ function decoratePermission(
     actionOrder: ACTION_ORDER[action],
     resourceKey,
     resourceLabel,
-    searchableText: `${permission.name} ${permission.codename} ${resourceLabel} ${action}`.toLowerCase(),
+    searchableText:
+      `${permission.name} ${permission.codename} ${resourceLabel} ${action}`.toLowerCase(),
   };
 }
 
@@ -274,9 +251,7 @@ function groupPermissions(
 
   const decorated = permissions
     .map(decoratePermission)
-    .filter((item) =>
-      query ? item.searchableText.includes(query) : true,
-    )
+    .filter((item) => (query ? item.searchableText.includes(query) : true))
     .sort((a, b) => {
       if (a.resourceLabel !== b.resourceLabel) {
         return a.resourceLabel.localeCompare(b.resourceLabel);
@@ -350,47 +325,30 @@ export default function PermissionMatrixSelector({
     [groups],
   );
 
-  const selectedSet = useMemo(
-    () => new Set(selected),
-    [selected],
-  );
+  const selectedSet = useMemo(() => new Set(selected), [selected]);
 
   const visibleSelectedCount = visiblePermissionIds.filter((id) =>
     selectedSet.has(id),
   ).length;
 
-  function setPermissionChecked(
-    permissionId: number,
-    checked: boolean,
-  ) {
+  function setPermissionChecked(permissionId: number, checked: boolean) {
     if (checked) {
-      onSelectedChange(
-        Array.from(new Set([...selected, permissionId])),
-      );
+      onSelectedChange(Array.from(new Set([...selected, permissionId])));
       return;
     }
 
-    onSelectedChange(
-      selected.filter((id) => id !== permissionId),
-    );
+    onSelectedChange(selected.filter((id) => id !== permissionId));
   }
 
-  function setManyChecked(
-    permissionIds: number[],
-    checked: boolean,
-  ) {
+  function setManyChecked(permissionIds: number[], checked: boolean) {
     if (checked) {
-      onSelectedChange(
-        Array.from(new Set([...selected, ...permissionIds])),
-      );
+      onSelectedChange(Array.from(new Set([...selected, ...permissionIds])));
       return;
     }
 
     const idsToRemove = new Set(permissionIds);
 
-    onSelectedChange(
-      selected.filter((id) => !idsToRemove.has(id)),
-    );
+    onSelectedChange(selected.filter((id) => !idsToRemove.has(id)));
   }
 
   function selectAllVisible() {
@@ -411,7 +369,8 @@ export default function PermissionMatrixSelector({
             </p>
 
             <p className="mt-1 text-xs text-[#64748B]">
-              {selected.length} selected · {visibleSelectedCount} selected in current view
+              {selected.length} selected · {visibleSelectedCount} selected in
+              current view
             </p>
           </div>
 
@@ -486,7 +445,8 @@ export default function PermissionMatrixSelector({
                       </h3>
 
                       <p className="mt-1 text-xs text-[#64748B]">
-                        {selectedInGroup.length} of {groupPermissionIds.length} selected
+                        {selectedInGroup.length} of {groupPermissionIds.length}{" "}
+                        selected
                       </p>
                     </div>
                   </div>
@@ -496,10 +456,7 @@ export default function PermissionMatrixSelector({
                       type="checkbox"
                       checked={allGroupSelected}
                       onChange={(event) =>
-                        setManyChecked(
-                          groupPermissionIds,
-                          event.target.checked,
-                        )
+                        setManyChecked(groupPermissionIds, event.target.checked)
                       }
                       className="h-4 w-4 rounded border-[#CBD5E1] accent-[#F46C0B]"
                     />
@@ -509,9 +466,7 @@ export default function PermissionMatrixSelector({
 
                 <div className="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
                   {group.permissions.map((item) => {
-                    const checked = selectedSet.has(
-                      item.permission.id,
-                    );
+                    const checked = selectedSet.has(item.permission.id);
 
                     return (
                       <label

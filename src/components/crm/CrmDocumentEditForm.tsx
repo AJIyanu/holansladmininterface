@@ -1,34 +1,17 @@
 "use client";
 
-import {
-  useActionState,
-} from "react";
+import { useActionState } from "react";
 import Link from "next/link";
-import {
-  useFormStatus,
-} from "react-dom";
-import {
-  AlertTriangle,
-  Loader2,
-} from "lucide-react";
+import { useFormStatus } from "react-dom";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
-import {
-  updateCrmDocumentAction,
-} from "@/features/crm/document-actions";
+import { updateCrmDocumentAction } from "@/features/crm/document-actions";
 
-import {
-  initialCrmDocumentActionState,
-} from "@/features/crm/action-states";
-import {
-  CRM_VERIFICATION_STATUS_OPTIONS,
-} from "@/features/crm/format";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
+import { initialCrmDocumentActionState } from "@/features/crm/action-states";
+import { CRM_VERIFICATION_STATUS_OPTIONS } from "@/features/crm/format";
+import { CRM_ROUTES } from "@/features/crm/routes";
 
-import type {
-  CrmPartyDocument,
-} from "@/features/crm/types";
+import type { CrmPartyDocument } from "@/features/crm/types";
 
 interface CrmDocumentEditFormProps {
   document: CrmPartyDocument;
@@ -51,17 +34,13 @@ function SubmitButton() {
       disabled={status.pending}
       className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D95C06] disabled:cursor-not-allowed disabled:bg-[#FDBA74]"
     >
-      {status.pending ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : null}
+      {status.pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
       Save document
     </button>
   );
 }
 
-export function CrmDocumentEditForm({
-  document,
-}: CrmDocumentEditFormProps) {
+export function CrmDocumentEditForm({ document }: CrmDocumentEditFormProps) {
   const [state, formAction] = useActionState(
     updateCrmDocumentAction,
     initialCrmDocumentActionState,
@@ -72,11 +51,7 @@ export function CrmDocumentEditForm({
       action={formAction}
       className="space-y-6 rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm sm:p-6"
     >
-      <input
-        type="hidden"
-        name="document_id"
-        value={document.id}
-      />
+      <input type="hidden" name="document_id" value={document.id} />
 
       {state.message ? (
         <div className="rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-4">
@@ -93,17 +68,12 @@ export function CrmDocumentEditForm({
         <p className="font-semibold text-[#0F172A]">
           {document.original_filename}
         </p>
-        <p className="mt-1">
-          Category: {document.category_display}
-        </p>
+        <p className="mt-1">Category: {document.category_display}</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="verification_status"
-          >
+          <label className={labelClass()} htmlFor="verification_status">
             Verification status
           </label>
 
@@ -114,10 +84,7 @@ export function CrmDocumentEditForm({
             className={`${fieldClass()} mt-1`}
           >
             {CRM_VERIFICATION_STATUS_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -139,10 +106,7 @@ export function CrmDocumentEditForm({
         </div>
 
         <div className="md:col-span-2">
-          <label
-            className={labelClass()}
-            htmlFor="description"
-          >
+          <label className={labelClass()} htmlFor="description">
             Description
           </label>
 

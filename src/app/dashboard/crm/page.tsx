@@ -10,24 +10,14 @@ import {
   Users,
 } from "lucide-react";
 
-import {
-  CRM_PAGE_DEFINITIONS,
-} from "@/features/crm/routes";
+import { CRM_PAGE_DEFINITIONS } from "@/features/crm/routes";
 
-import {
-  CRM_ANY_VIEW_PERMISSIONS,
-} from "@/features/crm/permissions";
+import { CRM_ANY_VIEW_PERMISSIONS } from "@/features/crm/permissions";
 
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { requireCrmPermission } from "@/features/crm/server";
 
-import {
-  hasPermission,
-} from "@/types/auth";
-import {
-  crmPermissionInput,
-} from "@/features/crm/permissions";
+import { hasPermission } from "@/types/auth";
+import { crmPermissionInput } from "@/features/crm/permissions";
 
 const pageIcons = {
   "All Parties": Users,
@@ -42,17 +32,12 @@ const pageIcons = {
 };
 
 export default async function CrmOverviewPage() {
-  const user = await requireCrmPermission(
-    CRM_ANY_VIEW_PERMISSIONS,
-  );
+  const user = await requireCrmPermission(CRM_ANY_VIEW_PERMISSIONS);
 
   const allowedPages = CRM_PAGE_DEFINITIONS.filter(
     (page) =>
       page.href !== "/dashboard/crm" &&
-      hasPermission(
-  user,
-  crmPermissionInput(page.permission),
-)
+      hasPermission(user, crmPermissionInput(page.permission)),
   );
 
   return (
@@ -62,23 +47,17 @@ export default async function CrmOverviewPage() {
           Customer relationship management
         </p>
 
-        <h1 className="mt-2 text-3xl font-bold tracking-tight">
-          CRM Overview
-        </h1>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight">CRM Overview</h1>
 
         <p className="mt-3 max-w-3xl text-sm leading-6 text-[#E2E8F0] sm:text-base">
-          Manage organisations, individuals, suppliers,
-          prospects, registrations and relationship activity
-          from one permission-controlled workspace.
+          Manage organisations, individuals, suppliers, prospects, registrations
+          and relationship activity from one permission-controlled workspace.
         </p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {allowedPages.map((page) => {
-          const Icon =
-            pageIcons[
-              page.title as keyof typeof pageIcons
-            ] ?? Users;
+          const Icon = pageIcons[page.title as keyof typeof pageIcons] ?? Users;
 
           return (
             <Link

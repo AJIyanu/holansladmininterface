@@ -1,17 +1,10 @@
 "use client";
 
-import {
-  useState,
-} from "react";
+import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
-import {
-  Bell,
-  CheckCheck,
-  Loader2,
-  RefreshCw,
-} from "lucide-react";
+import { Bell, CheckCheck, Loader2, RefreshCw } from "lucide-react";
 
 import { toast } from "sonner";
 
@@ -29,15 +22,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { useDashboardNotifications } from "@/hooks/use-dashboard-notifications";
 
-import {
-  getNotificationDestination,
-} from "@/lib/notifications/notification-utils";
+import { getNotificationDestination } from "@/lib/notifications/notification-utils";
 
 import { DashboardNotificationItem } from "../../dashboard/notifications/DashboardNotificationItem";
 
-import type {
-  DashboardNotification,
-} from "@/types/notifications";
+import type { DashboardNotification } from "@/types/notifications";
 
 function NotificationLoadingState() {
   return (
@@ -45,10 +34,7 @@ function NotificationLoadingState() {
       {Array.from({
         length: 3,
       }).map((_, index) => (
-        <div
-          key={index}
-          className="flex gap-3 px-4 py-4"
-        >
+        <div key={index} className="flex gap-3 px-4 py-4">
           <Skeleton className="size-9 shrink-0 rounded-full" />
 
           <div className="flex-1 space-y-2">
@@ -65,13 +51,9 @@ function NotificationLoadingState() {
 export default function DashboardNotifications() {
   const router = useRouter();
 
-  const [open, setOpen] =
-    useState(false);
+  const [open, setOpen] = useState(false);
 
-  const [
-    isMarkingAllRead,
-    setIsMarkingAllRead,
-  ] = useState(false);
+  const [isMarkingAllRead, setIsMarkingAllRead] = useState(false);
 
   const {
     notifications,
@@ -84,9 +66,7 @@ export default function DashboardNotifications() {
     markAllAsRead,
   } = useDashboardNotifications();
 
-  function handleOpenChange(
-    nextOpen: boolean,
-  ) {
+  function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
 
     if (nextOpen) {
@@ -96,16 +76,10 @@ export default function DashboardNotifications() {
     }
   }
 
-  function handleNotificationSelect(
-    notification: DashboardNotification,
-  ) {
-    const destination =
-      getNotificationDestination(
-        notification,
-      );
+  function handleNotificationSelect(notification: DashboardNotification) {
+    const destination = getNotificationDestination(notification);
 
-    const readRequest =
-      markAsRead(notification);
+    const readRequest = markAsRead(notification);
 
     setOpen(false);
     router.push(destination);
@@ -125,9 +99,7 @@ export default function DashboardNotifications() {
     try {
       await markAllAsRead();
 
-      toast.success(
-        "All notifications marked as read.",
-      );
+      toast.success("All notifications marked as read.");
     } catch (markAllError) {
       toast.error(
         markAllError instanceof Error
@@ -139,16 +111,10 @@ export default function DashboardNotifications() {
     }
   }
 
-  const badgeValue =
-    unreadCount > 99
-      ? "99+"
-      : String(unreadCount);
+  const badgeValue = unreadCount > 99 ? "99+" : String(unreadCount);
 
   return (
-    <DropdownMenu
-      open={open}
-      onOpenChange={handleOpenChange}
-    >
+    <DropdownMenu open={open} onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -177,9 +143,7 @@ export default function DashboardNotifications() {
       >
         <div className="flex items-center justify-between gap-3 px-4 py-3">
           <div>
-            <p className="text-sm font-semibold">
-              Notifications
-            </p>
+            <p className="text-sm font-semibold">Notifications</p>
 
             <p className="text-xs text-muted-foreground">
               {unreadCount} unread
@@ -191,19 +155,13 @@ export default function DashboardNotifications() {
               type="button"
               variant="ghost"
               size="icon"
-              onClick={() =>
-                void refresh()
-              }
+              onClick={() => void refresh()}
               disabled={isRefreshing}
               aria-label="Refresh notifications"
               className="size-8"
             >
               <RefreshCw
-                className={
-                  isRefreshing
-                    ? "size-4 animate-spin"
-                    : "size-4"
-                }
+                className={isRefreshing ? "size-4 animate-spin" : "size-4"}
               />
             </Button>
 
@@ -211,13 +169,8 @@ export default function DashboardNotifications() {
               type="button"
               variant="ghost"
               size="sm"
-              onClick={
-                handleMarkAllAsRead
-              }
-              disabled={
-                unreadCount === 0 ||
-                isMarkingAllRead
-              }
+              onClick={handleMarkAllAsRead}
+              disabled={unreadCount === 0 || isMarkingAllRead}
               className="h-8 gap-1.5 px-2 text-xs"
             >
               {isMarkingAllRead ? (
@@ -225,7 +178,6 @@ export default function DashboardNotifications() {
               ) : (
                 <CheckCheck className="size-3.5" />
               )}
-
               Mark all read
             </Button>
           </div>
@@ -251,29 +203,20 @@ export default function DashboardNotifications() {
                 <Bell className="size-6 text-muted-foreground" />
               </div>
 
-              <p className="text-sm font-medium">
-                No notifications
-              </p>
+              <p className="text-sm font-medium">No notifications</p>
 
               <p className="mt-1 max-w-60 text-xs leading-5 text-muted-foreground">
-                Task assignments, comments and
-                reminders will appear here.
+                Task assignments, comments and reminders will appear here.
               </p>
             </div>
           ) : (
-            notifications.map(
-              (notification) => (
-                <DashboardNotificationItem
-                  key={notification.id}
-                  notification={
-                    notification
-                  }
-                  onSelect={
-                    handleNotificationSelect
-                  }
-                />
-              ),
-            )
+            notifications.map((notification) => (
+              <DashboardNotificationItem
+                key={notification.id}
+                notification={notification}
+                onSelect={handleNotificationSelect}
+              />
+            ))
           )}
         </div>
 
@@ -282,8 +225,7 @@ export default function DashboardNotifications() {
             <DropdownMenuSeparator className="m-0" />
 
             <div className="px-4 py-2 text-center text-[11px] text-muted-foreground">
-              Showing the latest{" "}
-              {notifications.length} of{" "}
+              Showing the latest {notifications.length} of{" "}
               {notifications.length === 1
                 ? "1 notification"
                 : `${notifications.length} notifications`}

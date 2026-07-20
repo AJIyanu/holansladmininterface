@@ -1,38 +1,21 @@
-import {
-  listCrmIdentifiers,
-  listCrmParties,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
-import {
-  crmIdentifierQueryFromSearchParams,
-} from "@/features/crm/search-params";
+import { listCrmIdentifiers, listCrmParties } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
+import { crmIdentifierQueryFromSearchParams } from "@/features/crm/search-params";
 
-import {
-  CrmRegistrationsTable,
-} from "@/components/crm/CrmRegistrationsTable";
+import { CrmRegistrationsTable } from "@/components/crm/CrmRegistrationsTable";
 
 type PageProps = {
-  searchParams?: Promise<
-    Record<string, string | string[] | undefined>
-  >;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function RegistrationsPage({
-  searchParams,
-}: PageProps) {
+export default async function RegistrationsPage({ searchParams }: PageProps) {
   const user = await requireCrmPermission([
     CRM_PERMISSIONS.identifier.view,
     CRM_PERMISSIONS.document.view,
   ]);
 
-  const query = crmIdentifierQueryFromSearchParams(
-    (await searchParams) ?? {},
-  );
+  const query = crmIdentifierQueryFromSearchParams((await searchParams) ?? {});
 
   const data = await listCrmIdentifiers(query);
 
@@ -49,17 +32,13 @@ export default async function RegistrationsPage({
               search: partyId,
             });
 
-            return partyResult.results.find(
-              (party) => party.id === partyId,
-            );
+            return partyResult.results.find((party) => party.id === partyId);
           }),
         )
       : [];
 
   const partiesById = Object.fromEntries(
-    parties
-      .filter(Boolean)
-      .map((party) => [party!.id, party!]),
+    parties.filter(Boolean).map((party) => [party!.id, party!]),
   );
 
   return (

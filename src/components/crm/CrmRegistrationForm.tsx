@@ -1,31 +1,18 @@
 "use client";
 
-import {
-  useActionState,
-} from "react";
+import { useActionState } from "react";
 import Link from "next/link";
-import {
-  useFormStatus,
-} from "react-dom";
-import {
-  AlertTriangle,
-  Loader2,
-} from "lucide-react";
+import { useFormStatus } from "react-dom";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 import {
   createCrmRegistrationAction,
   updateCrmRegistrationAction,
 } from "@/features/crm/registration-actions";
 
-import {
-  initialCrmRegistrationActionState,
-} from "@/features/crm/action-states";
-import {
-  CRM_IDENTIFIER_TYPE_OPTIONS,
-} from "@/features/crm/format";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
+import { initialCrmRegistrationActionState } from "@/features/crm/action-states";
+import { CRM_IDENTIFIER_TYPE_OPTIONS } from "@/features/crm/format";
+import { CRM_ROUTES } from "@/features/crm/routes";
 
 import type {
   CrmPartyIdentifier,
@@ -46,11 +33,7 @@ function labelClass(): string {
   return "text-sm font-medium text-[#334155]";
 }
 
-function SubmitButton({
-  mode,
-}: {
-  mode: "create" | "edit";
-}) {
+function SubmitButton({ mode }: { mode: "create" | "edit" }) {
   const status = useFormStatus();
 
   return (
@@ -59,12 +42,8 @@ function SubmitButton({
       disabled={status.pending}
       className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D95C06] disabled:cursor-not-allowed disabled:bg-[#FDBA74]"
     >
-      {status.pending ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : null}
-      {mode === "create"
-        ? "Create registration"
-        : "Save registration"}
+      {status.pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+      {mode === "create" ? "Create registration" : "Save registration"}
     </button>
   );
 }
@@ -131,10 +110,7 @@ export function CrmRegistrationForm({
         </div>
 
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="identifier_type"
-          >
+          <label className={labelClass()} htmlFor="identifier_type">
             Registration type
           </label>
 
@@ -143,16 +119,12 @@ export function CrmRegistrationForm({
             name="identifier_type"
             required
             defaultValue={
-              initialIdentifier?.identifier_type ??
-              "COMPANY_REGISTRATION"
+              initialIdentifier?.identifier_type ?? "COMPANY_REGISTRATION"
             }
             className={`${fieldClass()} mt-1`}
           >
             {CRM_IDENTIFIER_TYPE_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -174,10 +146,7 @@ export function CrmRegistrationForm({
         </div>
 
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="issuing_country"
-          >
+          <label className={labelClass()} htmlFor="issuing_country">
             Issuing country
           </label>
 
@@ -185,9 +154,7 @@ export function CrmRegistrationForm({
             id="issuing_country"
             name="issuing_country"
             maxLength={2}
-            defaultValue={
-              initialIdentifier?.issuing_country ?? ""
-            }
+            defaultValue={initialIdentifier?.issuing_country ?? ""}
             className={`${fieldClass()} mt-1 uppercase`}
             placeholder="NG"
           />
@@ -211,8 +178,8 @@ export function CrmRegistrationForm({
           />
 
           <p className="mt-1 text-xs text-[#64748B]">
-            The value is encrypted by the backend. Normal
-            responses only show the masked value.
+            The value is encrypted by the backend. Normal responses only show
+            the masked value.
           </p>
         </div>
 

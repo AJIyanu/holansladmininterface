@@ -1,42 +1,22 @@
-import {
-  listCrmContactRoles,
-  listCrmParties,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { listCrmContactRoles, listCrmParties } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
 
-import {
-  CrmPartyForm,
-} from "@/components/crm/CrmPartyForm";
+import { CrmPartyForm } from "@/components/crm/CrmPartyForm";
 
-import type {
-  CrmPartyRoleName,
-} from "@/features/crm/types";
+import type { CrmPartyRoleName } from "@/features/crm/types";
 
 type PageProps = {
-  searchParams?: Promise<
-    Record<string, string | string[] | undefined>
-  >;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-type CreateMode =
-  | "INDIVIDUAL"
-  | "ORGANISATION"
-  | "TRADING_NAME";
+type CreateMode = "INDIVIDUAL" | "ORGANISATION" | "TRADING_NAME";
 
-function firstValue(
-  value: string | string[] | undefined,
-): string | undefined {
+function firstValue(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function createModeFromQuery(
-  value: string | undefined,
-): CreateMode {
+function createModeFromQuery(value: string | undefined): CreateMode {
   if (value === "organisation") {
     return "ORGANISATION";
   }
@@ -48,9 +28,7 @@ function createModeFromQuery(
   return "INDIVIDUAL";
 }
 
-function roleFromQuery(
-  value: string | undefined,
-): CrmPartyRoleName[] {
+function roleFromQuery(value: string | undefined): CrmPartyRoleName[] {
   const allowedRoles = [
     "CLIENT",
     "SUPPLIER",
@@ -67,9 +45,7 @@ function roleFromQuery(
   return [value as CrmPartyRoleName];
 }
 
-export default async function NewPartyPage({
-  searchParams,
-}: PageProps) {
+export default async function NewPartyPage({ searchParams }: PageProps) {
   await requireCrmPermission(CRM_PERMISSIONS.party.create);
 
   const resolvedSearchParams = (await searchParams) ?? {};
@@ -78,13 +54,9 @@ export default async function NewPartyPage({
     firstValue(resolvedSearchParams.mode),
   );
 
-  const defaultRoles = roleFromQuery(
-    firstValue(resolvedSearchParams.role),
-  );
+  const defaultRoles = roleFromQuery(firstValue(resolvedSearchParams.role));
 
-  const defaultOrganisationId = firstValue(
-    resolvedSearchParams.organisation,
-  );
+  const defaultOrganisationId = firstValue(resolvedSearchParams.organisation);
 
   const [organisations, contactRoles] = await Promise.all([
     listCrmParties({
@@ -112,10 +84,9 @@ export default async function NewPartyPage({
         </h1>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-          Create an individual, organisation, or trading name.
-          Individuals can be linked to an existing organisation
-          or used to create a new organisation profile at the
-          same time.
+          Create an individual, organisation, or trading name. Individuals can
+          be linked to an existing organisation or used to create a new
+          organisation profile at the same time.
         </p>
       </header>
 

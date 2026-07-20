@@ -1,6 +1,4 @@
-import type {
-  LucideIcon,
-} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface CrmPageShellProps {
   title: string;
@@ -53,8 +51,8 @@ export function CrmPageShell({
 
           <div className="mt-5 rounded-xl border border-[#FED7AA] bg-[#FFF7ED] p-4">
             <p className="text-sm font-medium text-[#9A3412]">
-              Operational forms and records will be connected
-              in the next implementation stage.
+              Operational forms and records will be connected in the next
+              implementation stage.
             </p>
           </div>
         </div>

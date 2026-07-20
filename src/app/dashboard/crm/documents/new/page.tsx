@@ -1,32 +1,17 @@
-import {
-  listCrmParties,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { listCrmParties } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
 
-import {
-  CrmDocumentUploadForm,
-} from "@/components/crm/CrmDocumentUploadForm";
+import { CrmDocumentUploadForm } from "@/components/crm/CrmDocumentUploadForm";
 
 type PageProps = {
-  searchParams?: Promise<
-    Record<string, string | string[] | undefined>
-  >;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function NewDocumentPage({
-  searchParams,
-}: PageProps) {
-  await requireCrmPermission(
-    CRM_PERMISSIONS.document.create,
-  );
+export default async function NewDocumentPage({ searchParams }: PageProps) {
+  await requireCrmPermission(CRM_PERMISSIONS.document.create);
 
-  const resolvedSearchParams =
-    (await searchParams) ?? {};
+  const resolvedSearchParams = (await searchParams) ?? {};
 
   const defaultPartyId =
     typeof resolvedSearchParams.party === "string"
@@ -56,9 +41,9 @@ export default async function NewDocumentPage({
         </h1>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-          Upload a Party document. The selected file can be
-          previewed before submission, while stored documents
-          are accessed only through backend permission checks.
+          Upload a Party document. The selected file can be previewed before
+          submission, while stored documents are accessed only through backend
+          permission checks.
         </p>
       </header>
 

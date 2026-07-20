@@ -22,12 +22,7 @@ export async function runCrmLifecycleFormAction(
   const partyId = textValue(formData, "party_id");
 
   const action = textValue(formData, "action") as
-    | "deactivate"
-    | "reactivate"
-    | "suspend"
-    | "block"
-    | "archive"
-    | "restore";
+    "deactivate" | "reactivate" | "suspend" | "block" | "archive" | "restore";
 
   const parsed = crmLifecycleSchema.safeParse({
     reason: textValue(formData, "reason"),

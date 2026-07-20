@@ -1,29 +1,16 @@
-import {
-  Plus,
-  Save,
-  Trash2,
-} from "lucide-react";
+import { Plus, Save, Trash2 } from "lucide-react";
 
-import {
-  hasPermission,
-} from "@/types/auth";
-import type {
-  CurrentUser,
-} from "@/types/auth";
+import { hasPermission } from "@/types/auth";
+import type { CurrentUser } from "@/types/auth";
 
 import {
   createCrmContactRoleAction,
   deleteCrmContactRoleAction,
   updateCrmContactRoleAction,
 } from "@/features/crm/contact-role-actions";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
 
-import type {
-  CrmContactRole,
-  PaginatedResponse,
-} from "@/features/crm/types";
+import type { CrmContactRole, PaginatedResponse } from "@/features/crm/types";
 
 interface CrmContactRolesManagerProps {
   user: CurrentUser;
@@ -46,20 +33,11 @@ export function CrmContactRolesManager({
   user,
   data,
 }: CrmContactRolesManagerProps) {
-  const canCreate = hasPermission(
-    user,
-    CRM_PERMISSIONS.contactRole.create,
-  );
+  const canCreate = hasPermission(user, CRM_PERMISSIONS.contactRole.create);
 
-  const canEdit = hasPermission(
-    user,
-    CRM_PERMISSIONS.contactRole.edit,
-  );
+  const canEdit = hasPermission(user, CRM_PERMISSIONS.contactRole.edit);
 
-  const canDelete = hasPermission(
-    user,
-    CRM_PERMISSIONS.contactRole.delete,
-  );
+  const canDelete = hasPermission(user, CRM_PERMISSIONS.contactRole.delete);
 
   return (
     <section className="space-y-6">
@@ -73,9 +51,9 @@ export function CrmContactRolesManager({
         </h1>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-          Configure the responsibilities a person may hold for
-          an organisation, such as procurement contact, accounts
-          contact, technical contact or decision maker.
+          Configure the responsibilities a person may hold for an organisation,
+          such as procurement contact, accounts contact, technical contact or
+          decision maker.
         </p>
       </header>
 
@@ -157,10 +135,7 @@ export function CrmContactRolesManager({
             </label>
 
             <div className="md:col-span-2">
-              <label
-                className={labelClass()}
-                htmlFor="new-description"
-              >
+              <label className={labelClass()} htmlFor="new-description">
                 Description
               </label>
 
@@ -193,21 +168,12 @@ export function CrmContactRolesManager({
             className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm"
           >
             {canEdit ? (
-              <form
-                action={updateCrmContactRoleAction}
-                className="space-y-4"
-              >
-                <input
-                  type="hidden"
-                  name="contact_role_id"
-                  value={role.id}
-                />
+              <form action={updateCrmContactRoleAction} className="space-y-4">
+                <input type="hidden" name="contact_role_id" value={role.id} />
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className={labelClass()}>
-                      Name
-                    </label>
+                    <label className={labelClass()}>Name</label>
 
                     <input
                       name="name"
@@ -219,9 +185,7 @@ export function CrmContactRolesManager({
                   </div>
 
                   <div>
-                    <label className={labelClass()}>
-                      Slug
-                    </label>
+                    <label className={labelClass()}>Slug</label>
 
                     <input
                       name="slug"
@@ -232,9 +196,7 @@ export function CrmContactRolesManager({
                   </div>
 
                   <div>
-                    <label className={labelClass()}>
-                      Sort order
-                    </label>
+                    <label className={labelClass()}>Sort order</label>
 
                     <input
                       name="sort_order"
@@ -257,9 +219,7 @@ export function CrmContactRolesManager({
                   </label>
 
                   <div className="md:col-span-2">
-                    <label className={labelClass()}>
-                      Description
-                    </label>
+                    <label className={labelClass()}>Description</label>
 
                     <textarea
                       name="description"
@@ -305,8 +265,7 @@ export function CrmContactRolesManager({
                 </div>
 
                 <p className="mt-3 text-xs text-[#94A3B8]">
-                  Slug: {role.slug || "—"} · Sort:{" "}
-                  {role.sort_order}
+                  Slug: {role.slug || "—"} · Sort: {role.sort_order}
                 </p>
               </div>
             )}
@@ -316,11 +275,7 @@ export function CrmContactRolesManager({
                 action={deleteCrmContactRoleAction}
                 className="mt-3 flex justify-end"
               >
-                <input
-                  type="hidden"
-                  name="contact_role_id"
-                  value={role.id}
-                />
+                <input type="hidden" name="contact_role_id" value={role.id} />
 
                 <button
                   type="submit"

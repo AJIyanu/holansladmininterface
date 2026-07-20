@@ -1,36 +1,20 @@
-import {
-  listCrmParties,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { listCrmParties } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
 
-import {
-  CrmInteractionForm,
-} from "@/components/crm/CrmInteractionForm";
+import { CrmInteractionForm } from "@/components/crm/CrmInteractionForm";
 
 type PageProps = {
-  searchParams?: Promise<
-    Record<string, string | string[] | undefined>
-  >;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function NewInteractionPage({
-  searchParams,
-}: PageProps) {
-  await requireCrmPermission(
-    CRM_PERMISSIONS.interaction.create,
-  );
+export default async function NewInteractionPage({ searchParams }: PageProps) {
+  await requireCrmPermission(CRM_PERMISSIONS.interaction.create);
 
   const resolved = (await searchParams) ?? {};
 
   const defaultPartyId =
-    typeof resolved.party === "string"
-      ? resolved.party
-      : undefined;
+    typeof resolved.party === "string" ? resolved.party : undefined;
 
   const parties = await listCrmParties({
     page_size: 100,
@@ -50,8 +34,8 @@ export default async function NewInteractionPage({
         </h1>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-          Record a call, WhatsApp chat, email, meeting or
-          follow-up with a CRM Party.
+          Record a call, WhatsApp chat, email, meeting or follow-up with a CRM
+          Party.
         </p>
       </header>
 

@@ -155,20 +155,20 @@ export default function RoleCard({
           </div>
 
           {expanded && (
-  <div className="mt-5 space-y-4">
-    <div>
-      <h3 className="text-sm font-semibold text-[#0F172A]">
-        Assigned permissions
-      </h3>
+            <div className="mt-5 space-y-4">
+              <div>
+                <h3 className="text-sm font-semibold text-[#0F172A]">
+                  Assigned permissions
+                </h3>
 
-      <p className="mt-1 text-xs text-[#64748B]">
-        Permissions are grouped by section and sorted by action.
-      </p>
-    </div>
+                <p className="mt-1 text-xs text-[#64748B]">
+                  Permissions are grouped by section and sorted by action.
+                </p>
+              </div>
 
-    <PermissionGroupedSummary permissions={rolePermissions} />
-  </div>
-)}
+              <PermissionGroupedSummary permissions={rolePermissions} />
+            </div>
+          )}
         </CardContent>
       </Card>
 

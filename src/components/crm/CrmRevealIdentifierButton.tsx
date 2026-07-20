@@ -1,25 +1,12 @@
 "use client";
 
-import {
-  useActionState,
-  useState,
-} from "react";
-import {
-  useFormStatus,
-} from "react-dom";
-import {
-  Eye,
-  EyeOff,
-  Loader2,
-} from "lucide-react";
+import { useActionState, useState } from "react";
+import { useFormStatus } from "react-dom";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import {
-  revealCrmRegistrationAction,
-} from "@/features/crm/registration-actions";
+import { revealCrmRegistrationAction } from "@/features/crm/registration-actions";
 
-import {
-  initialCrmRegistrationActionState,
-} from "@/features/crm/action-states";
+import { initialCrmRegistrationActionState } from "@/features/crm/action-states";
 
 interface CrmRevealIdentifierButtonProps {
   identifierId: string;
@@ -62,11 +49,7 @@ export function CrmRevealIdentifierButton({
           setIsOpen(true);
         }}
       >
-        <input
-          type="hidden"
-          name="identifier_id"
-          value={identifierId}
-        />
+        <input type="hidden" name="identifier_id" value={identifierId} />
 
         <RevealSubmitButton />
       </form>
@@ -103,8 +86,7 @@ export function CrmRevealIdentifierButton({
               </div>
             ) : (
               <div className="mt-5 rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-4 text-sm font-medium text-[#991B1B]">
-                {state.message ||
-                  "The value could not be revealed."}
+                {state.message || "The value could not be revealed."}
               </div>
             )}
 

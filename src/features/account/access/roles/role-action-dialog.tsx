@@ -137,8 +137,8 @@ export default function RoleActionDialog({
   }
 
   function setSelectedPermissionIds(permissionIds: number[]) {
-  setSelected(permissionIds);
-}
+    setSelected(permissionIds);
+  }
 
   async function submitAction() {
     if (!action) {
@@ -267,18 +267,19 @@ export default function RoleActionDialog({
               </div>
             )}
 
-            {(action === "add-permissions" || action === "remove-permissions") && (
-  <PermissionMatrixSelector
-    permissions={availablePermissions}
-    selected={selected.map(Number)}
-    onSelectedChange={setSelectedPermissionIds}
-    emptyMessage={
-      action === "add-permissions"
-        ? "All permissions are already assigned."
-        : "This role has no permissions to remove."
-    }
-  />
-)}
+            {(action === "add-permissions" ||
+              action === "remove-permissions") && (
+              <PermissionMatrixSelector
+                permissions={availablePermissions}
+                selected={selected.map(Number)}
+                onSelectedChange={setSelectedPermissionIds}
+                emptyMessage={
+                  action === "add-permissions"
+                    ? "All permissions are already assigned."
+                    : "This role has no permissions to remove."
+                }
+              />
+            )}
 
             {(action === "add-staff" || action === "remove-staff") &&
               (loading ? (

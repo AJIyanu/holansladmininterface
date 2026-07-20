@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  ShieldCheck,
-} from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
-import type {
-  Permission,
-} from "./access-types";
+import type { Permission } from "./access-types";
 
 interface PermissionGroupedSummaryProps {
   permissions: Permission[];
@@ -156,31 +152,19 @@ function inferAction(permission: Permission): PermissionAction {
     return "Deactivate";
   }
 
-  if (
-    value.includes("restore") ||
-    value.includes("reactivate")
-  ) {
+  if (value.includes("restore") || value.includes("reactivate")) {
     return "Restore";
   }
 
-  if (
-    value.includes("assign") ||
-    value.includes("allocate")
-  ) {
+  if (value.includes("assign") || value.includes("allocate")) {
     return "Assign";
   }
 
-  if (
-    value.includes("download") ||
-    value.includes("export")
-  ) {
+  if (value.includes("download") || value.includes("export")) {
     return "Download";
   }
 
-  if (
-    value.includes("reveal") ||
-    value.includes("sensitive")
-  ) {
+  if (value.includes("reveal") || value.includes("sensitive")) {
     return "Reveal";
   }
 
@@ -217,9 +201,7 @@ function resourceKeyFromPermission(permission: Permission): string {
     "merge_",
   ];
 
-  const prefix = prefixes.find((item) =>
-    codename.startsWith(item),
-  );
+  const prefix = prefixes.find((item) => codename.startsWith(item));
 
   if (prefix) {
     return codename.slice(prefix.length);
@@ -238,9 +220,7 @@ function resourceKeyFromPermission(permission: Permission): string {
   return codename;
 }
 
-function decoratePermission(
-  permission: Permission,
-): DecoratedPermission {
+function decoratePermission(permission: Permission): DecoratedPermission {
   const action = inferAction(permission);
   const resourceKey = resourceKeyFromPermission(permission);
 
@@ -253,22 +233,18 @@ function decoratePermission(
   };
 }
 
-function groupPermissions(
-  permissions: Permission[],
-): PermissionGroup[] {
-  const decorated = permissions
-    .map(decoratePermission)
-    .sort((a, b) => {
-      if (a.resourceLabel !== b.resourceLabel) {
-        return a.resourceLabel.localeCompare(b.resourceLabel);
-      }
+function groupPermissions(permissions: Permission[]): PermissionGroup[] {
+  const decorated = permissions.map(decoratePermission).sort((a, b) => {
+    if (a.resourceLabel !== b.resourceLabel) {
+      return a.resourceLabel.localeCompare(b.resourceLabel);
+    }
 
-      if (a.actionOrder !== b.actionOrder) {
-        return a.actionOrder - b.actionOrder;
-      }
+    if (a.actionOrder !== b.actionOrder) {
+      return a.actionOrder - b.actionOrder;
+    }
 
-      return a.permission.name.localeCompare(b.permission.name);
-    });
+    return a.permission.name.localeCompare(b.permission.name);
+  });
 
   const groups = new Map<string, PermissionGroup>();
 

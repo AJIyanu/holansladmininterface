@@ -1,44 +1,27 @@
 import Link from "next/link";
 
-import {
-  ArrowLeft,
-  Edit,
-} from "lucide-react";
+import { ArrowLeft, Edit } from "lucide-react";
 
-import {
-  hasPermission,
-} from "@/types/auth";
+import { hasPermission } from "@/types/auth";
 
 import {
   getCrmParty,
   listCrmContactRoles,
   listCrmParties,
 } from "@/features/crm/api";
-import {
-  formatCrmDateTime,
-} from "@/features/crm/format";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { formatCrmDateTime } from "@/features/crm/format";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { CRM_ROUTES } from "@/features/crm/routes";
+import { requireCrmPermission } from "@/features/crm/server";
 
 import {
   CrmRoleBadges,
   CrmStatusBadge,
   CrmVerificationBadge,
 } from "@/components/crm/CrmPartyBadges";
-import {
-  CrmPartyLifecyclePanel,
-} from "@/components/crm/CrmPartyLifecyclePanel";
+import { CrmPartyLifecyclePanel } from "@/components/crm/CrmPartyLifecyclePanel";
 
-import {
-  CrmAffiliationsPanel,
-} from "@/components/crm/CrmAffiliationsPanel";
+import { CrmAffiliationsPanel } from "@/components/crm/CrmAffiliationsPanel";
 
 type PageProps = {
   params: Promise<{
@@ -46,18 +29,13 @@ type PageProps = {
   }>;
 };
 
-export default async function PartyDetailPage({
-  params,
-}: PageProps) {
-  const user = await requireCrmPermission(
-    CRM_PERMISSIONS.party.view,
-  );
+export default async function PartyDetailPage({ params }: PageProps) {
+  const user = await requireCrmPermission(CRM_PERMISSIONS.party.view);
 
   const { partyId } = await params;
   const party = await getCrmParty(partyId);
 
-  const [organisations, individuals, contactRoles] =
-  await Promise.all([
+  const [organisations, individuals, contactRoles] = await Promise.all([
     listCrmParties({
       page_size: 100,
       status: "ACTIVE",
@@ -77,10 +55,7 @@ export default async function PartyDetailPage({
     }),
   ]);
 
-  const canEdit = hasPermission(
-    user,
-    CRM_PERMISSIONS.party.edit,
-  );
+  const canEdit = hasPermission(user, CRM_PERMISSIONS.party.edit);
 
   return (
     <section className="space-y-6">
@@ -122,27 +97,23 @@ export default async function PartyDetailPage({
 
           <div className="flex flex-wrap gap-2">
             <CrmStatusBadge status={party.status} />
-            <CrmVerificationBadge
-              level={party.verification_level}
-            />
+            <CrmVerificationBadge level={party.verification_level} />
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 mb-2">
           <CrmRoleBadges
             party={{
               ...party,
               primary_email:
                 party.contact_methods.find(
                   (method) =>
-                    method.method_type === "EMAIL" &&
-                    method.is_primary,
+                    method.method_type === "EMAIL" && method.is_primary,
                 )?.value ?? "",
               primary_phone:
                 party.contact_methods.find(
                   (method) =>
-                    method.method_type === "PHONE" &&
-                    method.is_primary,
+                    method.method_type === "PHONE" && method.is_primary,
                 )?.value ?? "",
               primary_source:
                 party.sources.find((source) => source.is_primary)
@@ -152,30 +123,30 @@ export default async function PartyDetailPage({
         </div>
 
         {party.entity_kind === "ORGANISATION" ||
-          party.entity_kind === "TRADING_NAME" ? (
-            <Link
-              href={CRM_ROUTES.newPartyWith({
-                mode: "individual",
-                organisation: party.id,
-              })}
-              className="inline-flex rounded-lg bg-[#F46C0B] px-4 py-2 text-sm font-semibold text-white hover:bg-[#D95C06]"
-            >
-              Add contact person
-            </Link>
-          ) : null}
+        party.entity_kind === "TRADING_NAME" ? (
+          <Link
+            href={CRM_ROUTES.newPartyWith({
+              mode: "individual",
+              organisation: party.id,
+            })}
+            className="inline-flex rounded-lg bg-[#F46C0B] px-4 py-2 text-sm font-semibold text-white hover:bg-[#D95C06]"
+          >
+            Add contact person
+          </Link>
+        ) : null}
       </header>
 
       <CrmPartyLifecyclePanel party={party} user={user} />
 
       <CrmAffiliationsPanel
-          party={party}
-          user={user}
-          organisations={organisations.results}
-          individuals={individuals.results.filter(
-            (individual) => individual.id !== party.id,
-          )}
-          contactRoles={contactRoles.results}
-        />
+        party={party}
+        user={user}
+        organisations={organisations.results}
+        individuals={individuals.results.filter(
+          (individual) => individual.id !== party.id,
+        )}
+        contactRoles={contactRoles.results}
+      />
 
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
@@ -185,9 +156,7 @@ export default async function PartyDetailPage({
 
           <dl className="mt-4 space-y-3 text-sm">
             <div>
-              <dt className="font-medium text-[#64748B]">
-                Email
-              </dt>
+              <dt className="font-medium text-[#64748B]">Email</dt>
               <dd className="text-[#0F172A]">
                 {party.contact_methods.find(
                   (method) => method.method_type === "EMAIL",
@@ -196,9 +165,7 @@ export default async function PartyDetailPage({
             </div>
 
             <div>
-              <dt className="font-medium text-[#64748B]">
-                Phone
-              </dt>
+              <dt className="font-medium text-[#64748B]">Phone</dt>
               <dd className="text-[#0F172A]">
                 {party.contact_methods.find(
                   (method) =>
@@ -217,18 +184,14 @@ export default async function PartyDetailPage({
 
           <dl className="mt-4 space-y-3 text-sm">
             <div>
-              <dt className="font-medium text-[#64748B]">
-                Selectable
-              </dt>
+              <dt className="font-medium text-[#64748B]">Selectable</dt>
               <dd className="text-[#0F172A]">
                 {party.is_selectable ? "Yes" : "No"}
               </dd>
             </div>
 
             <div>
-              <dt className="font-medium text-[#64748B]">
-                Traceable
-              </dt>
+              <dt className="font-medium text-[#64748B]">Traceable</dt>
               <dd className="text-[#0F172A]">
                 {party.is_traceable ? "Yes" : "No"}
               </dd>
@@ -243,18 +206,14 @@ export default async function PartyDetailPage({
 
           <dl className="mt-4 space-y-3 text-sm">
             <div>
-              <dt className="font-medium text-[#64748B]">
-                Created
-              </dt>
+              <dt className="font-medium text-[#64748B]">Created</dt>
               <dd className="text-[#0F172A]">
                 {formatCrmDateTime(party.created_at)}
               </dd>
             </div>
 
             <div>
-              <dt className="font-medium text-[#64748B]">
-                Updated
-              </dt>
+              <dt className="font-medium text-[#64748B]">Updated</dt>
               <dd className="text-[#0F172A]">
                 {formatCrmDateTime(party.updated_at)}
               </dd>
@@ -270,9 +229,8 @@ export default async function PartyDetailPage({
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-[#64748B]">
-            Manage company registration, tax, VAT, import/export
-            and marketplace seller identifiers from the
-            Registrations area.
+            Manage company registration, tax, VAT, import/export and marketplace
+            seller identifiers from the Registrations area.
           </p>
 
           <Link
@@ -284,57 +242,55 @@ export default async function PartyDetailPage({
         </div>
 
         <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
-  <h2 className="text-base font-semibold text-[#0F172A]">
-    Documents
-  </h2>
+          <h2 className="text-base font-semibold text-[#0F172A]">Documents</h2>
 
-  <p className="mt-2 text-sm leading-6 text-[#64748B]">
-    Upload, preview and manage registration, tax, bank,
-    contract, identity and correspondence documents.
-  </p>
+          <p className="mt-2 text-sm leading-6 text-[#64748B]">
+            Upload, preview and manage registration, tax, bank, contract,
+            identity and correspondence documents.
+          </p>
 
-  <div className="mt-4 flex flex-wrap gap-2">
-    <Link
-      href={`${CRM_ROUTES.documents}?party=${party.id}`}
-      className="inline-flex rounded-lg border border-[#CBD5E1] px-4 py-2 text-sm font-semibold text-[#334155] hover:border-[#F46C0B] hover:text-[#F46C0B]"
-    >
-      View documents
-    </Link>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link
+              href={`${CRM_ROUTES.documents}?party=${party.id}`}
+              className="inline-flex rounded-lg border border-[#CBD5E1] px-4 py-2 text-sm font-semibold text-[#334155] hover:border-[#F46C0B] hover:text-[#F46C0B]"
+            >
+              View documents
+            </Link>
 
-    <Link
-      href={`${CRM_ROUTES.newDocument}?party=${party.id}`}
-      className="inline-flex rounded-lg bg-[#0F4C81] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0B3A63]"
-    >
-      Upload document
-    </Link>
-  </div>
+            <Link
+              href={`${CRM_ROUTES.newDocument}?party=${party.id}`}
+              className="inline-flex rounded-lg bg-[#0F4C81] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0B3A63]"
+            >
+              Upload document
+            </Link>
+          </div>
         </div>
         <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
-  <h2 className="text-base font-semibold text-[#0F172A]">
-    Interactions
-  </h2>
+          <h2 className="text-base font-semibold text-[#0F172A]">
+            Interactions
+          </h2>
 
-  <p className="mt-2 text-sm leading-6 text-[#64748B]">
-    Record WhatsApp chats, calls, emails, meetings and
-    follow-up activity for this Party.
-  </p>
+          <p className="mt-2 text-sm leading-6 text-[#64748B]">
+            Record WhatsApp chats, calls, emails, meetings and follow-up
+            activity for this Party.
+          </p>
 
-  <div className="mt-4 flex flex-wrap gap-2">
-    <Link
-      href={`${CRM_ROUTES.interactions}?party=${party.id}`}
-      className="inline-flex rounded-lg border border-[#CBD5E1] px-4 py-2 text-sm font-semibold text-[#334155] hover:border-[#F46C0B] hover:text-[#F46C0B]"
-    >
-      View interactions
-    </Link>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link
+              href={`${CRM_ROUTES.interactions}?party=${party.id}`}
+              className="inline-flex rounded-lg border border-[#CBD5E1] px-4 py-2 text-sm font-semibold text-[#334155] hover:border-[#F46C0B] hover:text-[#F46C0B]"
+            >
+              View interactions
+            </Link>
 
-    <Link
-      href={`${CRM_ROUTES.newInteraction}?party=${party.id}`}
-      className="inline-flex rounded-lg bg-[#0F4C81] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0B3A63]"
-    >
-      Log interaction
-    </Link>
-  </div>
-</div>
+            <Link
+              href={`${CRM_ROUTES.newInteraction}?party=${party.id}`}
+              className="inline-flex rounded-lg bg-[#0F4C81] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0B3A63]"
+            >
+              Log interaction
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );

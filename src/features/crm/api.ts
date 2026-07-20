@@ -120,12 +120,7 @@ export async function checkCrmPartyDuplicates(
 export async function runCrmPartyLifecycleAction(
   partyId: string,
   action:
-    | "deactivate"
-    | "reactivate"
-    | "suspend"
-    | "block"
-    | "archive"
-    | "restore",
+    "deactivate" | "reactivate" | "suspend" | "block" | "archive" | "restore",
   input: CrmLifecycleInput,
 ): Promise<CrmPartyDetail> {
   return serverFetch<CrmPartyDetail>(

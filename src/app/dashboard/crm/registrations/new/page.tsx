@@ -1,21 +1,11 @@
-import {
-  listCrmParties,
-} from "@/features/crm/api";
-import {
-  CRM_PERMISSIONS,
-} from "@/features/crm/permissions";
-import {
-  requireCrmPermission,
-} from "@/features/crm/server";
+import { listCrmParties } from "@/features/crm/api";
+import { CRM_PERMISSIONS } from "@/features/crm/permissions";
+import { requireCrmPermission } from "@/features/crm/server";
 
-import {
-  CrmRegistrationForm,
-} from "@/components/crm/CrmRegistrationForm";
+import { CrmRegistrationForm } from "@/components/crm/CrmRegistrationForm";
 
 export default async function NewRegistrationPage() {
-  await requireCrmPermission(
-    CRM_PERMISSIONS.identifier.create,
-  );
+  await requireCrmPermission(CRM_PERMISSIONS.identifier.create);
 
   const parties = await listCrmParties({
     page_size: 100,
@@ -35,15 +25,12 @@ export default async function NewRegistrationPage() {
         </h1>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">
-          Add an encrypted registration, tax, VAT, import/export
-          or marketplace seller identifier to a Party.
+          Add an encrypted registration, tax, VAT, import/export or marketplace
+          seller identifier to a Party.
         </p>
       </header>
 
-      <CrmRegistrationForm
-        mode="create"
-        parties={parties.results}
-      />
+      <CrmRegistrationForm mode="create" parties={parties.results} />
     </section>
   );
 }

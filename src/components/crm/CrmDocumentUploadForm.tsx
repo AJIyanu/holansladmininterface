@@ -1,41 +1,22 @@
 "use client";
 
-import {
-  useRef,
-  useState,
-  useActionState,
-} from "react";
+import { useRef, useState, useActionState } from "react";
 import Link from "next/link";
-import {
-  useFormStatus,
-} from "react-dom";
-import {
-  AlertTriangle,
-  Loader2,
-} from "lucide-react";
+import { useFormStatus } from "react-dom";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
-import {
-  uploadCrmDocumentAction,
-} from "@/features/crm/document-actions";
+import { uploadCrmDocumentAction } from "@/features/crm/document-actions";
 
-import {
-  initialCrmDocumentActionState,
-} from "@/features/crm/action-states";
+import { initialCrmDocumentActionState } from "@/features/crm/action-states";
 import {
   CRM_DOCUMENT_CATEGORY_OPTIONS,
   CRM_VERIFICATION_STATUS_OPTIONS,
 } from "@/features/crm/format";
-import {
-  CRM_ROUTES,
-} from "@/features/crm/routes";
+import { CRM_ROUTES } from "@/features/crm/routes";
 
-import type {
-  CrmPartyListItem,
-} from "@/features/crm/types";
+import type { CrmPartyListItem } from "@/features/crm/types";
 
-import {
-  CrmFilePreview,
-} from "./CrmFilePreview";
+import { CrmFilePreview } from "./CrmFilePreview";
 
 interface CrmDocumentUploadFormProps {
   parties: CrmPartyListItem[];
@@ -60,9 +41,7 @@ function SubmitButton() {
       disabled={status.pending}
       className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F46C0B] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D95C06] disabled:cursor-not-allowed disabled:bg-[#FDBA74]"
     >
-      {status.pending ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : null}
+      {status.pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
       Upload document
     </button>
   );
@@ -73,14 +52,13 @@ export function CrmDocumentUploadForm({
   defaultPartyId,
   defaultCategory = "OTHER",
 }: CrmDocumentUploadFormProps) {
-  const [selectedFile, setSelectedFile] =
-    useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [state, formAction] = useActionState(
     uploadCrmDocumentAction,
-    initialCrmDocumentActionState
+    initialCrmDocumentActionState,
   );
 
   return (
@@ -133,10 +111,7 @@ export function CrmDocumentUploadForm({
             className={`${fieldClass()} mt-1`}
           >
             {CRM_DOCUMENT_CATEGORY_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -144,10 +119,7 @@ export function CrmDocumentUploadForm({
         </div>
 
         <div>
-          <label
-            className={labelClass()}
-            htmlFor="verification_status"
-          >
+          <label className={labelClass()} htmlFor="verification_status">
             Verification status
           </label>
 
@@ -158,10 +130,7 @@ export function CrmDocumentUploadForm({
             className={`${fieldClass()} mt-1`}
           >
             {CRM_VERIFICATION_STATUS_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -194,9 +163,7 @@ export function CrmDocumentUploadForm({
             required
             accept=".pdf,.jpg,.jpeg,.png,.txt,.doc,.docx,.xls,.xlsx,application/pdf,image/jpeg,image/png,text/plain,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             onChange={(event) => {
-              setSelectedFile(
-                event.currentTarget.files?.[0] ?? null,
-              );
+              setSelectedFile(event.currentTarget.files?.[0] ?? null);
             }}
             className="mt-1 block w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#0F172A] file:mr-4 file:rounded-md file:border-0 file:bg-[#FFF1E8] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-[#C2410C] hover:file:bg-[#FED7AA]"
           />
@@ -216,10 +183,7 @@ export function CrmDocumentUploadForm({
         </div>
 
         <div className="md:col-span-2">
-          <label
-            className={labelClass()}
-            htmlFor="description"
-          >
+          <label className={labelClass()} htmlFor="description">
             Description
           </label>
 

@@ -255,14 +255,13 @@ export default async function TaskDetailPage({
 
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
-
-      <div
-        role="alert"
-        className="rounded-lg border border-red-500 bg-red-100 my-auto text-lg p-9 text-red-700"
+        <div
+          role="alert"
+          className="rounded-lg border border-red-500 bg-red-100 my-auto text-lg p-9 text-red-700"
         >
-        {message}
-      </div>
+          {message}
         </div>
+      </div>
     );
   }
 }
