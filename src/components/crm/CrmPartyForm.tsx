@@ -457,6 +457,7 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             defaultValue={personProfile?.title ?? ""}
             placeholder="Title"
             className={textInputClass()}
+            disabled
           />
 
           <input
@@ -464,6 +465,7 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             defaultValue={personProfile?.first_name ?? ""}
             placeholder="First name"
             className={textInputClass()}
+            disabled
           />
 
           <input
@@ -471,6 +473,7 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             defaultValue={personProfile?.middle_name ?? ""}
             placeholder="Middle name"
             className={textInputClass()}
+            disabled
           />
 
           <input
@@ -478,6 +481,7 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             defaultValue={personProfile?.last_name ?? ""}
             placeholder="Last name"
             className={textInputClass()}
+            disabled
           />
 
           <input
@@ -485,13 +489,14 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             defaultValue={personProfile?.preferred_name ?? ""}
             placeholder="Preferred name"
             className={`${textInputClass()} md:col-span-2`}
+            disabled
           />
         </section>
       ) : (
         <section className="grid gap-4 md:grid-cols-2">
           <div className="md:col-span-2">
             <h2 className="text-base font-semibold text-[#0F172A]">
-              Organisation / trading name details
+              Organisation / trading name details - This part is not editable here!
             </h2>
           </div>
 
@@ -499,28 +504,32 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             name="legal_name"
             defaultValue={organisationProfile?.legal_name ?? ""}
             placeholder="Legal name"
-            className={textInputClass()}
+            className={`${textInputClass()} text-gray-500`}
+            disabled
           />
 
           <input
             name="trading_name"
             defaultValue={organisationProfile?.trading_name ?? ""}
             placeholder="Trading name"
-            className={textInputClass()}
+              className={`${textInputClass()} text-gray-500`}
+              disabled
           />
 
           <input
             name="website"
             defaultValue={organisationProfile?.website ?? ""}
             placeholder="Website"
-            className={textInputClass()}
+              className={`${textInputClass()} text-gray-500`}
+              disabled
           />
 
           <input
             name="industry"
             defaultValue={organisationProfile?.industry ?? ""}
             placeholder="Industry"
-            className={textInputClass()}
+              className={`${textInputClass()} text-gray-500`}
+              disabled
           />
 
           <input
@@ -528,14 +537,16 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             defaultValue={organisationProfile?.registration_country ?? ""}
             maxLength={2}
             placeholder="Registration country"
-            className={`${textInputClass()} uppercase`}
+              className={`${textInputClass()} uppercase text-gray-500`}
+              disabled
           />
 
           <input
             name="incorporation_date"
             type="date"
             defaultValue={organisationProfile?.incorporation_date ?? ""}
-            className={textInputClass()}
+              className={`${textInputClass()} text-gray-500`}
+              disabled
           />
 
           <div className="md:col-span-2">
@@ -544,7 +555,8 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
               rows={3}
               defaultValue={organisationProfile?.business_description ?? ""}
               placeholder="Business description"
-              className={textareaClass()}
+                className={`${textInputClass()} text-gray-500`}
+                disabled
             />
           </div>
         </section>

@@ -31,6 +31,18 @@ import type {
   CrmPartyAffiliationWriteInput,
   CrmPartyAffiliation,
   CrmPartyAffiliationListQuery,
+  CrmAddress,
+  CrmAddressListQuery,
+  CrmAddressWriteInput,
+  CrmContactMethod,
+  CrmContactMethodListQuery,
+  CrmContactMethodWriteInput,
+  CrmOrganisationProfile,
+  CrmPartyProfileWriteInput,
+  CrmPartySource,
+  CrmPartySourceWriteInput,
+  CrmPersonProfile,
+  CrmSourceListQuery,
 } from "./types";
 
 const CRM_API_PATHS = {
@@ -40,6 +52,9 @@ const CRM_API_PATHS = {
   documents: "/crm/documents/",
   interactions: "/crm/interactions/",
   contactRoles: "/crm/contact-roles/",
+  contactMethods: "/crm/contact-methods/",
+  addresses: "/crm/addresses/",
+  sources: "/crm/sources/",
 } as const;
 
 function detailPath(collectionPath: string, id: string): string {
@@ -387,4 +402,130 @@ export async function deleteCrmAffiliation(
       method: "DELETE",
     },
   );
+}
+
+export async function updateCrmPartyProfile(
+  partyId: string,
+  input: CrmPartyProfileWriteInput,
+): Promise<CrmOrganisationProfile | CrmPersonProfile> {
+  return serverFetch<CrmOrganisationProfile | CrmPersonProfile>(
+    `${detailPath(CRM_API_PATHS.parties, partyId)}profile/`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export async function listCrmContactMethods(
+  query: CrmContactMethodListQuery = {},
+): Promise<PaginatedResponse<CrmContactMethod>> {
+  return serverFetch<PaginatedResponse<CrmContactMethod>>(
+    buildCrmApiPath(CRM_API_PATHS.contactMethods, query),
+  );
+}
+
+export async function createCrmContactMethod(
+  input: CrmContactMethodWriteInput,
+): Promise<CrmContactMethod> {
+  return serverFetch<CrmContactMethod>(CRM_API_PATHS.contactMethods, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateCrmContactMethod(
+  contactMethodId: string,
+  input: Partial<CrmContactMethodWriteInput>,
+): Promise<CrmContactMethod> {
+  return serverFetch<CrmContactMethod>(
+    detailPath(CRM_API_PATHS.contactMethods, contactMethodId),
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export async function deleteCrmContactMethod(
+  contactMethodId: string,
+): Promise<void> {
+  await serverFetch<null>(
+    detailPath(CRM_API_PATHS.contactMethods, contactMethodId),
+    {
+      method: "DELETE",
+    },
+  );
+}
+
+export async function listCrmAddresses(
+  query: CrmAddressListQuery = {},
+): Promise<PaginatedResponse<CrmAddress>> {
+  return serverFetch<PaginatedResponse<CrmAddress>>(
+    buildCrmApiPath(CRM_API_PATHS.addresses, query),
+  );
+}
+
+export async function createCrmAddress(
+  input: CrmAddressWriteInput,
+): Promise<CrmAddress> {
+  return serverFetch<CrmAddress>(CRM_API_PATHS.addresses, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateCrmAddress(
+  addressId: string,
+  input: Partial<CrmAddressWriteInput>,
+): Promise<CrmAddress> {
+  return serverFetch<CrmAddress>(
+    detailPath(CRM_API_PATHS.addresses, addressId),
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export async function deleteCrmAddress(addressId: string): Promise<void> {
+  await serverFetch<null>(detailPath(CRM_API_PATHS.addresses, addressId), {
+    method: "DELETE",
+  });
+}
+
+export async function listCrmSources(
+  query: CrmSourceListQuery = {},
+): Promise<PaginatedResponse<CrmPartySource>> {
+  return serverFetch<PaginatedResponse<CrmPartySource>>(
+    buildCrmApiPath(CRM_API_PATHS.sources, query),
+  );
+}
+
+export async function createCrmSource(
+  input: CrmPartySourceWriteInput,
+): Promise<CrmPartySource> {
+  return serverFetch<CrmPartySource>(CRM_API_PATHS.sources, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateCrmSource(
+  sourceId: string,
+  input: Partial<CrmPartySourceWriteInput>,
+): Promise<CrmPartySource> {
+  return serverFetch<CrmPartySource>(
+    detailPath(CRM_API_PATHS.sources, sourceId),
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export async function deleteCrmSource(sourceId: string): Promise<void> {
+  await serverFetch<null>(detailPath(CRM_API_PATHS.sources, sourceId), {
+    method: "DELETE",
+  });
 }

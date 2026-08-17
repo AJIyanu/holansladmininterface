@@ -352,18 +352,32 @@ function buildTradingNamePartyPayload(formData: FormData): CrmPartyWriteInput {
   };
 }
 
-function buildEditPartyPayload(formData: FormData): CrmPartyWriteInput {
-  const entityKind = textValue(formData, "entity_kind") as CrmEntityKind;
+// function buildEditPartyPayload(formData: FormData): CrmPartyWriteInput {
+//   const entityKind = textValue(formData, "entity_kind") as CrmEntityKind;
 
-  if (entityKind === "INDIVIDUAL") {
-    return buildIndividualPartyPayload(formData);
-  }
+//   if (entityKind === "INDIVIDUAL") {
+//     return buildIndividualPartyPayload(formData);
+//   }
 
-  if (entityKind === "TRADING_NAME") {
-    return buildTradingNamePartyPayload(formData);
-  }
+//   if (entityKind === "TRADING_NAME") {
+//     return buildTradingNamePartyPayload(formData);
+//   }
 
-  return buildOrganisationPartyPayload(formData);
+//   return buildOrganisationPartyPayload(formData);
+// }
+
+function buildEditPartyPayload(
+  formData: FormData,
+): Partial<CrmPartyWriteInput> {
+  return {
+    display_name: textValue(formData, "display_name"),
+    entity_kind: textValue(formData, "entity_kind") as CrmEntityKind,
+    verification_level: textValue(
+      formData,
+      "verification_level",
+    ) as CrmVerificationLevel,
+    roles: selectedRoles(formData),
+  };
 }
 
 function buildCreatePayload(formData: FormData): CrmPartyWriteInput {
@@ -607,7 +621,13 @@ export async function updateCrmPartyAction(
 ): Promise<CrmPartyActionState> {
   const partyId = textValue(formData, "party_id");
   const payload = buildEditPartyPayload(formData);
-  const parsed = crmPartyWriteSchema.safeParse(payload);
+
+  if (!payload.display_name) {
+    return {
+      ok: false,
+      message: "Display name is required",
+    };
+  }
 
   if (!partyId) {
     return {
@@ -616,19 +636,19 @@ export async function updateCrmPartyAction(
     };
   }
 
-  if (!parsed.success) {
-    return {
-      ok: false,
-      message:
-        parsed.error.issues[0]?.message ??
-        "Check the Party form and try again.",
-    };
-  }
+  // if (!parsed.success) {
+  //   return {
+  //     ok: false,
+  //     message:
+  //       parsed.error.issues[0]?.message ??
+  //       "Check the Party form and try again.",
+  //   };
+  // }
 
   let updatedId = partyId;
 
   try {
-    const updated = await updateCrmParty(partyId, parsed.data);
+    const updated = await updateCrmParty(partyId, payload);
 
     updatedId = updated.id;
   } catch (error) {

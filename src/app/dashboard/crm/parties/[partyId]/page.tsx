@@ -23,6 +23,10 @@ import { CrmPartyLifecyclePanel } from "@/components/crm/CrmPartyLifecyclePanel"
 
 import { CrmAffiliationsPanel } from "@/components/crm/CrmAffiliationsPanel";
 
+import {
+  CrmPartyRelatedRecordsPanel,
+} from "@/components/crm/CrmPartyRelatedRecordsPanel";
+
 type PageProps = {
   params: Promise<{
     partyId: string;
@@ -147,6 +151,8 @@ export default async function PartyDetailPage({ params }: PageProps) {
         )}
         contactRoles={contactRoles.results}
       />
+
+      <CrmPartyRelatedRecordsPanel party={party} />
 
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">

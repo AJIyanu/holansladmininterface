@@ -388,6 +388,57 @@ export interface CrmDuplicateCheckInput {
   listing_url?: string;
 }
 
+export interface CrmContactMethodWriteInput extends CrmContactMethodInput {
+  party: UUID;
+}
+
+export interface CrmAddressWriteInput extends CrmAddressInput {
+  party: UUID;
+}
+
+export interface CrmPartySourceWriteInput extends CrmPartySourceInput {
+  party: UUID;
+}
+
+export type CrmPartyProfileWriteInput =
+  CrmOrganisationProfileInput | CrmPersonProfileInput;
+
+export interface CrmContactMethodListQuery {
+  party?: UUID;
+  method_type?: CrmContactMethodType;
+  is_primary?: boolean;
+  is_verified?: boolean;
+  is_active?: boolean;
+  search?: string;
+  ordering?: string;
+  page?: number;
+  page_size?: number;
+}
+
+export interface CrmAddressListQuery {
+  party?: UUID;
+  address_type?: CrmAddressType;
+  country_code?: string;
+  is_primary?: boolean;
+  is_active?: boolean;
+  search?: string;
+  ordering?: string;
+  page?: number;
+  page_size?: number;
+}
+
+export interface CrmSourceListQuery {
+  party?: UUID;
+  source_type?: CrmSourceType;
+  platform_name?: string;
+  is_primary?: boolean;
+  is_active?: boolean;
+  search?: string;
+  ordering?: string;
+  page?: number;
+  page_size?: number;
+}
+
 export interface CrmDuplicateMatch {
   party: CrmPartyListItem;
   match_level: "EXACT" | "STRONG" | "WEAK";
