@@ -228,7 +228,11 @@ function ProfilePanel({
 
               <input
                 name="website"
-                placeholder="Website"
+                type="url"
+                inputMode="url"
+                autoComplete="url"
+                placeholder="https://example.com"
+                title="Enter a complete URL beginning with http:// or https://"
                 defaultValue={organisation?.website ?? ""}
                 className={fieldClass()}
               />
