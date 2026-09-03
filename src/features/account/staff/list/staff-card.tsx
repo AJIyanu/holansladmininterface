@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BriefcaseBusiness,
   Building2,
   ChevronDown,
   ChevronUp,

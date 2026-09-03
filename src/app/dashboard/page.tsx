@@ -1,5 +1,3 @@
-import { CardDemo } from "@/components/layout/CardDemo";
-
 export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {

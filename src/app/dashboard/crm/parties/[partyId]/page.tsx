@@ -23,9 +23,7 @@ import { CrmPartyLifecyclePanel } from "@/components/crm/CrmPartyLifecyclePanel"
 
 import { CrmAffiliationsPanel } from "@/components/crm/CrmAffiliationsPanel";
 
-import {
-  CrmPartyRelatedRecordsPanel,
-} from "@/components/crm/CrmPartyRelatedRecordsPanel";
+import { CrmPartyRelatedRecordsPanel } from "@/components/crm/CrmPartyRelatedRecordsPanel";
 
 type PageProps = {
   params: Promise<{

@@ -18,7 +18,8 @@ interface ResetPasswordPageProps {
 }
 
 async function verifyResetCode(code: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://admin.holansl.com";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://admin.holansl.com";
 
   const response = await fetch(`${baseUrl}/api/auth/password-reset/verify`, {
     method: "POST",

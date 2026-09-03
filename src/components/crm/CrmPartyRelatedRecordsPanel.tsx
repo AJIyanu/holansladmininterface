@@ -1,7 +1,6 @@
 import {
   Building2,
   Globe,
-  Mail,
   MapPin,
   Phone,
   Save,
@@ -45,11 +44,7 @@ function labelClass(): string {
   return "text-sm font-medium text-[#334155]";
 }
 
-function SubmitButton({
-  children = "Save",
-}: {
-  children?: React.ReactNode;
-}) {
+function SubmitButton({ children = "Save" }: { children?: React.ReactNode }) {
   return (
     <button
       type="submit"
@@ -119,11 +114,7 @@ function ActivePrimaryChecks({
   );
 }
 
-function ProfilePanel({
-  party,
-}: {
-  party: CrmPartyDetail;
-}) {
+function ProfilePanel({ party }: { party: CrmPartyDetail }) {
   const isIndividual = party.entity_kind === "INDIVIDUAL";
   const person = party.person_profile;
   const organisation = party.organisation_profile;
@@ -141,9 +132,7 @@ function ProfilePanel({
 
         <div>
           <h2 className="text-base font-bold text-[#0F172A]">
-            {isIndividual
-              ? "Person profile"
-              : "Organisation / trading profile"}
+            {isIndividual ? "Person profile" : "Organisation / trading profile"}
           </h2>
 
           <p className="mt-1 text-sm text-[#64748B]">
@@ -157,21 +146,10 @@ function ProfilePanel({
           Edit profile details
         </summary>
 
-        <form
-          action={updateCrmProfileAction}
-          className="mt-4 space-y-4"
-        >
-          <input
-            type="hidden"
-            name="party_id"
-            value={party.id}
-          />
+        <form action={updateCrmProfileAction} className="mt-4 space-y-4">
+          <input type="hidden" name="party_id" value={party.id} />
 
-          <input
-            type="hidden"
-            name="entity_kind"
-            value={party.entity_kind}
-          />
+          <input type="hidden" name="entity_kind" value={party.entity_kind} />
 
           {isIndividual ? (
             <div className="grid gap-4 md:grid-cols-2">
@@ -248,18 +226,14 @@ function ProfilePanel({
                 name="registration_country"
                 placeholder="Registration country, e.g. NG"
                 maxLength={2}
-                defaultValue={
-                  organisation?.registration_country ?? ""
-                }
+                defaultValue={organisation?.registration_country ?? ""}
                 className={`${fieldClass()} uppercase`}
               />
 
               <input
                 name="incorporation_date"
                 type="date"
-                defaultValue={
-                  organisation?.incorporation_date ?? ""
-                }
+                defaultValue={organisation?.incorporation_date ?? ""}
                 className={fieldClass()}
               />
 
@@ -267,9 +241,7 @@ function ProfilePanel({
                 name="business_description"
                 rows={3}
                 placeholder="Business description"
-                defaultValue={
-                  organisation?.business_description ?? ""
-                }
+                defaultValue={organisation?.business_description ?? ""}
                 className={`${textareaClass()} md:col-span-2`}
               />
             </div>
@@ -350,11 +322,7 @@ function ContactMethodForm({
   );
 }
 
-function ContactMethodsPanel({
-  party,
-}: {
-  party: CrmPartyDetail;
-}) {
+function ContactMethodsPanel({ party }: { party: CrmPartyDetail }) {
   return (
     <section className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
       <div className="flex items-start gap-3">
@@ -368,7 +336,8 @@ function ContactMethodsPanel({
           </h2>
 
           <p className="mt-1 text-sm text-[#64748B]">
-            Manage email, phone, WhatsApp, website, social and marketplace contact records.
+            Manage email, phone, WhatsApp, website, social and marketplace
+            contact records.
           </p>
         </div>
       </div>
@@ -380,8 +349,7 @@ function ContactMethodsPanel({
             className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4"
           >
             <summary className="cursor-pointer text-sm font-semibold text-[#0F4C81]">
-              {contactMethod.method_type_display}:{" "}
-              {contactMethod.value}
+              {contactMethod.method_type_display}: {contactMethod.value}
               {contactMethod.is_primary ? " · Primary" : ""}
             </summary>
 
@@ -395,11 +363,7 @@ function ContactMethodsPanel({
                 action={deleteCrmContactMethodAction}
                 className="flex justify-end"
               >
-                <input
-                  type="hidden"
-                  name="party_id"
-                  value={party.id}
-                />
+                <input type="hidden" name="party_id" value={party.id} />
 
                 <input
                   type="hidden"
@@ -434,20 +398,14 @@ function AddressForm({
   partyId: string;
   address?: CrmAddress;
 }) {
-  const action = address
-    ? updateCrmAddressAction
-    : createCrmAddressAction;
+  const action = address ? updateCrmAddressAction : createCrmAddressAction;
 
   return (
     <form action={action} className="space-y-4">
       <input type="hidden" name="party_id" value={partyId} />
 
       {address ? (
-        <input
-          type="hidden"
-          name="address_id"
-          value={address.id}
-        />
+        <input type="hidden" name="address_id" value={address.id} />
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -527,19 +485,13 @@ function AddressForm({
       <ActivePrimaryChecks item={address} />
 
       <div className="flex justify-end">
-        <SubmitButton>
-          {address ? "Save address" : "Add address"}
-        </SubmitButton>
+        <SubmitButton>{address ? "Save address" : "Add address"}</SubmitButton>
       </div>
     </form>
   );
 }
 
-function AddressesPanel({
-  party,
-}: {
-  party: CrmPartyDetail;
-}) {
+function AddressesPanel({ party }: { party: CrmPartyDetail }) {
   return (
     <section className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
       <div className="flex items-start gap-3">
@@ -553,7 +505,8 @@ function AddressesPanel({
           </h2>
 
           <p className="mt-1 text-sm text-[#64748B]">
-            Manage registered address, office, billing, delivery, residential or market locations.
+            Manage registered address, office, billing, delivery, residential or
+            market locations.
           </p>
         </div>
       </div>
@@ -571,26 +524,15 @@ function AddressesPanel({
             </summary>
 
             <div className="mt-4 space-y-3">
-              <AddressForm
-                partyId={party.id}
-                address={address}
-              />
+              <AddressForm partyId={party.id} address={address} />
 
               <form
                 action={deleteCrmAddressAction}
                 className="flex justify-end"
               >
-                <input
-                  type="hidden"
-                  name="party_id"
-                  value={party.id}
-                />
+                <input type="hidden" name="party_id" value={party.id} />
 
-                <input
-                  type="hidden"
-                  name="address_id"
-                  value={address.id}
-                />
+                <input type="hidden" name="address_id" value={address.id} />
 
                 <DeleteButton />
               </form>
@@ -619,20 +561,14 @@ function SourceForm({
   partyId: string;
   source?: CrmPartySource;
 }) {
-  const action = source
-    ? updateCrmSourceAction
-    : createCrmSourceAction;
+  const action = source ? updateCrmSourceAction : createCrmSourceAction;
 
   return (
     <form action={action} className="space-y-4">
       <input type="hidden" name="party_id" value={partyId} />
 
       {source ? (
-        <input
-          type="hidden"
-          name="source_id"
-          value={source.id}
-        />
+        <input type="hidden" name="source_id" value={source.id} />
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -641,17 +577,13 @@ function SourceForm({
           defaultValue={source?.source_type ?? "DIRECT_CONTACT"}
           className={fieldClass()}
         >
-          <option value="ONLINE_MARKETPLACE">
-            Online marketplace
-          </option>
+          <option value="ONLINE_MARKETPLACE">Online marketplace</option>
           <option value="PHYSICAL_MARKET">Physical market</option>
           <option value="DIRECT_CONTACT">Direct contact</option>
           <option value="REFERRAL">Referral</option>
           <option value="WEBSITE">Website</option>
           <option value="SOCIAL_MEDIA">Social media</option>
-          <option value="PREVIOUS_TRANSACTION">
-            Previous transaction
-          </option>
+          <option value="PREVIOUS_TRANSACTION">Previous transaction</option>
           <option value="TRADE_DIRECTORY">Trade directory</option>
           <option value="EVENT">Event</option>
           <option value="OTHER">Other</option>
@@ -710,8 +642,7 @@ function SourceForm({
           name="discovered_at"
           type="date"
           defaultValue={
-            source?.discovered_at ??
-            new Date().toISOString().slice(0, 10)
+            source?.discovered_at ?? new Date().toISOString().slice(0, 10)
           }
           className={fieldClass()}
         />
@@ -736,19 +667,13 @@ function SourceForm({
       <ActivePrimaryChecks item={source} />
 
       <div className="flex justify-end">
-        <SubmitButton>
-          {source ? "Save source" : "Add source"}
-        </SubmitButton>
+        <SubmitButton>{source ? "Save source" : "Add source"}</SubmitButton>
       </div>
     </form>
   );
 }
 
-function SourcesPanel({
-  party,
-}: {
-  party: CrmPartyDetail;
-}) {
+function SourcesPanel({ party }: { party: CrmPartyDetail }) {
   return (
     <section className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
       <div className="flex items-start gap-3">
@@ -762,7 +687,8 @@ function SourcesPanel({
           </h2>
 
           <p className="mt-1 text-sm text-[#64748B]">
-            Manage Jumia, eBay, Amazon, physical market, referral and discovery details.
+            Manage Jumia, eBay, Amazon, physical market, referral and discovery
+            details.
           </p>
         </div>
       </div>
@@ -782,21 +708,10 @@ function SourcesPanel({
             <div className="mt-4 space-y-3">
               <SourceForm partyId={party.id} source={source} />
 
-              <form
-                action={deleteCrmSourceAction}
-                className="flex justify-end"
-              >
-                <input
-                  type="hidden"
-                  name="party_id"
-                  value={party.id}
-                />
+              <form action={deleteCrmSourceAction} className="flex justify-end">
+                <input type="hidden" name="party_id" value={party.id} />
 
-                <input
-                  type="hidden"
-                  name="source_id"
-                  value={source.id}
-                />
+                <input type="hidden" name="source_id" value={source.id} />
 
                 <DeleteButton />
               </form>

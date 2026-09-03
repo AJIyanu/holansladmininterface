@@ -38,7 +38,7 @@ It supports:
 /dashboard/crm/documents/[documentId]/edit
 /dashboard/crm/interactions
 /dashboard/crm/settings/contact-roles
-````
+```
 
 ## Removed routes
 
@@ -76,4 +76,6 @@ border-border
 bg-background
 ```
 
-````
+```
+
+```

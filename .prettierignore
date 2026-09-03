@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.vercel/
+out/
+build/
+dist/
+coverage/
+.agents/
+.codex/
+.env*
+next-env.d.ts
+*.tsbuildinfo
+*.deb
+DEVELOPMENT_LOG.local.md

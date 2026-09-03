@@ -496,7 +496,8 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
         <section className="grid gap-4 md:grid-cols-2">
           <div className="md:col-span-2">
             <h2 className="text-base font-semibold text-[#0F172A]">
-              Organisation / trading name details - This part is not editable here!
+              Organisation / trading name details - This part is not editable
+              here!
             </h2>
           </div>
 
@@ -512,24 +513,24 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             name="trading_name"
             defaultValue={organisationProfile?.trading_name ?? ""}
             placeholder="Trading name"
-              className={`${textInputClass()} text-gray-500`}
-              disabled
+            className={`${textInputClass()} text-gray-500`}
+            disabled
           />
 
           <input
             name="website"
             defaultValue={organisationProfile?.website ?? ""}
             placeholder="Website"
-              className={`${textInputClass()} text-gray-500`}
-              disabled
+            className={`${textInputClass()} text-gray-500`}
+            disabled
           />
 
           <input
             name="industry"
             defaultValue={organisationProfile?.industry ?? ""}
             placeholder="Industry"
-              className={`${textInputClass()} text-gray-500`}
-              disabled
+            className={`${textInputClass()} text-gray-500`}
+            disabled
           />
 
           <input
@@ -537,16 +538,16 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
             defaultValue={organisationProfile?.registration_country ?? ""}
             maxLength={2}
             placeholder="Registration country"
-              className={`${textInputClass()} uppercase text-gray-500`}
-              disabled
+            className={`${textInputClass()} uppercase text-gray-500`}
+            disabled
           />
 
           <input
             name="incorporation_date"
             type="date"
             defaultValue={organisationProfile?.incorporation_date ?? ""}
-              className={`${textInputClass()} text-gray-500`}
-              disabled
+            className={`${textInputClass()} text-gray-500`}
+            disabled
           />
 
           <div className="md:col-span-2">
@@ -555,8 +556,8 @@ function EditModeFields({ initialParty }: { initialParty: CrmPartyDetail }) {
               rows={3}
               defaultValue={organisationProfile?.business_description ?? ""}
               placeholder="Business description"
-                className={`${textInputClass()} text-gray-500`}
-                disabled
+              className={`${textInputClass()} text-gray-500`}
+              disabled
             />
           </div>
         </section>

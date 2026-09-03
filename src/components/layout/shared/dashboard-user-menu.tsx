@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Bell,
-  ChevronDown,
   CircleHelp,
   LogOut,
   Settings,

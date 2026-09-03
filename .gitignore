@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# Local-only development inventory and roadmap; never force-add this file.
+/DEVELOPMENT_LOG.local.md

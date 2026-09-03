@@ -28,7 +28,7 @@ src/features/crm
 src/components/crm
 src/app/dashboard/crm
 src/app/api/crm
-````
+```
 
 ## Important files
 
@@ -128,4 +128,6 @@ Browser
 
 The browser never receives Supabase credentials or direct private-bucket URLs.
 
-````
+```
+
+```

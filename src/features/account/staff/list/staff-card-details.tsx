@@ -1,9 +1,6 @@
 import {
   BriefcaseBusiness,
-  Building2,
-  CalendarDays,
   Contact,
-  MapPin,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
