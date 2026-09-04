@@ -208,7 +208,7 @@ export function LoginForm() {
             <Button
               type="submit"
               disabled={form.formState.isSubmitting}
-              className="w-full bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground font-medium py-2 px-4 rounded-md mt-6"
+              className="mt-6 w-full rounded-md bg-brand-navy px-4 py-2 font-medium text-brand-white hover:bg-brand-navy/90"
             >
               {form.formState.isSubmitting ? "Logging in..." : "Log in"}
             </Button>

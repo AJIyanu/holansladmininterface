@@ -1,40 +1,37 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
+
+import { clearAuthCookies } from "@/lib/auth-tokens";
 
 const API_BASE_URL = process.env.DJANGO_API_URL || "http://localhost:8000/api";
 
 export async function POST(request: NextRequest) {
-  try {
-    const refreshToken = request.cookies.get("refresh_token")?.value;
+  const accessToken = request.cookies.get("access_token")?.value;
+  const refreshToken = request.cookies.get("refresh_token")?.value;
 
-    if (refreshToken) {
-      await fetch(`${API_BASE_URL}/auth/logout/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refresh: refreshToken }),
-      });
-    }
+  if (accessToken && refreshToken) {
+    after(async () => {
+      try {
+        const backendResponse = await fetch(`${API_BASE_URL}/account/logout/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            access: accessToken,
+            refresh: refreshToken,
+          }),
+          cache: "no-store",
+        });
 
-    const response = NextResponse.json({ success: true }, { status: 200 });
-
-    // Clear cookies
-    response.cookies.set("access_token", "", {
-      httpOnly: true,
-      maxAge: 0,
-      path: "/",
+        if (!backendResponse.ok) {
+          console.error("Backend logout failed:", backendResponse.status);
+        }
+      } catch (error) {
+        console.error("Backend logout request failed:", error);
+      }
     });
-    response.cookies.set("refresh_token", "", {
-      httpOnly: true,
-      maxAge: 0,
-      path: "/",
-    });
-
-    return response;
-  } catch (err: unknown) {
-    const errorMessage =
-      err instanceof Error ? err.message : "An unexpected error occurred";
-    return NextResponse.json(
-      { success: false, error: errorMessage },
-      { status: 500 },
-    );
   }
+
+  const response = NextResponse.json({ success: true }, { status: 200 });
+  clearAuthCookies(response);
+
+  return response;
 }
