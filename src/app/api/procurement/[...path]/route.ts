@@ -1,96 +1,94 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-
-const API_BASE_URL = process.env.DJANGO_API_URL;
-
-async function proxyRequest(req: NextRequest, method: string, path: string[]) {
-  const endpoint = `${API_BASE_URL}/procurement/${path.join("/")}/`;
-
-  let token = req.cookies.get("access_token")?.value;
-  if (!token) {
-    token = cookies().toString();
+import { authenticatedRouteFetch } from "@/lib/authenticated-route-fetch";
+import { setAccessTokenCookie } from "@/lib/auth-tokens";
+const collections = new Set([
+  "requests",
+  "items",
+  "supplier-quotations",
+  "quotations",
+  "quotation-revisions",
+  "purchase-orders",
+  "supplier-purchases",
+  "goods-receipts",
+  "deliveries",
+  "delivery-outcomes",
+  "outcome-lines",
+  "rejection-actions",
+  "attempts",
+  "events",
+  "documents",
+  "costs",
+  "finance-requests",
+  "task-links",
+  "capabilities",
+  "lookups",
+  "document-register",
+  "document-versions",
+]);
+type Context = { params: Promise<{ path: string[] }> };
+async function proxy(request: NextRequest, context: Context) {
+  const { path } = await context.params;
+  if (
+    !collections.has(path[0]) ||
+    path.some((part) => !/^[a-zA-Z0-9-]+$/.test(part))
+  )
+    return NextResponse.json(
+      { detail: "Unknown procurement route." },
+      { status: 404 },
+    );
+  if (
+    request.method !== "GET" &&
+    request.headers.get("origin") &&
+    request.headers.get("origin") !== request.nextUrl.origin
+  )
+    return NextResponse.json(
+      { detail: "Invalid request origin." },
+      { status: 403 },
+    );
+  const headers = new Headers();
+  for (const name of ["content-type", "idempotency-key"]) {
+    const value = request.headers.get(name);
+    if (value) headers.set(name, value);
   }
-  // console.log(`Accessing endpoint: ${endpoint} with token: ${token}`);
-
-  let body: string | undefined;
-  if (method !== "GET" && method !== "HEAD") {
-    body = await req.text();
-  }
-  // console.log("Proxying request body:", body);
-
-  const res = await fetch(endpoint, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      "X-Auth-Token": `Bearer ${token}`,
-    },
-    body,
-    cache: "no-store",
-  });
-
-  const data = (await res.text().catch(() => null)) ?? "";
-  // console.log(`Response from ${endpoint}:`, data);
-
-  if (res.status === 204) {
-    return new NextResponse(null, {
-      status: 204,
-      headers: {
-        "Content-Type": res.headers.get("Content-Type") ?? "application/json",
-      },
+  try {
+    const body =
+      request.method === "GET" ? undefined : await request.arrayBuffer();
+    if (body && body.byteLength > 25 * 1024 * 1024)
+      return NextResponse.json(
+        { detail: "Upload exceeds 25 MiB." },
+        { status: 413 },
+      );
+    const result = await authenticatedRouteFetch(
+      `/procurement/${path.join("/")}/${request.nextUrl.search}`,
+      { method: request.method, headers, body, cache: "no-store" },
+    );
+    if (result.errorResponse) return result.errorResponse;
+    if (!result.response)
+      return NextResponse.json(
+        { detail: "Procurement service unavailable." },
+        { status: 503 },
+      );
+    const outputHeaders = new Headers({
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
     });
+    for (const name of ["content-type", "content-disposition"]) {
+      const value = result.response.headers.get(name);
+      if (value) outputHeaders.set(name, value);
+    }
+    const response = new NextResponse(result.response.body, {
+      status: result.response.status,
+      headers: outputHeaders,
+    });
+    if (result.accessToken) setAccessTokenCookie(response, result.accessToken);
+    return response;
+  } catch {
+    return NextResponse.json(
+      { detail: "Unable to reach procurement. Retry the same submission." },
+      { status: 503 },
+    );
   }
-
-  return new NextResponse(data, {
-    status: res.status,
-    headers: {
-      "Content-Type": res.headers.get("Content-Type") ?? "application/json",
-    },
-  });
 }
-
-// GET
-export async function GET(
-  req: NextRequest,
-  props: { params: Promise<{ path: string[] }> },
-) {
-  const params = await props.params;
-  return proxyRequest(req, "GET", params.path);
-}
-
-// POST
-export async function POST(
-  req: NextRequest,
-  props: { params: Promise<{ path: string[] }> },
-) {
-  const params = await props.params;
-  // console.log("POST request to path:", params.path);
-  return proxyRequest(req, "POST", params.path);
-}
-
-// PUT
-export async function PUT(
-  req: NextRequest,
-  props: { params: Promise<{ path: string[] }> },
-) {
-  const params = await props.params;
-  return proxyRequest(req, "PUT", params.path);
-}
-
-// PATCH
-export async function PATCH(
-  req: NextRequest,
-  props: { params: Promise<{ path: string[] }> },
-) {
-  const params = await props.params;
-  return proxyRequest(req, "PATCH", params.path);
-}
-
-// DELETE
-export async function DELETE(
-  req: NextRequest,
-  props: { params: Promise<{ path: string[] }> },
-) {
-  const params = await props.params;
-  return proxyRequest(req, "DELETE", params.path);
-}
+export const GET = proxy;
+export const POST = proxy;
+export const PATCH = proxy;

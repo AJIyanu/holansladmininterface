@@ -32,3 +32,21 @@ Protect registration reveals and document downloads; interactions remain manual.
 Tasks, comments, reminders and dashboard notifications are implemented. Procurement
 and finance links/proxy remnants do not imply implemented business functionality.
 Consult backend app docs and stabilize backend contracts before dependent UI work.
+
+Procurement now uses `/dashboard/procurement/[[...segments]]` with the existing
+sidebar, assigned permission checks, server-fetched records and the authenticated
+`/api/procurement/[...path]` proxy. Document-version pages display saved PDF/JPG
+previews and downloads through the protected proxy. Company office details come
+from backend configuration, never from obsolete sample addresses. Official
+quotation/invoice issuance and receipts remain dependent on ledger integration.
+
+Procurement form review uses the shared Dialog: validated field values, selected
+record labels, filenames and item rows appear before Confirm and save. Edit
+closes the modal and retains values. Request ownership/department are backend
+defaults. The journey uses alternating rounded cards, circular icons and a dotted
+path, with hover/focus/tap popups and paginated milestone history. Keyboard users
+can enter the popup with Enter, Space or Arrow Down; Escape closes it.
+
+Accounts now uses `/dashboard/ledger/[[...segments]]` and the authenticated
+`/api/ledger/[...path]` proxy. See [Accounts workspace](LEDGER.md) for implemented
+screens, permission boundaries and pending backend migration requirements.

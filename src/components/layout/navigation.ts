@@ -8,7 +8,6 @@ import {
   CircleDollarSign,
   ClipboardList,
   FileBarChart,
-  FilePlus2,
   FileText,
   Gauge,
   HandCoins,
@@ -115,56 +114,152 @@ export const dashboardNavigation: NavigationSection[] = [
     title: "Procurement",
     items: [
       {
+        title: "Requests & Tracking",
+        icon: ClipboardList,
+        children: [
+          {
+            title: "All Requests",
+            href: "/dashboard/procurement/requests",
+            icon: ClipboardList,
+            permission: "procurement.procurementrequest.view",
+          },
+          {
+            title: "New Request",
+            href: "/dashboard/procurement/requests/new",
+            icon: ClipboardList,
+            permission: "procurement.procurementrequest.create",
+          },
+          {
+            title: "Item Trackers",
+            href: "/dashboard/procurement/items",
+            icon: ClipboardList,
+            permission: "procurement.requestitem.view",
+          },
+        ],
+      },
+      {
+        title: "Sourcing & Quotations",
+        icon: Receipt,
+        children: [
+          {
+            title: "Supplier Offers",
+            href: "/dashboard/procurement/supplier-quotations",
+            icon: Receipt,
+            permission: "procurement.supplierquotation.view",
+          },
+          {
+            title: "Client Quotations",
+            href: "/dashboard/procurement/quotations",
+            icon: Receipt,
+            permission: "procurement.clientquotation.view",
+          },
+          {
+            title: "Prepare Quotation",
+            href: "/dashboard/procurement/quotations/new",
+            icon: Receipt,
+            permission: "procurement.clientquotation.create",
+          },
+        ],
+      },
+      {
         title: "Purchase Orders",
         icon: ShoppingCart,
         children: [
           {
-            title: "Create Order",
-            href: "/dashboard/po/new",
-            icon: FilePlus2,
-            permission: "procurement.purchaseorder.create",
+            title: "Client Purchase Orders",
+            href: "/dashboard/procurement/purchase-orders",
+            icon: ShoppingCart,
+            permission: "procurement.clientpurchaseorder.view",
           },
           {
-            title: "Track Orders",
-            href: "/dashboard/po",
+            title: "Record Purchase Order",
+            href: "/dashboard/procurement/purchase-orders/new",
+            icon: ShoppingCart,
+            permission: "procurement.clientpurchaseorder.create",
+          },
+        ],
+      },
+      {
+        title: "Purchasing",
+        icon: PackageCheck,
+        children: [
+          {
+            title: "Supplier Purchases",
+            href: "/dashboard/procurement/supplier-purchases",
             icon: PackageCheck,
-            permission: "procurement.purchaseorder.view",
+            permission: "procurement.supplierpurchase.view",
+          },
+          {
+            title: "Goods Received",
+            href: "/dashboard/procurement/goods-receipts",
+            icon: PackageCheck,
+            permission: "procurement.goodsreceipt.view",
           },
         ],
       },
       {
-        title: "Requests",
-        icon: ClipboardList,
+        title: "Delivery & Rejections",
+        icon: Send,
         children: [
           {
-            title: "Create Request",
-            href: "/dashboard/requests/new",
-            icon: FilePlus2,
-            permission: "procurement.clientrequest.create",
+            title: "Deliveries & Waybills",
+            href: "/dashboard/procurement/deliveries",
+            icon: Send,
+            permission: "procurement.delivery.view",
           },
           {
-            title: "View Requests",
-            href: "/dashboard/requests",
+            title: "Rejected Items & Replacements",
+            href: "/dashboard/procurement/outcome-lines",
+            icon: Send,
+            permission: "procurement.deliveryoutcomeline.view",
+          },
+        ],
+      },
+      {
+        title: "Finance Requests",
+        icon: HandCoins,
+        children: [
+          {
+            title: "Invoice Requests",
+            href: "/dashboard/procurement/finance-requests?kind=INVOICE",
+            icon: HandCoins,
+            permission: "procurement.financerequest.view",
+          },
+          {
+            title: "Advance Requests",
+            href: "/dashboard/procurement/finance-requests?kind=ADVANCE",
+            icon: HandCoins,
+            permission: "procurement.financerequest.view",
+          },
+          {
+            title: "Cost Breakdowns",
+            href: "/dashboard/procurement/costs",
+            icon: HandCoins,
+            permission: "procurement.procurementcost.view",
+          },
+        ],
+      },
+      {
+        title: "Documents",
+        icon: FileText,
+        children: [
+          {
+            title: "Document Register",
+            href: "/dashboard/procurement/document-register",
             icon: FileText,
-            permission: "procurement.clientrequest.view",
-          },
-        ],
-      },
-      {
-        title: "Quotations",
-        icon: Receipt,
-        children: [
-          {
-            title: "Create Quotation",
-            href: "/dashboard/orders/create",
-            icon: FilePlus2,
-            permission: "procurement.quotation.create",
+            permission: "procurement.documentregister.view",
           },
           {
-            title: "Manage Quotations",
-            href: "/dashboard/orders/pending",
-            icon: Receipt,
-            permission: "procurement.quotation.view",
+            title: "Prepare Document",
+            href: "/dashboard/procurement/document-versions/new",
+            icon: FileText,
+            permission: "procurement.documentversion.create",
+          },
+          {
+            title: "Uploaded Evidence",
+            href: "/dashboard/procurement/documents",
+            icon: FileText,
+            permission: "procurement.procurementdocument.view",
           },
         ],
       },
@@ -269,55 +364,67 @@ export const dashboardNavigation: NavigationSection[] = [
     ],
   },
   {
-    title: "Finance",
+    title: "Accounts",
     items: [
       {
-        title: "Accounting",
+        title: "Overview",
+        href: "/dashboard/ledger",
         icon: CircleDollarSign,
-        children: [
-          {
-            title: "Invoices",
-            href: "/dashboard/finance/invoices",
-            icon: FileText,
-            permission: "ledger.invoice.view",
-          },
-          {
-            title: "Payments",
-            href: "/dashboard/finance/payments",
-            icon: WalletCards,
-            permission: "ledger.payment.view",
-          },
-          {
-            title: "Expenses",
-            href: "/dashboard/finance/expenses",
-            icon: HandCoins,
-            permission: "ledger.expense.view",
-          },
-        ],
+        permission: "ledger.journalentry.view",
       },
       {
-        title: "Reports",
+        title: "Approval inbox",
+        href: "/dashboard/ledger/approval-requests",
+        icon: FileText,
+        permission: "ledger.approvalrequest.view",
+      },
+      {
+        title: "Invoices",
+        href: "/dashboard/ledger/invoices",
+        icon: FileText,
+        permission: "ledger.invoice.view",
+      },
+      {
+        title: "Receipts",
+        href: "/dashboard/ledger/receipts",
+        icon: WalletCards,
+        permission: "ledger.receipt.view",
+      },
+      {
+        title: "Payments",
+        href: "/dashboard/ledger/payments",
+        icon: WalletCards,
+        permission: "ledger.payment.view",
+      },
+      {
+        title: "Expenses",
+        href: "/dashboard/ledger/expenses",
+        icon: HandCoins,
+        permission: "ledger.expense.view",
+      },
+      {
+        title: "Journal and account book",
+        href: "/dashboard/ledger/journals",
         icon: FileBarChart,
-        children: [
-          {
-            title: "Financial Reports",
-            href: "/dashboard/finance/reports",
-            icon: FileBarChart,
-            permission: "ledger.report.view",
-          },
-          {
-            title: "Reconciliations",
-            href: "/dashboard/finance/budget",
-            icon: Gauge,
-            permission: "ledger.reconciliation.view",
-          },
-        ],
+        permission: "ledger.journalentry.view",
+      },
+      {
+        title: "Reconciliation and Statement",
+        href: "/dashboard/ledger/client-statements",
+        icon: FileBarChart,
+        permission: "ledger.clientstatement.view",
       },
       {
         title: "Analytics",
-        href: "/dashboard/finance/analytics",
+        href: "/dashboard/ledger/analytics",
         icon: BarChart3,
-        permission: "ledger.analytics.view",
+        permission: "ledger.journalentry.view",
+      },
+      {
+        title: "Settings",
+        href: "/dashboard/ledger/settings",
+        icon: Gauge,
+        permission: "ledger.financialrecord.view",
       },
     ],
   },
@@ -388,13 +495,41 @@ export const dashboardNavigation: NavigationSection[] = [
   },
 ];
 
+function canSeeNavigationLink(
+  user: CurrentUser,
+  href: string | undefined,
+  permission: string | string[] | undefined,
+): boolean {
+  if (!href?.startsWith("/dashboard/procurement"))
+    return hasPermission(user, permission);
+  if (!user.is_staff && !user.is_superuser) return false;
+  const required = [
+    "procurement.procurementrequest.view",
+    ...(Array.isArray(permission)
+      ? permission
+      : permission
+        ? [permission]
+        : []),
+  ];
+  if (typeof permission === "string" && permission.endsWith(".create")) {
+    required.push(
+      "procurement.procurementrequest.operate",
+      permission.replace(/\.create$/, ".view"),
+    );
+  }
+  return (
+    user.is_superuser ||
+    required.every((value) => user.permissions.includes(value))
+  );
+}
+
 function filterNavigationItem(
   item: NavigationItem,
   user: CurrentUser,
 ): NavigationItem | null {
   if (item.children) {
     const allowedChildren = item.children.filter((child) =>
-      hasPermission(user, child.permission),
+      canSeeNavigationLink(user, child.href, child.permission),
     );
 
     if (allowedChildren.length === 0) {
@@ -408,7 +543,7 @@ function filterNavigationItem(
     };
   }
 
-  return hasPermission(user, item.permission) ? item : null;
+  return canSeeNavigationLink(user, item.href, item.permission) ? item : null;
 }
 
 export function getNavigationForUser(user: CurrentUser): NavigationSection[] {
