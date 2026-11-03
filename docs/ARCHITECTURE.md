@@ -47,6 +47,7 @@ defaults. The journey uses alternating rounded cards, circular icons and a dotte
 path, with hover/focus/tap popups and paginated milestone history. Keyboard users
 can enter the popup with Enter, Space or Arrow Down; Escape closes it.
 
-Accounts now uses `/dashboard/ledger/[[...segments]]` and the authenticated
-`/api/ledger/[...path]` proxy. See [Accounts workspace](LEDGER.md) for implemented
-screens, permission boundaries and pending backend migration requirements.
+Ledger was reset on 2026-11-03. Its first rebuild feature is the NGN cash book at
+`/dashboard/ledger` and read-only paired journal at `/dashboard/ledger/journal`.
+Both use server-enforced model permissions; mutations use protected Server Actions.
+Prior invoices, tax screens, reports and API proxy remain removed.

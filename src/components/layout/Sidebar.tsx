@@ -135,50 +135,6 @@ export const sampleNavigationData = {
       ],
     },
   ],
-  Finance: [
-    {
-      name: "Accounting",
-      iconname: "finance",
-      subitems: [
-        {
-          subitemname: "Invoices",
-          iconname: "invoices",
-          link: "/dashboard/finance/invoices",
-        },
-        {
-          subitemname: "Payments",
-          iconname: "payments",
-          link: "/dashboard/finance/payments",
-        },
-        {
-          subitemname: "Expenses",
-          iconname: "expenses",
-          link: "/dashboard/finance/expenses",
-        },
-      ],
-    },
-    {
-      name: "Reports",
-      iconname: "reports",
-      subitems: [
-        {
-          subitemname: "Financial Reports",
-          iconname: "reports",
-          link: "/dashboard/finance/reports",
-        },
-        {
-          subitemname: "Reconciliations",
-          iconname: "budget",
-          link: "/dashboard/finance/budget",
-        },
-      ],
-    },
-    {
-      name: "Analytics",
-      iconname: "analytics",
-      link: "/dashboard/finance/analytics",
-    },
-  ],
   Administration: [
     {
       name: "User Management",

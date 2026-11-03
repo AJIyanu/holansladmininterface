@@ -1,15 +1,11 @@
 import {
   Activity,
   // Archive,
-  BarChart3,
   Bell,
   Bot,
   Building2,
-  CircleDollarSign,
   ClipboardList,
-  FileBarChart,
   FileText,
-  Gauge,
   HandCoins,
   LayoutDashboard,
   PackageCheck,
@@ -20,7 +16,6 @@ import {
   UserCog,
   UserPlus,
   Users,
-  WalletCards,
   FileClock,
   LockKeyhole,
   ShieldCheck,
@@ -107,6 +102,23 @@ export const dashboardNavigation: NavigationSection[] = [
             permission: "ai.chat.view",
           },
         ],
+      },
+    ],
+  },
+  {
+    title: "Accounts",
+    items: [
+      {
+        title: "Cash book",
+        href: "/dashboard/ledger",
+        icon: HandCoins,
+        permission: "ledger.cashbookentry.view",
+      },
+      {
+        title: "Double-entry journal",
+        href: "/dashboard/ledger/journal",
+        icon: FileText,
+        permission: "ledger.cashbookjournal.view",
       },
     ],
   },
@@ -364,71 +376,6 @@ export const dashboardNavigation: NavigationSection[] = [
     ],
   },
   {
-    title: "Accounts",
-    items: [
-      {
-        title: "Overview",
-        href: "/dashboard/ledger",
-        icon: CircleDollarSign,
-        permission: "ledger.journalentry.view",
-      },
-      {
-        title: "Approval inbox",
-        href: "/dashboard/ledger/approval-requests",
-        icon: FileText,
-        permission: "ledger.approvalrequest.view",
-      },
-      {
-        title: "Invoices",
-        href: "/dashboard/ledger/invoices",
-        icon: FileText,
-        permission: "ledger.invoice.view",
-      },
-      {
-        title: "Receipts",
-        href: "/dashboard/ledger/receipts",
-        icon: WalletCards,
-        permission: "ledger.receipt.view",
-      },
-      {
-        title: "Payments",
-        href: "/dashboard/ledger/payments",
-        icon: WalletCards,
-        permission: "ledger.payment.view",
-      },
-      {
-        title: "Expenses",
-        href: "/dashboard/ledger/expenses",
-        icon: HandCoins,
-        permission: "ledger.expense.view",
-      },
-      {
-        title: "Journal and account book",
-        href: "/dashboard/ledger/journals",
-        icon: FileBarChart,
-        permission: "ledger.journalentry.view",
-      },
-      {
-        title: "Reconciliation and Statement",
-        href: "/dashboard/ledger/client-statements",
-        icon: FileBarChart,
-        permission: "ledger.clientstatement.view",
-      },
-      {
-        title: "Analytics",
-        href: "/dashboard/ledger/analytics",
-        icon: BarChart3,
-        permission: "ledger.journalentry.view",
-      },
-      {
-        title: "Settings",
-        href: "/dashboard/ledger/settings",
-        icon: Gauge,
-        permission: "ledger.financialrecord.view",
-      },
-    ],
-  },
-  {
     title: "Administration",
     items: [
       {
@@ -500,6 +447,12 @@ function canSeeNavigationLink(
   href: string | undefined,
   permission: string | string[] | undefined,
 ): boolean {
+  if (
+    href?.startsWith("/dashboard/ledger") &&
+    !user.is_staff &&
+    !user.is_superuser
+  )
+    return false;
   if (!href?.startsWith("/dashboard/procurement"))
     return hasPermission(user, permission);
   if (!user.is_staff && !user.is_superuser) return false;

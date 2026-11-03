@@ -619,22 +619,3 @@ export const actionNames: Record<string, string[]> = {
   "outcome-lines": ["resolve"],
   "document-versions": ["request-approval", "generate"],
 };
-
-// A client may approve a posted invoice directly without a quotation.
-const poFields = resources["purchase-orders"].form!.lines!.fields;
-const quotedItem = poFields.find((field) => field.name === "quote_line");
-if (quotedItem) quotedItem.required = false;
-poFields.unshift(
-  lookup(
-    "invoice_line",
-    "Direct invoice item (choose instead of quoted item)",
-    "ledger:invoice-lines",
-    false,
-  ),
-);
-const poDocument = resources["purchase-orders"].form!.fields.find(
-  (field) => field.name === "document",
-);
-if (poDocument) poDocument.required = false;
-resources["purchase-orders"].form!.notice =
-  "Choose exactly one source per line: an approved quotation item or a posted invoice item. Documented orders need a file; verbal approvals need confirmation details.";

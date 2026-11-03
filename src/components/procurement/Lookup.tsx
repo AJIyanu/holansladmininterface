@@ -79,17 +79,10 @@ export function Lookup({
         (path !== "lookups" || params.get("kind") === "contacts")
       )
         params.set("request", requestId);
-      const ledgerLookup = path.startsWith("ledger:");
-      if (ledgerLookup) params.set("kind", path.slice("ledger:".length));
-      fetch(
-        ledgerLookup
-          ? `/api/ledger/lookups/?${params}`
-          : `/api/procurement/${path}/?${params}`,
-        {
-          signal: controller.signal,
-          cache: "no-store",
-        },
-      )
+      fetch(`/api/procurement/${path}/?${params}`, {
+        signal: controller.signal,
+        cache: "no-store",
+      })
         .then(async (response) => {
           if (!response.ok)
             throw new Error(
