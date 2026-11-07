@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import UserProvider from "@/components/UserProvider";
 import DashboardNotFound from "@/components/errors/dashboard-not-found";
 import PublicNotFound from "@/components/errors/public-not-found";
 import { getCurrentUser } from "@/lib/auth-server";
@@ -16,9 +17,11 @@ export default async function NotFound() {
 
   if (currentUser) {
     return (
-      <DashboardLayout>
-        <DashboardNotFound />
-      </DashboardLayout>
+      <UserProvider user={currentUser}>
+        <DashboardLayout>
+          <DashboardNotFound />
+        </DashboardLayout>
+      </UserProvider>
     );
   }
 
