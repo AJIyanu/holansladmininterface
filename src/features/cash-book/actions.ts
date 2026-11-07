@@ -72,8 +72,8 @@ export async function mutateCashBook(
             : "DELETE",
       body: JSON.stringify(body),
     });
-    revalidatePath("/dashboard/ledger");
-    revalidatePath("/dashboard/ledger/journal");
+    revalidatePath("/dashboard/ledger/cashbook/entry");
+    revalidatePath("/dashboard/ledger/cashbook/journal");
     return {
       success: true,
       message:

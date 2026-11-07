@@ -1,7 +1,24 @@
 import { z } from "zod";
 
+export function cashBookToday() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Lagos",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
 export const cashFormSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a date."),
+  account: z.uuid().optional(),
+  currency: z.enum(["NGN", "USD", "GBP"]).optional(),
+  date: z
+    .string()
+    .date("Choose a valid date.")
+    .refine(
+      (value) => value <= cashBookToday(),
+      "Future income and expenses cannot be recorded. Choose today or a past date.",
+    ),
   kind: z.enum(["RECEIPT", "EXPENSE", "CAPITAL"]),
   amount: z
     .string()

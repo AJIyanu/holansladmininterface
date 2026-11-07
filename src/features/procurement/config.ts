@@ -184,8 +184,14 @@ export const resources: Record<string, Resource> = {
             "quote_line",
             "Quoted item",
             "quotation-revisions",
-            true,
+            false,
             "lines",
+          ),
+          lookup(
+            "invoice_line",
+            "Approved invoice item (instead of quote)",
+            "lookups?kind=invoice-lines",
+            false,
           ),
           qty,
           price,
@@ -356,7 +362,7 @@ export const resources: Record<string, Resource> = {
           doc(),
         ],
       },
-      "Ledger integration is pending. Saving creates a draft, not an approved invoice, advance, payment or refund.",
+      "Save, then submit the request for Accounts review. Accounts can create invoices from the procurement inbox; invoices enter the sales ledger when marked delivered. Submission does not mean payment.",
     ),
   },
   costs: {
@@ -468,6 +474,14 @@ export function actionForm(
     lines,
     notice,
   });
+  if (resource === "finance-requests" && action === "submit")
+    return definition(
+      "Submit finance request",
+      "financerequest.edit",
+      [],
+      undefined,
+      "Submit this request to Accounts. This does not record a payment.",
+    );
   if (resource === "requests" && action === "submit")
     return definition(
       "Submit client request",
@@ -581,7 +595,7 @@ export function actionForm(
         field("evidence", "Sending evidence", true, "textarea"),
       ],
       undefined,
-      "Ledger approval is required. Sending is unavailable while ledger integration is pending.",
+      "Accounts approval of this revision is required before recording it as sent.",
     );
   if (resource === "document-versions" && action === "request-approval")
     return definition(
@@ -611,6 +625,7 @@ export function actionForm(
     );
 }
 export const actionNames: Record<string, string[]> = {
+  "finance-requests": ["submit"],
   requests: ["submit", "client-code"],
   items: ["reorder"],
   quotations: ["revise"],

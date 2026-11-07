@@ -48,6 +48,25 @@ path, with hover/focus/tap popups and paginated milestone history. Keyboard user
 can enter the popup with Enter, Space or Arrow Down; Escape closes it.
 
 Ledger was reset on 2026-11-03. Its first rebuild feature is the NGN cash book at
-`/dashboard/ledger` and read-only paired journal at `/dashboard/ledger/journal`.
+`/dashboard/ledger/cashbook/entry` and read-only paired journal at `/dashboard/ledger/cashbook/journal`.
 Both use server-enforced model permissions; mutations use protected Server Actions.
 Prior invoices, tax screens, reports and API proxy remain removed.
+
+## Sales invoice documents
+
+The invoice detail page uses `src/templates/InvoiceTemplate.tsx`, converted from
+`src/templates/invoice.html`, for its client-facing preview. Company contacts come
+from invoice detail API `company` configuration. The protected PDF route continues
+to use the backend's confirmed-snapshot renderer for downloads and email attachments.
+Only item S/N appears in the preview/PDF; full item references remain available
+separately in staff-only internal reference details and in stored snapshots.
+
+Invoice editing uses `UnitSelect` with common abbreviated units and a custom
+short-form entry. `features/sales-invoice/units.ts` formats quantities without
+trailing decimal zeros, including legacy unit names. Existing quantity/unit
+storage is retained. Optional `discount_percent` uses exact BigInt per-line
+half-up arithmetic shared by the form review; VAT follows the discounted goods
+subtotal. Invoice detail `pricing` restores saved discount settings on reopen.
+Previews show gross line values and a discount deduction only for positive rates;
+the backend stores/posts net line amounts and keeps discount metadata in existing
+operation payloads and immutable document snapshots, without schema additions.

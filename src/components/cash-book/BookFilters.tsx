@@ -1,3 +1,7 @@
+import {
+  LedgerSelect,
+  LedgerDatePicker,
+} from "@/components/ledger/FormControls";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,7 +9,14 @@ import { Input } from "@/components/ui/input";
 export type BookSearch = Record<string, string | string[] | undefined>;
 export function bookQuery(search: BookSearch) {
   const query = new URLSearchParams();
-  for (const key of ["year", "date_from", "date_to", "page"]) {
+  for (const key of [
+    "year",
+    "date_from",
+    "date_to",
+    "page",
+    "currency",
+    "account",
+  ]) {
     const value = search[key];
     if (typeof value === "string" && value) query.set(key, value);
   }
@@ -22,6 +33,9 @@ export function bookQuery(search: BookSearch) {
 export function BookFilters({ query }: { query: URLSearchParams }) {
   return (
     <form className="flex flex-wrap items-end gap-3 rounded-xl border bg-card p-4">
+      {query.get("account") && (
+        <input type="hidden" name="account" value={query.get("account")!} />
+      )}
       <label className="space-y-1">
         <span className="text-sm font-medium">Financial year</span>
         <Input
@@ -34,21 +48,33 @@ export function BookFilters({ query }: { query: URLSearchParams }) {
           className="w-28"
         />
       </label>
-      <label className="space-y-1">
+      <label className="w-full space-y-1 sm:w-64">
         <span className="text-sm font-medium">From (optional)</span>
-        <Input
+        <LedgerDatePicker
           name="date_from"
-          type="date"
+
           defaultValue={query.get("date_from") ?? ""}
         />
       </label>
-      <label className="space-y-1">
+      <label className="w-full space-y-1 sm:w-64">
         <span className="text-sm font-medium">To (optional)</span>
-        <Input
+        <LedgerDatePicker
           name="date_to"
-          type="date"
+
           defaultValue={query.get("date_to") ?? ""}
         />
+      </label>
+      <label>
+        Currency
+        <LedgerSelect
+          name="currency"
+          defaultValue={query.get("currency") ?? "NGN"}
+          className="w-full min-w-48"
+        >
+          {["NGN", "USD", "GBP"].map((c) => (
+            <option key={c}>{c}</option>
+          ))}
+        </LedgerSelect>
       </label>
       <Button type="submit">Apply</Button>
       <p className="basis-full text-sm text-muted-foreground">

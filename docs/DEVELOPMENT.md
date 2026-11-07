@@ -51,3 +51,15 @@ verify theme changes; use isolated UI fixtures where possible.
 
 Update DEVELOPMENT_LOG.local.md for every added/changed/corrected feature, with
 timestamp, functions, reason, files and exact verification results.
+
+## Development compiler recovery
+
+`pnpm dev` uses Webpack following reported Turbopack heap exhaustion and
+proxy/client-manifest failures. Production builds still use Turbopack.
+`next.config.ts` pins Turbopack and output tracing roots to this repository,
+so parent-directory lockfiles cannot broaden the selected application root.
+
+After a compiler crash or compiler switch, stop all frontend dev processes before
+removing the generated `.next` directory and restarting `pnpm dev`. Do not remove
+source files, lockfiles or dependencies as part of this cache reset. Do not run
+a build and a dev server against the same generated output concurrently.

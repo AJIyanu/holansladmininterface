@@ -72,11 +72,15 @@ export function Lookup({
       params.set("page", String(page));
       params.set("page_size", "30");
       if (search) params.set("search", search);
-      if (clientId && params.get("kind") === "contacts")
+      if (
+        clientId &&
+        ["contacts", "invoice-lines"].includes(params.get("kind") ?? "")
+      )
         params.set("client", clientId);
       if (
         requestId &&
-        (path !== "lookups" || params.get("kind") === "contacts")
+        (path !== "lookups" ||
+          ["contacts", "invoice-lines"].includes(params.get("kind") ?? ""))
       )
         params.set("request", requestId);
       fetch(`/api/procurement/${path}/?${params}`, {

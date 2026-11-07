@@ -7,7 +7,7 @@ import {
   setAuthCookies,
 } from "@/lib/auth-tokens";
 
-const protectedPagePrefixes = ["/dashboard"];
+const protectedPagePrefixes = ["/dashboard", "/statements"];
 
 function isAccessTokenExpired(token?: string, toleranceSeconds = 30): boolean {
   if (!token) {

@@ -7,6 +7,11 @@ Keep one AGENTS.md in this repository.
 
 ## Frontend standards
 
+- Keep full item references (`invoice-reference.serial-number`) in app/code for
+  precise internal referencing. Client-facing invoice previews, PDFs and email
+  attachments show only each item's S/N (1, 2, 3, …), alongside its description.
+  The invoice number itself remains visible in the document metadata.
+
 - Read [architecture](docs/ARCHITECTURE.md), [branding](docs/BRANDING.md),
   [UI standards](docs/UI_STANDARDS.md) and [verification](docs/DEVELOPMENT.md).
 - Consult the backend [app/API docs](../holansl_backend/docs/apps/README.md) for

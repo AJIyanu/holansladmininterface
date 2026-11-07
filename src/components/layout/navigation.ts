@@ -109,16 +109,52 @@ export const dashboardNavigation: NavigationSection[] = [
     title: "Accounts",
     items: [
       {
-        title: "Cash book",
-        href: "/dashboard/ledger",
-        icon: HandCoins,
-        permission: "ledger.cashbookentry.view",
+        title: "Ledger",
+        icon: FileText,
+        children: [
+          {
+            title: "Sales Ledger",
+            href: "/dashboard/ledger/ledgers/sales",
+            icon: Receipt,
+            permission: "ledger.salesledger.view",
+          },
+          {
+            title: "Purchase Ledger",
+            href: "/dashboard/ledger/ledgers/purchase",
+            icon: ShoppingCart,
+            permission: "ledger.purchaseledger.view",
+          },
+          {
+            title: "Procurement approvals",
+            href: "/dashboard/ledger/ledgers/procurement",
+            icon: FileText,
+            permission: "ledger.procurement.approve",
+          },
+          {
+            title: "Settings",
+            href: "/dashboard/ledger/ledgers/settings",
+            icon: FileText,
+            permission: "ledger.ledgeraccount.view",
+          },
+        ],
       },
       {
-        title: "Double-entry journal",
-        href: "/dashboard/ledger/journal",
-        icon: FileText,
-        permission: "ledger.cashbookjournal.view",
+        title: "Cashbook",
+        icon: HandCoins,
+        children: [
+          {
+            title: "Entry",
+            href: "/dashboard/ledger/cashbook/entry",
+            icon: ListPlus,
+            permission: "ledger.cashbookentry.view",
+          },
+          {
+            title: "Double Entry",
+            href: "/dashboard/ledger/cashbook/journal",
+            icon: FileText,
+            permission: "ledger.cashbookjournal.view",
+          },
+        ],
       },
     ],
   },
@@ -448,7 +484,7 @@ function canSeeNavigationLink(
   permission: string | string[] | undefined,
 ): boolean {
   if (
-    href?.startsWith("/dashboard/ledger") &&
+    href?.startsWith("/dashboard/ledger/cashbook/entry") &&
     !user.is_staff &&
     !user.is_superuser
   )

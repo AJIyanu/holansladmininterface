@@ -1,10 +1,27 @@
 "use client";
 
+import { LedgerSelect } from "@/components/ledger/FormControls";
+
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { format, parseISO } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,33 +33,49 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  cashBookToday,
   cashFormSchema,
   type CashFormValues,
 } from "@/features/cash-book/schema";
 import { mutateCashBook } from "@/features/cash-book/actions";
 import { money, type CashEntry } from "@/features/cash-book/types";
 
-const selectClass =
-  "h-10 w-full rounded-md border border-input bg-background px-3 text-sm";
-
-export function EntryForm({ entry }: { entry?: CashEntry }) {
+export function EntryForm({
+  entry,
+  accounts = [],
+}: {
+  entry?: CashEntry;
+  accounts?: Array<{
+    id: string;
+    name: string;
+    kind: string;
+    currency: string;
+    is_active: boolean;
+  }>;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [dateOpen, setDateOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const submission = useRef<{ payload: string; key: string } | null>(null);
   const form = useForm<CashFormValues>({
     resolver: zodResolver(cashFormSchema),
     defaultValues: {
-      date:
-        entry?.date ??
-        new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Lagos" }),
+      account: entry?.account ?? "00000000-0000-4000-8000-000000000001",
+      currency: (entry?.currency ?? "NGN") as "NGN" | "USD" | "GBP",
+      date: entry?.date ?? cashBookToday(),
       kind: entry?.kind ?? "RECEIPT",
       amount: entry?.amount ?? "",
       description: entry?.description ?? "",
       reference: entry?.reference ?? "",
       reason: "",
     },
+  });
+  const selectedAccount = useWatch({ control: form.control, name: "account" });
+  const selectedCurrency = useWatch({
+    control: form.control,
+    name: "currency",
   });
   function save(values: CashFormValues) {
     if (entry && !values.reason.trim()) {
@@ -97,13 +130,39 @@ export function EntryForm({ entry }: { entry?: CashEntry }) {
           {entry ? "Edit" : "Add entry"}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-xl">
+        {!entry && (
+          <label>
+            Cash / bank account
+            <LedgerSelect
+              className="w-full min-w-48"
+              value={selectedAccount}
+              onChange={(e) => {
+                const account = accounts.find((a) => a.id === e.target.value);
+                form.setValue("account", e.target.value);
+                form.setValue(
+                  "currency",
+                  account?.currency as "NGN" | "USD" | "GBP",
+                );
+              }}
+            >
+              {accounts
+                .filter((a) => a.is_active)
+                .map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name} · {a.kind} · {a.currency}
+                  </option>
+                ))}
+            </LedgerSelect>
+          </label>
+        )}
         <DialogHeader>
           <DialogTitle>
             {entry ? "Correct cash-book entry" : "Add cash-book entry"}
           </DialogTitle>
           <DialogDescription>
-            NGN cash book. Both sides of the journal are recorded automatically.
+            {selectedCurrency ?? "NGN"} cash book. Both sides of the journal are
+            recorded automatically.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -113,34 +172,105 @@ export function EntryForm({ entry }: { entry?: CashEntry }) {
           }}
         >
           <fieldset disabled={pending} className="space-y-4">
-            <label className="block space-y-1">
-              <span>Entry type</span>
-              <select className={selectClass} {...form.register("kind")}>
-                <option value="RECEIPT">Money in — cash income (debit)</option>
-                <option value="EXPENSE">Money out — expense (credit)</option>
-                <option value="CAPITAL">
-                  Money in — capital introduced (debit)
-                </option>
-              </select>
-            </label>
+            <div className="space-y-1">
+              <label htmlFor="cash-entry-kind">Entry type</label>
+              <Controller
+                control={form.control}
+                name="kind"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={pending}
+                  >
+                    <SelectTrigger
+                      id="cash-entry-kind"
+                      ref={field.ref}
+                      onBlur={field.onBlur}
+                      className="w-full"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="RECEIPT">
+                        Money in — cash income (debit)
+                      </SelectItem>
+                      <SelectItem value="EXPENSE">
+                        Money out — expense (credit)
+                      </SelectItem>
+                      <SelectItem value="CAPITAL">
+                        Money in — capital introduced (debit)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
             <p className="text-sm text-muted-foreground">
               Use capital introduced for owner funding. Money in recorded as
               cash income credits the income account.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="block space-y-1">
-                <span>Date</span>
-                <Input
-                  type="date"
-                  {...form.register("date")}
-                  aria-invalid={!!error("date")}
+              <div className="space-y-1">
+                <label htmlFor="cash-entry-date">Date</label>
+                <Controller
+                  control={form.control}
+                  name="date"
+                  render={({ field }) => (
+                    <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          id="cash-entry-date"
+                          ref={field.ref}
+                          onBlur={field.onBlur}
+                          disabled={pending}
+                          aria-invalid={!!error("date")}
+                          aria-describedby="cash-entry-date-error"
+                          className="w-full justify-start text-left font-normal"
+                        >
+                          <CalendarIcon className="mr-2 size-4" />
+                          {field.value
+                            ? format(parseISO(field.value), "dd MMM yyyy")
+                            : "Choose a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        align="start"
+                        className="w-[22rem] max-w-[calc(100vw-2rem)] p-0"
+                      >
+                        <Calendar
+                          className="w-full [--cell-size:2.5rem]"
+                          mode="single"
+                          selected={
+                            field.value ? parseISO(field.value) : undefined
+                          }
+                          defaultMonth={
+                            field.value ? parseISO(field.value) : undefined
+                          }
+                          today={parseISO(cashBookToday())}
+                          disabled={{ after: parseISO(cashBookToday()) }}
+                          onSelect={(date) => {
+                            if (date) {
+                              field.onChange(format(date, "yyyy-MM-dd"));
+                              setDateOpen(false);
+                            }
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 />
-                <span className="text-sm text-destructive">
+                <p
+                  id="cash-entry-date-error"
+                  className="text-sm text-destructive"
+                >
                   {error("date")}
-                </span>
-              </label>
+                </p>
+              </div>
               <label className="block space-y-1">
-                <span>Amount (NGN)</span>
+                <span>Amount ({selectedCurrency ?? "NGN"})</span>
                 <Input
                   inputMode="decimal"
                   placeholder="0.00"
@@ -236,8 +366,8 @@ export function VoidEntry({ entry }: { entry: CashEntry }) {
         <DialogHeader>
           <DialogTitle>Void this entry?</DialogTitle>
           <DialogDescription>
-            Remove {money(entry.amount)} from the cash book. The original entry
-            and a reversal remain in the journal.
+            Remove {money(entry.amount, entry.currency)} from the cash book. The
+            original entry and a reversal remain in the journal.
           </DialogDescription>
         </DialogHeader>
         <p className="break-words">{entry.description}</p>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice - Holan Integrated Services Limited</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --color-primary: #1a3a6e;
+        --color-totals-bg: #e8f0fa;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans text-[14px] text-gray-800 p-8">
+    <div class="max-w-[800px] mx-auto bg-white shadow-md px-11 py-10">
+      <!-- Header: Logo + Company Info (right aligned, stacked) -->
+      <div class="flex justify-end mb-6">
+        <div class="text-right">
+          <!-- Logo Placeholder (right aligned, on top of website) -->
+          <div
+            class="ml-auto mb-3 w-[180px] h-[70px] border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-gray-400 text-sm"
+          >
+            [LOGO PLACEHOLDER]
+          </div>
+
+          <!-- Company Contact Info -->
+          <div class="text-[12.5px] leading-relaxed text-gray-700">
+            <div class="font-semibold">Website: www.holansl.com</div>
+            <div>Email: operations@holansl.com</div>
+            <div>WhatsApp: 2348073033767, 2348090964567</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoice Title -->
+      <h1
+        class="text-right text-[28px] font-bold tracking-wide text-gray-900 mb-7"
+      >
+        INVOICE
+      </h1>
+
+      <!-- Billing Meta -->
+      <div class="mb-7 leading-relaxed">
+        <div>
+          <span class="inline-block min-w-[95px] font-semibold"
+            >Billed to:</span
+          >
+          Sayed Farms
+        </div>
+        <div>
+          <span class="inline-block min-w-[95px] font-semibold">Date</span>
+          9/6/2026
+        </div>
+        <div>
+          <span class="inline-block min-w-[95px] font-semibold"
+            >Invoice No:</span
+          >
+          HOL-INV-20260609-110
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <table class="w-full border-collapse mb-0">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th
+              class="py-3 px-3 text-left font-semibold text-[13px] tracking-wide w-12"
+            >
+              S/N
+            </th>
+            <th
+              class="py-3 px-3 text-left font-semibold text-[13px] tracking-wide"
+            >
+              ITEMS
+            </th>
+            <th
+              class="py-3 px-3 text-right font-semibold text-[13px] tracking-wide w-32"
+            >
+              PRICE
+            </th>
+            <th
+              class="py-3 px-3 text-right font-semibold text-[13px] tracking-wide w-16"
+            >
+              QTY
+            </th>
+            <th
+              class="py-3 px-3 text-right font-semibold text-[13px] tracking-wide w-32"
+            >
+              AMOUNT
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-gray-200">
+            <td class="py-3.5 px-3 text-center align-top">1</td>
+            <td class="py-3.5 px-3 align-top">BEARING UCP 212 / SY60 SKF</td>
+            <td class="py-3.5 px-3 text-right align-top"></td>
+            <td class="py-3.5 px-3 text-right align-top">4</td>
+            <td class="py-3.5 px-3 text-right align-top">₦0.00</td>
+          </tr>
+          <tr class="border-b border-gray-200">
+            <td class="py-3.5 px-3 text-center align-top">2</td>
+            <td class="py-3.5 px-3 align-top">BEARING UCF 210 / FY50 SKF</td>
+            <td class="py-3.5 px-3 text-right align-top"></td>
+            <td class="py-3.5 px-3 text-right align-top">4</td>
+            <td class="py-3.5 px-3 text-right align-top">₦0.00</td>
+          </tr>
+          <tr class="border-b border-gray-300">
+            <td class="py-3.5 px-3 text-center align-top">3</td>
+            <td class="py-3.5 px-3 align-top">
+              BELT 7HP 1914 FOR HISENSE DRYER MODEL DH5S102BB
+            </td>
+            <td class="py-3.5 px-3 text-right align-top">₦17,000.00</td>
+            <td class="py-3.5 px-3 text-right align-top">2</td>
+            <td class="py-3.5 px-3 text-right align-top">₦34,000.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Totals Section -->
+      <div class="flex justify-end">
+        <div class="w-80">
+          <div
+            class="flex justify-between py-2.5 px-3.5 bg-totals-bg border-b border-blue-100"
+          >
+            <span>Sub-total</span>
+            <span class="font-semibold min-w-[110px] text-right"
+              >₦34,000.00</span
+            >
+          </div>
+          <div
+            class="flex justify-between py-2.5 px-3.5 bg-totals-bg border-b border-blue-100"
+          >
+            <span>Discount 0%</span>
+            <span class="font-semibold min-w-[110px] text-right"></span>
+          </div>
+          <div
+            class="flex justify-between py-2.5 px-3.5 bg-totals-bg border-b border-blue-100"
+          >
+            <span>VAT 7.50%</span>
+            <span class="font-semibold min-w-[110px] text-right"
+              >₦2,550.00</span
+            >
+          </div>
+          <div
+            class="flex justify-between py-2.5 px-3.5 bg-primary text-white font-bold text-[15px]"
+          >
+            <span>TOTAL</span>
+            <span class="min-w-[110px] text-right">₦36,550.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signature -->
+      <div class="mt-16 text-center text-gray-600 text-[13px]">
+        <div class="w-56 border-t border-gray-600 mx-auto mb-2"></div>
+        Signature and Date
+      </div>
+    </div>
+  </body>
+</html>
