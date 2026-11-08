@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LedgerListSkeleton } from "@/components/ledger/LoadingSkeleton";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -138,7 +139,7 @@ export function PartySelector({
         </label>
         <div aria-live="polite" aria-busy={loading}>
           {loading ? (
-            <p className="py-6 text-sm text-muted-foreground">Searching…</p>
+            <LedgerListSkeleton label={`Searching ${label}s…`} />
           ) : result.error ? (
             <div className="space-y-3 py-3">
               <p role="alert">{result.error}</p>

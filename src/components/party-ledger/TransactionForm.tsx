@@ -11,6 +11,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { LedgerListSkeleton } from "@/components/ledger/LoadingSkeleton";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -407,9 +408,7 @@ export function TransactionForm({
                     />
                   </label>
                   {loading ? (
-                    <p role="status" className="text-sm">
-                      Loading outstanding documents…
-                    </p>
+                    <LedgerListSkeleton label="Loading outstanding documents…" />
                   ) : documents.error ? (
                     <div className="space-y-2">
                       <p role="alert">{documents.error}</p>

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { LedgerListSkeleton } from "@/components/ledger/LoadingSkeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,7 @@ export function ReceiptInvoicePicker({
   const [page, setPage] = useState(1);
   const [data, setData] = useState<InvoicePage>();
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [copying, setCopying] = useState(false);
   const [retry, setRetry] = useState(0);
   useEffect(() => {
@@ -80,19 +81,23 @@ export function ReceiptInvoicePicker({
         value={search}
         maxLength={100}
         onChange={(e) => {
+          setLoading(true);
           setSearch(e.target.value);
           setPage(1);
         }}
         placeholder="Search reference or item"
       />
-      {loading && <p role="status">Loading invoices…</p>}
-      {error && (
+      {loading && <LedgerListSkeleton label="Loading invoices…" />}
+      {!loading && error && (
         <p role="alert">
           {error}{" "}
           <Button
             type="button"
             variant="outline"
-            onClick={() => setRetry((n) => n + 1)}
+            onClick={() => {
+              setLoading(true);
+              setRetry((n) => n + 1);
+            }}
           >
             Retry
           </Button>
@@ -100,33 +105,37 @@ export function ReceiptInvoicePicker({
       )}
       {!loading && data?.results.length === 0 && <p>No matching invoices.</p>}
       <div className="space-y-2">
-        {data?.results.map((invoice) => (
-          <div
-            key={invoice.id}
-            className="flex flex-wrap items-center justify-between gap-2 rounded border p-2"
-          >
-            <span className="break-words">
-              {invoice.reference ?? "Unconfirmed invoice"} · {invoice.date} ·{" "}
-              {invoice.currency} {invoice.subtotal}
-              {selected === invoice.id ? " · Selected" : ""}
-            </span>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={copying}
-              onClick={() => copy(invoice.id)}
+        {!loading &&
+          data?.results.map((invoice) => (
+            <div
+              key={invoice.id}
+              className="flex flex-wrap items-center justify-between gap-2 rounded border p-2"
             >
-              Copy items
-            </Button>
-          </div>
-        ))}
+              <span className="break-words">
+                {invoice.reference ?? "Unconfirmed invoice"} · {invoice.date} ·{" "}
+                {invoice.currency} {invoice.subtotal}
+                {selected === invoice.id ? " · Selected" : ""}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={copying}
+                onClick={() => copy(invoice.id)}
+              >
+                Copy items
+              </Button>
+            </div>
+          ))}
       </div>
       <div className="flex flex-wrap gap-2">
         <Button
           type="button"
           variant="outline"
           disabled={!data?.previous || loading || copying}
-          onClick={() => setPage((n) => n - 1)}
+          onClick={() => {
+            setLoading(true);
+            setPage((n) => n - 1);
+          }}
         >
           Previous
         </Button>
@@ -134,7 +143,10 @@ export function ReceiptInvoicePicker({
           type="button"
           variant="outline"
           disabled={!data?.next || loading || copying}
-          onClick={() => setPage((n) => n + 1)}
+          onClick={() => {
+            setLoading(true);
+            setPage((n) => n + 1);
+          }}
         >
           Next
         </Button>

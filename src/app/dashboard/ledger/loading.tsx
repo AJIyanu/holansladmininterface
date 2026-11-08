@@ -1,7 +1,5 @@
-export default function LoadingCashBook() {
-  return (
-    <p role="status" className="p-6 text-muted-foreground">
-      Loading cash-book records…
-    </p>
-  );
+import { LedgerPageSkeleton } from "@/components/ledger/LoadingSkeleton";
+
+export default function LoadingLedger() {
+  return <LedgerPageSkeleton label="Loading ledger…" variant="ledger" />;
 }

@@ -1,7 +1,5 @@
+import { LedgerPageSkeleton } from "@/components/ledger/LoadingSkeleton";
+
 export default function LoadingSalesLedger() {
-  return (
-    <p role="status" className="p-6 text-muted-foreground">
-      Loading sales ledger…
-    </p>
-  );
+  return <LedgerPageSkeleton label="Loading sales ledger…" variant="party" />;
 }
