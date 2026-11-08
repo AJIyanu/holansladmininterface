@@ -1,3 +1,5 @@
+import { ReceiptEditor } from "@/components/sales-receipt/ReceiptEditor";
+import { SalesReceipts } from "@/components/sales-receipt/SalesReceipts";
 import Link from "next/link";
 import { StatementHistory } from "./StatementHistory";
 import { WorkspaceTools } from "./WorkspaceTools";
@@ -105,15 +107,35 @@ export async function PartyLedgerPage({
                           party={state.selected_party}
                         />
                       )}
-                      {hasPermission(user, "ledger.cashbookentry.create") && (
-                        <TransactionForm
-                          key={`${kind}-${state.selected_party.id}-payment`}
-                          kind={kind}
-                          party={state.selected_party}
-                          accounts={accounts}
-                          payment
-                        />
-                      )}
+                      {kind === "purchase" &&
+                        hasPermission(user, "ledger.cashbookentry.create") && (
+                          <TransactionForm
+                            key={`${kind}-${state.selected_party.id}-payment`}
+                            kind={kind}
+                            party={state.selected_party}
+                            accounts={accounts}
+                            payment
+                          />
+                        )}
+                      {kind === "sales" &&
+                        hasPermission(user, "ledger.cashbookentry.create") &&
+                        hasPermission(user, "ledger.salesreceipt.view") &&
+                        hasPermission(user, "ledger.salesreceipt.create") && (
+                          <ReceiptEditor
+                            key={state.selected_party.id}
+                            party={state.selected_party.id}
+                            accounts={accounts}
+                            canViewInvoices={hasPermission(
+                              user,
+                              "ledger.salesinvoice.view",
+                            )}
+                            defaults={{
+                              billed_to: state.selected_party.display_name,
+                              billing_address: "",
+                              recipient_email: "",
+                            }}
+                          />
+                        )}
                     </div>
                   )}
                 {kind === "sales" &&
@@ -125,6 +147,13 @@ export async function PartyLedgerPage({
                         state.selected_party.status === "ACTIVE" &&
                         hasPermission(user, "ledger.salesinvoice.create")
                       }
+                    />
+                  )}
+                {kind === "sales" &&
+                  hasPermission(user, "ledger.salesreceipt.view") && (
+                    <SalesReceipts
+                      party={state.selected_party.id}
+                      search={search}
                     />
                   )}
                 <WorkspaceTools

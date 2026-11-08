@@ -61,6 +61,8 @@ export const accountNames: Record<string, string> = {
   CAPITAL: "Capital introduced",
   RECEIVABLE: "Client receivables",
   PAYABLE: "Supplier payables",
+  VAT_PAYABLE: "VAT Payable",
+  WHT_RECEIVABLE: "Withholding Tax Receivable",
   DEFERRED_REVENUE: "Unearned sales",
   PURCHASE_CLEARING: "Purchases pending classification",
 };
