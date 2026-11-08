@@ -48,7 +48,8 @@ export default async function Page({
           hasPermission(user, "ledger.salesledger.view")
         }
         canPurchase={
-          hasPermission(user, "ledger.purchasetransaction.create") &&
+          hasPermission(user, "ledger.purchasebill.create") &&
+          hasPermission(user, "ledger.purchasebill.view") &&
           hasPermission(user, "ledger.purchaseledger.view")
         }
       />

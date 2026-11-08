@@ -100,7 +100,7 @@ export function ProcurementInbox({
                       r.kind === "INVOICE" ? "IMPORT_INVOICE" : "IMPORT_BILL"
                     }
                   >
-                    {r.kind === "INVOICE" ? "Create invoice" : "Post bill"}
+                    {r.kind === "INVOICE" ? "Create invoice" : "Create bill"}
                   </option>
                 )}
               </LedgerSelect>

@@ -15,7 +15,8 @@ import {
 import { PartySelector } from "./PartySelector";
 import { PartyTransactions } from "./PartyTransactions";
 import { SalesInvoices } from "@/components/sales-invoice/SalesInvoices";
-import { TransactionForm } from "./TransactionForm";
+import { PurchaseEditor } from "@/components/purchases/PurchaseEditor";
+import { PurchaseHistory } from "@/components/purchases/PurchaseHistory";
 import type { BookSearch } from "@/components/cash-book/BookFilters";
 
 export async function PartyLedgerPage({
@@ -98,25 +99,64 @@ export async function PartyLedgerPage({
                   CRM status: {state.selected_party.status.toLowerCase()}
                 </p>
                 {state.selected_party.status === "ACTIVE" &&
-                  hasPermission(user, `ledger.${kind}transaction.create`) && (
+                  (kind === "purchase" ||
+                    hasPermission(
+                      user,
+                      `ledger.${kind}transaction.create`,
+                    )) && (
                     <div className="flex flex-wrap gap-3">
                       {kind === "purchase" && (
-                        <TransactionForm
-                          key={`${kind}-${state.selected_party.id}-document`}
-                          kind={kind}
-                          party={state.selected_party}
-                        />
+                        <>
+                          {hasPermission(user, "ledger.purchasebill.view") &&
+                            hasPermission(
+                              user,
+                              "ledger.purchasebill.create",
+                            ) && (
+                              <PurchaseEditor
+                                key={`${state.selected_party.id}-bill`}
+                                kind="bills"
+                                party={state.selected_party.id}
+                                canDeliver={
+                                  hasPermission(
+                                    user,
+                                    "ledger.purchasebill.deliver",
+                                  ) &&
+                                  hasPermission(
+                                    user,
+                                    "ledger.purchasetransaction.create",
+                                  )
+                                }
+                              />
+                            )}
+                          {hasPermission(
+                            user,
+                            "ledger.purchasetransaction.create",
+                          ) &&
+                            hasPermission(
+                              user,
+                              "ledger.purchasepayment.view",
+                            ) &&
+                            hasPermission(
+                              user,
+                              "ledger.purchasepayment.create",
+                            ) &&
+                            hasPermission(
+                              user,
+                              "ledger.cashbookentry.create",
+                            ) && (
+                              <PurchaseEditor
+                                key={`${state.selected_party.id}-payment`}
+                                kind="payments"
+                                party={state.selected_party.id}
+                                accounts={accounts}
+                                canCopy={hasPermission(
+                                  user,
+                                  "ledger.purchasebill.view",
+                                )}
+                              />
+                            )}
+                        </>
                       )}
-                      {kind === "purchase" &&
-                        hasPermission(user, "ledger.cashbookentry.create") && (
-                          <TransactionForm
-                            key={`${kind}-${state.selected_party.id}-payment`}
-                            kind={kind}
-                            party={state.selected_party}
-                            accounts={accounts}
-                            payment
-                          />
-                        )}
                       {kind === "sales" &&
                         hasPermission(user, "ledger.cashbookentry.create") &&
                         hasPermission(user, "ledger.salesreceipt.view") &&
@@ -156,6 +196,24 @@ export async function PartyLedgerPage({
                       search={search}
                     />
                   )}
+                {kind === "purchase" && (
+                  <>
+                    {hasPermission(user, "ledger.purchasebill.view") && (
+                      <PurchaseHistory
+                        kind="bills"
+                        party={state.selected_party.id}
+                        search={search}
+                      />
+                    )}
+                    {hasPermission(user, "ledger.purchasepayment.view") && (
+                      <PurchaseHistory
+                        kind="payments"
+                        party={state.selected_party.id}
+                        search={search}
+                      />
+                    )}
+                  </>
+                )}
                 <WorkspaceTools
                   key={`${kind}-${state.selected_party.id}`}
                   kind={kind}

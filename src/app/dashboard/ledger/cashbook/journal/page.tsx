@@ -102,23 +102,15 @@ export default async function JournalPage({
               {entry.reason && (
                 <p className="break-words text-sm">Reason: {entry.reason}</p>
               )}
-              <details className="text-xs text-muted-foreground">
-                <summary className="cursor-pointer">Record identifiers</summary>
-                <p className="mt-2 break-all">Journal: {entry.id}</p>
-                {entry.entry && (
-                  <p className="break-all">Cash-book entry: {entry.entry}</p>
-                )}
-                {entry.party_transaction && (
-                  <p className="break-all">
-                    Party transaction: {entry.party_transaction}
-                  </p>
-                )}
-                {entry.reverses && (
-                  <p className="break-all">
-                    Reverses journal: {entry.reverses}
-                  </p>
-                )}
-              </details>
+              <p className="text-xs text-muted-foreground">
+                {entry.reverses
+                  ? "Reversal journal entry"
+                  : entry.party_transaction
+                    ? "Party ledger journal entry"
+                    : entry.entry
+                      ? "Cash-book journal entry"
+                      : "Journal entry"}
+              </p>
             </div>
             <dl className="grid gap-4 p-4 sm:grid-cols-2">
               <div>

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { serverFetch, ServerFetchError } from "@/lib/server-fetch";
 import { money } from "@/features/cash-book/types";
 import type { LedgerKind } from "@/features/party-ledger/types";
+import { PartyTransactionCard } from "./PartyTransactionCard";
 import {
   BookFilters,
   BookPagination,
@@ -121,29 +122,8 @@ export async function PartyTransactions({
       ) : (
         <ul className="space-y-3">
           {data.results.map((row) => (
-            <li key={row.id} className="space-y-2 rounded-lg border p-4">
-              <div className="flex flex-wrap justify-between gap-2">
-                <span className="text-sm">
-                  {row.date} · {row.transaction_type.toLowerCase()}
-                </span>
-                <span className="font-semibold tabular-nums">
-                  {formatMoney(row.amount)}
-                </span>
-              </div>
-              <p className="break-words">{row.description}</p>
-              <p className="break-words text-sm text-muted-foreground">
-                {row.reference || "No reference"} · Recorded by{" "}
-                {row.created_by_name}
-              </p>
-              <p className="text-sm">
-                Balance: {formatMoney(row.running_balance)}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {row.transaction_type === "PAYMENT"
-                  ? "Currently unallocated"
-                  : "Currently outstanding"}
-                : {formatMoney(row.remaining_amount)}
-              </p>
+            <li key={row.id}>
+              <PartyTransactionCard row={row} kind={kind} currency={currency} />
             </li>
           ))}
         </ul>

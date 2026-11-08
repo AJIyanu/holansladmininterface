@@ -1,5 +1,38 @@
 # Ledger — current non-tax workspace
 
+## Supplier bills and payments — 2026-11-08
+
+Purchase Ledger Add bill and Add payment now open itemized forms. Bills capture the
+supplier invoice reference, item quantities/units/prices, optional tax (7.5% default),
+fixed/percentage discount and delivery status. Undelivered bills remain outside
+supplier debt; Mark delivered posts only the goods subtotal. Authorized staff can
+edit undelivered manual bills; delivered/source-linked financial details are retained.
+
+Payment can copy a supplier invoice into an editable draft, choose currency and paying
+cash/bank account, and include adjustable withholding (2% default). Tax and withholding
+are both based on goods after discount, before tax. The live and confirmation totals
+show exact cash paid: goods + tax − withholding. Payments post immediately; linked
+advances are applied on bill delivery without duplicating cash. Purchase ledger
+payments remain goods-only while the journal includes Input Tax and WHT Payable.
+
+Receipt number and image/PDF upload are optional on confirmation. Later editing permits
+only the receipt number/scan, with a review and immutable evidence history. Accepted
+files are PDF, JPEG, PNG or WebP up to 10 MB. Existing files remain available through
+permission-checked downloads. No generated supplier documents or email controls exist.
+
+Details: `/dashboard/ledger/purchase/{bills|payments}/{UUID}`. Supplier bill/payment
+history has search and pagination; invoice copying has paginated reference search.
+The Next download proxy is `/api/ledger/purchase-payments/{UUID}/evidence/{UUID}/download`.
+Server Actions reuse authenticated helpers and multipart uploads; tokens and storage
+identifiers stay server-side. Delivery, creation, evidence edit and download controls
+mirror the new backend permissions. Existing purchase reconciliation remains available.
+Procurement inbox now creates bill documents instead of immediately posting debt.
+
+Backend migration **0026** and purchasebill/purchasepayment permissions are required
+before testing. Full contracts and accounting rules are in the backend
+`docs/apps/ledger.md`. No dependencies were added. Authenticated browser interaction
+and live provider uploads were not exercised; automated tests mock private storage.
+
 ## Payment receipts — 2026-11-08
 
 The approved receipt workflow replaces Sales Ledger's Add payment button with
