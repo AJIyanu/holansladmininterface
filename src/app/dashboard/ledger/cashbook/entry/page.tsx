@@ -160,6 +160,16 @@ export default async function CashBookPage({
                   </span>
                 </div>
                 <p className="break-words">{entry.description}</p>
+                {entry.tax_linked && !entry.party_transaction_id && (
+                  <p className="text-xs text-muted-foreground">
+                    Tax activity · managed through the Tax Ledger
+                  </p>
+                )}
+                {entry.staff_transaction_id && (
+                  <p className="text-xs text-muted-foreground">
+                    Staff ledger transaction
+                  </p>
+                )}
                 {entry.party_transaction_id && (
                   <p className="text-sm text-muted-foreground">
                     Party-ledger payment · managed through its source ledger
@@ -173,15 +183,19 @@ export default async function CashBookPage({
                   Balance: {formatMoney(entry.running_balance ?? "0.00")}
                 </p>
                 <div className="flex gap-2">
-                  {canEdit && !entry.party_transaction_id && (
-                    <EntryForm
-                      key={`${entry.id}-${entry.version}`}
-                      entry={entry}
-                    />
-                  )}
-                  {canDelete && !entry.party_transaction_id && (
-                    <VoidEntry entry={entry} />
-                  )}
+                  {canEdit &&
+                    !entry.party_transaction_id &&
+                    !entry.staff_transaction_id &&
+                    !entry.tax_linked && (
+                      <EntryForm
+                        key={`${entry.id}-${entry.version}`}
+                        entry={entry}
+                      />
+                    )}
+                  {canDelete &&
+                    !entry.party_transaction_id &&
+                    !entry.staff_transaction_id &&
+                    !entry.tax_linked && <VoidEntry entry={entry} />}
                 </div>
               </article>
             ))}
@@ -220,6 +234,16 @@ export default async function CashBookPage({
                     </td>
                     <td className="max-w-xs break-words px-4 py-3">
                       <p>{entry.description}</p>
+                      {entry.tax_linked && !entry.party_transaction_id && (
+                        <p className="text-xs text-muted-foreground">
+                          Tax activity · managed through the Tax Ledger
+                        </p>
+                      )}
+                      {entry.staff_transaction_id && (
+                        <p className="text-xs text-muted-foreground">
+                          Staff ledger transaction
+                        </p>
+                      )}
                       {entry.party_transaction_id && (
                         <p className="text-xs text-muted-foreground">
                           Party-ledger payment · managed through its source
@@ -252,15 +276,19 @@ export default async function CashBookPage({
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
-                        {canEdit && !entry.party_transaction_id && (
-                          <EntryForm
-                            key={`${entry.id}-${entry.version}`}
-                            entry={entry}
-                          />
-                        )}
-                        {canDelete && !entry.party_transaction_id && (
-                          <VoidEntry entry={entry} />
-                        )}
+                        {canEdit &&
+                          !entry.party_transaction_id &&
+                          !entry.staff_transaction_id &&
+                          !entry.tax_linked && (
+                            <EntryForm
+                              key={`${entry.id}-${entry.version}`}
+                              entry={entry}
+                            />
+                          )}
+                        {canDelete &&
+                          !entry.party_transaction_id &&
+                          !entry.staff_transaction_id &&
+                          !entry.tax_linked && <VoidEntry entry={entry} />}
                       </div>
                     </td>
                   </tr>

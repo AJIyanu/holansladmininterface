@@ -11,7 +11,7 @@ import { quantityLabel, quantityNumber } from "@/features/sales-invoice/units";
 /** Client-facing layout converted from the supplied invoice.html. */
 export function InvoiceTemplate({ invoice }: { invoice: Invoice }) {
   const subtotal = BigInt(invoice.subtotal.replace(".", ""));
-  const vat = vatAmount(subtotal);
+  const vat = vatAmount(subtotal, invoice.tax_rate ?? "7.5");
   const fmt = (value: string) => money(value, invoice.currency);
   const company = invoice.company;
   const pricing = invoice.pricing;
@@ -27,7 +27,7 @@ export function InvoiceTemplate({ invoice }: { invoice: Invoice }) {
           ["Net subtotal", invoice.subtotal],
         ]
       : []),
-    ["VAT (7.5%)", decimal(vat)],
+    [`VAT (${invoice.tax_rate ?? "7.5"}%)`, decimal(vat)],
     ["TOTAL", decimal(subtotal + vat)],
   ];
   return (

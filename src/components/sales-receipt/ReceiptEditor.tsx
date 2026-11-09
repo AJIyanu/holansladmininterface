@@ -1,4 +1,5 @@
 "use client";
+import { useSalesTaxRates } from "@/features/tax-ledger/useSalesTaxRates";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -107,10 +108,14 @@ export function ReceiptEditor({
   const method = useWatch({ control: form.control, name: "payment_method" });
   const accountId = useWatch({ control: form.control, name: "account_id" });
   const invoiceId = useWatch({ control: form.control, name: "invoice_id" });
+  const rateDate = useWatch({ control: form.control, name: "date" });
+  const rates = useSalesTaxRates(open, rateDate, party, invoiceId);
   const { vat, withholding, received } = receiptTotals(
     subtotal,
     vatPaid,
     withholdingApplied,
+    rates.vat,
+    rates.wht,
   );
   const fmt = (value: bigint) => money(decimal(value), currency);
   async function save() {
@@ -162,6 +167,16 @@ export function ReceiptEditor({
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[92dvh] overflow-y-auto sm:max-w-5xl">
+        {!rates.ready && (
+          <p role="status">
+            {rates.error || "Loading tax rates…"}{" "}
+            {rates.error && (
+              <Button variant="outline" onClick={rates.retry}>
+                Retry rates
+              </Button>
+            )}
+          </p>
+        )}
         <DialogHeader>
           <DialogTitle>
             {review ? (
@@ -232,8 +247,8 @@ export function ReceiptEditor({
             )}
             <p>Net goods subtotal: {fmt(subtotal)}</p>
             <p>
-              VAT paid (7.5%): {fmt(vat)} · Withholding (2%): −
-              {fmt(withholding)} · Amount received: {fmt(received)}
+              VAT paid ({rates.vat}%): {fmt(vat)} · Withholding ({rates.wht}%):
+              −{fmt(withholding)} · Amount received: {fmt(received)}
             </p>
             <p className="text-sm text-muted-foreground">
               The goods payment enters the sales ledger immediately. The cash
@@ -257,6 +272,10 @@ export function ReceiptEditor({
           <form
             onSubmit={form.handleSubmit((values) => {
               if (copying) return;
+              if (!rates.ready) {
+                toast.error(rates.error || "Wait for tax rates to load.");
+                return;
+              }
               const account = accounts.find(
                 (a) =>
                   a.id === values.account_id &&
@@ -273,7 +292,11 @@ export function ReceiptEditor({
                 });
                 return;
               }
-              setReview(values);
+              setReview({
+                ...values,
+                expected_vat_rate: rates.vat,
+                expected_withholding_rate: rates.wht,
+              });
             })}
             className="space-y-5"
           >
@@ -431,7 +454,7 @@ export function ReceiptEditor({
                   role="switch"
                   {...form.register("vat_paid")}
                 />
-                VAT paid (7.5%)
+                VAT paid ({rates.vat}%)
               </label>
               <label className="flex items-center gap-2">
                 <input
@@ -439,7 +462,7 @@ export function ReceiptEditor({
                   role="switch"
                   {...form.register("withholding_applied")}
                 />
-                Withholding tax (2%)
+                Withholding tax ({rates.wht}%)
               </label>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -589,8 +612,12 @@ export function ReceiptEditor({
                 </p>
               )}
               <p>Net goods subtotal: {fmt(subtotal)}</p>
-              <p>VAT paid (7.5%): {fmt(vat)}</p>
-              <p>Withholding (2%): −{fmt(withholding)}</p>
+              <p>
+                VAT paid ({rates.vat}%): {fmt(vat)}
+              </p>
+              <p>
+                Withholding ({rates.wht}%): −{fmt(withholding)}
+              </p>
               <p className="text-lg font-semibold">
                 Amount received: {fmt(received)}
               </p>

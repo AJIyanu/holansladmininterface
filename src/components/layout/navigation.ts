@@ -125,6 +125,18 @@ export const dashboardNavigation: NavigationSection[] = [
             permission: "ledger.purchaseledger.view",
           },
           {
+            title: "Tax Ledger",
+            href: "/dashboard/ledger/ledgers/tax",
+            icon: FileText,
+            permission: "ledger.taxledger.view",
+          },
+          {
+            title: "Staff Ledger",
+            href: "/dashboard/ledger/ledgers/staff",
+            icon: Users,
+            permission: "ledger.staffledger.view",
+          },
+          {
             title: "Procurement approvals",
             href: "/dashboard/ledger/ledgers/procurement",
             icon: FileText,

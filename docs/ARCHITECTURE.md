@@ -70,3 +70,72 @@ subtotal. Invoice detail `pricing` restores saved discount settings on reopen.
 Previews show gross line values and a discount deduction only for positive rates;
 the backend stores/posts net line amounts and keeps discount metadata in existing
 operation payloads and immutable document snapshots, without schema additions.
+
+## Staff Ledger
+
+`/dashboard/ledger/ledgers/staff` adds a searchable, server-persisted staff selector,
+permission-gated Pay Staff, Receive from Staff and Retire Advance actions, date/currency
+filters, separate staff balances, transaction history, expense submissions and saved
+statements. Staff are existing UUID accounts, not CRM parties. Money forms choose an
+existing currency-matched cash/bank account. Salary/allowance expenses are not staff debt.
+
+Retire Advance uses editable ordered expense rows with dates, categories, descriptions,
+amounts and optional receipts. Add/remove/move controls preserve each receipt's row
+identity. Source selection expands inline within the form, avoiding nested dialogs.
+A review step precedes submission. Pending expenses wait for a separate permissioned
+approval/rejection with recorded actor, date and reason. The review displays change
+or reimbursement due; approval causes no cash movement. Actual returns/reimbursements
+use linked money forms. Self-approval is permitted with the audit record preserved.
+
+Detail routes are `/dashboard/ledger/staff/entries/{id}` and
+`/dashboard/ledger/staff/retirements/{id}`. Protected document downloads use
+`/api/ledger/staff/documents/{id}/download`, authenticatedRouteFetch and Django's
+assigned download permission. Supporting file bytes are hashed into each submission's
+retry fingerprint, with UUID idempotency on the backend. No storage URLs/tokens are
+exposed. Max file size is 10 MB, combined 20 MB; existing Server Action body limit is
+25 MB. No new dependency is required.
+
+`/statements/staff/{id}` renders the immutable full **Reconciliation and Statement**
+snapshot for one currency with prior balances, all period entries and closing balances.
+Generation opens a new browser tab; an explicit link remains available if popups are
+blocked. It uses company details saved by the backend, landscape print styling and
+staff/HolanSL signature lines. Financial year defaults to January–December. Balances
+start at zero until records exist. Staff-linked Cash Book entries hide edit/void actions;
+Django independently rejects those changes. Journal labels include staff receivables
+and staff reimbursement payables.
+
+Permissions follow `ledger.staffledger.{view,pay,receive,retire,approve,download,print}`;
+cash actions additionally need `ledger.cashbookentry.create`. Pages, actions and navigation
+mirror the existing formatted permissions. The backend's ledger migration0027 is required
+before using these routes; development does not run application migrations.
+
+## Tax Ledger
+
+`/dashboard/ledger/ledgers/tax` is protected by `ledger.taxledger.view`, with
+currency-separated company balance cards, filtered period/opening/closing values,
+searchable party selection, paginated tax events and approval requests. Historical
+review is explicitly loaded on demand. Navigation uses the existing permission
+format. Additional remit/approve/adjust/configure/apply/export permissions control
+operations, approvals, policies and CSV; Django remains authoritative.
+
+TaxEditor uses React Hook Form/Zod and inline review with stable retry identifiers.
+It records remittances, document VAT settlements, input-VAT classifications,
+manual CIT assessments, client-WHT credits, approved adjustments and historical
+openings. Remittance/CIT/adjustment reversals append records. All mutations use
+server actions and authenticated serverFetch; private evidence and exports stream
+through authenticated route handlers. No tokens, financial drafts or tax records
+are persisted in browser storage. Pages and dialogs retain empty/error/retry states.
+
+Request details live at `/dashboard/ledger/tax/requests/{id}`, policy history and
+configuration at `/dashboard/ledger/tax/policies`. Prepared/approved actors and
+reasons remain visible, including self-approvals. File uploads use the same private
+provider pipeline as supplier receipts. No electronic invoicing or WHT certificates.
+
+Sales invoice/receipt editors fetch effective server rates before review and submit
+expected rates to catch changed policy. Linked invoices retain their frozen VAT
+rate; client WHT overrides are date-effective. Both HTML and PDF templates use
+stored rates. Newly generated party Reconciliation and Statements show goods,
+VAT recognised/received/paid, WHT, actual cash and opening/closing combined balances;
+old frozen statements remain compatible. Tax-linked cash entries hide independent
+edit/void actions. Backend migration0028 and explicit staff grants are required;
+application migrations and historical backfill are operator actions.

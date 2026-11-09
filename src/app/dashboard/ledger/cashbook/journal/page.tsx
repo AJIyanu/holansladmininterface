@@ -105,11 +105,13 @@ export default async function JournalPage({
               <p className="text-xs text-muted-foreground">
                 {entry.reverses
                   ? "Reversal journal entry"
-                  : entry.party_transaction
-                    ? "Party ledger journal entry"
-                    : entry.entry
-                      ? "Cash-book journal entry"
-                      : "Journal entry"}
+                  : entry.staff_entry
+                    ? "Staff ledger journal entry"
+                    : entry.party_transaction
+                      ? "Party ledger journal entry"
+                      : entry.entry
+                        ? "Cash-book journal entry"
+                        : "Journal entry"}
               </p>
             </div>
             <dl className="grid gap-4 p-4 sm:grid-cols-2">

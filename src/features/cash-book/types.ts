@@ -2,6 +2,8 @@ export interface CashEntry {
   account: string;
   currency: string;
   party_transaction_id?: string | null;
+  tax_linked?: boolean;
+  staff_transaction_id?: string | null;
   id: string;
   date: string;
   kind: "RECEIPT" | "EXPENSE" | "CAPITAL";
@@ -20,6 +22,7 @@ export interface JournalEntry {
   id: string;
   entry: string | null;
   party_transaction: string | null;
+  staff_entry: string | null;
   date: string;
   amount: string;
   debit_account: string;
@@ -55,13 +58,18 @@ export function money(value: string, currency = "NGN"): string {
   return `${negative ? "−" : ""}${({ NGN: "₦", USD: "$", GBP: "£" } as Record<string, string>)[currency] ?? currency}${BigInt(whole).toLocaleString("en-NG")}.${cents.padEnd(2, "0")}`;
 }
 export const accountNames: Record<string, string> = {
+  STAFF_RECEIVABLE: "Staff receivables",
+  STAFF_PAYABLE: "Staff reimbursements payable",
   CASH: "Cash",
   INCOME: "Income",
   EXPENSE: "Expenses",
   CAPITAL: "Capital introduced",
   RECEIVABLE: "Client receivables",
   PAYABLE: "Supplier payables",
-  INPUT_TAX: "Input tax",
+  INPUT_TAX: "Purchase VAT (Input VAT)",
+  INPUT_PENDING: "Input VAT pending review",
+  CIT_PAYABLE: "Company Income Tax payable",
+  TAX_EXPENSE: "Company Income Tax expense",
   WHT_PAYABLE: "Withholding Tax Payable",
   VAT_PAYABLE: "VAT Payable",
   WHT_RECEIVABLE: "Withholding Tax Receivable",

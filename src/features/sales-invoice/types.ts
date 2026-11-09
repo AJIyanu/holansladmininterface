@@ -8,6 +8,7 @@ export interface InvoiceItem {
   amount?: string;
 }
 export interface Invoice {
+  tax_rate?: string;
   pricing?: {
     discount_percent: string;
     gross_subtotal: string;

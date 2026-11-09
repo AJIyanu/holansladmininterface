@@ -1,4 +1,5 @@
 "use client";
+import { useSalesTaxRates } from "@/features/tax-ledger/useSalesTaxRates";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -101,7 +102,9 @@ export function InvoiceEditor({
   const grossSubtotal = invoiceSubtotal(items ?? []);
   const subtotal = invoiceSubtotal(items ?? [], discountPercent);
   const discount = grossSubtotal - subtotal;
-  const vat = vatAmount(subtotal);
+  const rateDate = useWatch({ control: form.control, name: "date" });
+  const rates = useSalesTaxRates(open, rateDate, party, invoice?.id);
+  const vat = vatAmount(subtotal, rates.vat);
   const fmt = (value: bigint) => money(decimal(value), currency);
   async function save() {
     if (!review) return;
@@ -151,6 +154,16 @@ export function InvoiceEditor({
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[92dvh] overflow-y-auto sm:max-w-5xl">
+        {!rates.ready && (
+          <p role="status">
+            {rates.error || "Loading tax rates…"}{" "}
+            {rates.error && (
+              <Button variant="outline" onClick={rates.retry}>
+                Retry rates
+              </Button>
+            )}
+          </p>
+        )}
         <DialogHeader>
           <DialogTitle>
             {review
@@ -205,7 +218,7 @@ export function InvoiceEditor({
             )}
             <p>Net goods subtotal: {fmt(subtotal)}</p>
             <p>
-              VAT (7.5%): {fmt(vat)} · Total: {fmt(subtotal + vat)}
+              VAT ({rates.vat}%): {fmt(vat)} · Total: {fmt(subtotal + vat)}
             </p>
             <p className="text-sm text-muted-foreground">
               This invoice enters the sales ledger when marked delivered.
@@ -224,7 +237,16 @@ export function InvoiceEditor({
             </div>
           </div>
         ) : (
-          <form onSubmit={form.handleSubmit(setReview)} className="space-y-5">
+          <form
+            onSubmit={form.handleSubmit((values) => {
+              if (!rates.ready) {
+                toast.error(rates.error || "Wait for tax rates to load.");
+                return;
+              }
+              setReview({ ...values, expected_vat_rate: rates.vat });
+            })}
+            className="space-y-5"
+          >
             <div className="grid gap-3 sm:grid-cols-2">
               <label>
                 Invoice date
@@ -403,7 +425,9 @@ export function InvoiceEditor({
                 </p>
               )}
               <p>Net goods subtotal: {fmt(subtotal)}</p>
-              <p>VAT (7.5%): {fmt(vat)}</p>
+              <p>
+                VAT ({rates.vat}%): {fmt(vat)}
+              </p>
               <p className="text-lg font-semibold">
                 Total: {fmt(subtotal + vat)}
               </p>

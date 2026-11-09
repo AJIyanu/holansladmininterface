@@ -110,3 +110,10 @@ test("tax-inclusive cash overflow is rejected before confirmation", () => {
     true,
   );
 });
+
+test("receipt preview uses configured VAT and client WHT independently", () => {
+  const result = receiptTotals(10000000n, true, true, "8", "2.5");
+  assert.equal(decimal(result.vat), "8000.00");
+  assert.equal(decimal(result.withholding), "2500.00");
+  assert.equal(decimal(result.received), "105500.00");
+});

@@ -27,12 +27,14 @@ export function ReceiptTemplate({ receipt }: { receipt: Receipt }) {
         ]
       : []),
     [
-      receipt.snapshot.vat_paid ? "VAT paid (7.5%)" : "VAT not paid",
+      receipt.snapshot.vat_paid
+        ? `VAT paid (${receipt.snapshot.vat_rate ?? "7.5"}%)`
+        : "VAT not paid",
       receipt.vat,
     ],
     [
       receipt.snapshot.withholding_applied
-        ? "Withholding tax (2%)"
+        ? `Withholding tax (${receipt.snapshot.withholding_rate ?? "2"}%)`
         : "Withholding tax not applied",
       receipt.withholding,
     ],

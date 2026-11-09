@@ -14,6 +14,10 @@ const price = z
   );
 export const invoiceValuesSchema = z
   .object({
+    expected_vat_rate: z
+      .string()
+      .regex(/^\d{1,2}(\.\d{1,2})?$/)
+      .optional(),
     date: z.string().date("Choose a valid date."),
     currency: z.enum(["NGN", "USD", "GBP"]),
     billed_to: z.string().trim().min(1, "Enter the billed-to name.").max(255),
@@ -102,6 +106,6 @@ export function discountedLineAmount(
 export function decimal(value: bigint): string {
   return `${value / BigInt(100)}.${String(value % BigInt(100)).padStart(2, "0")}`;
 }
-export function vatAmount(subtotal: bigint): bigint {
-  return (subtotal * BigInt(75) + BigInt(500)) / BigInt(1000);
+export function vatAmount(subtotal: bigint, rate = "7.5"): bigint {
+  return (subtotal * scaled(rate, 2) + BigInt(5000)) / BigInt(10000);
 }

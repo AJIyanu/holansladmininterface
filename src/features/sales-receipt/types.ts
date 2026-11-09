@@ -22,6 +22,8 @@ export interface Receipt {
   created_at: string;
   reversed: boolean;
   snapshot: {
+    vat_rate?: string;
+    withholding_rate?: string;
     company: {
       address?: string;
       website?: string;

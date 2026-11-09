@@ -15,6 +15,7 @@ interface Statement {
     currency: string;
     date_from: string;
     date_to: string;
+    tax?: Record<string, string>;
     opening_balance: string;
     closing_balance: string;
     charges: string;
@@ -31,6 +32,11 @@ interface Statement {
       debit: string;
       credit: string;
       balance: string;
+      vat_recognised?: string;
+      vat_cash?: string;
+      wht?: string;
+      actual_cash?: string;
+      combined_balance?: string;
     }>;
     outstanding: Array<{
       id: string;
@@ -112,7 +118,7 @@ export default async function StatementPage({
       />
       <dl className="my-4 grid grid-cols-3 gap-3 text-sm">
         {[
-          ["Prior balance", s.opening_balance],
+          ["Prior balance (goods)", s.opening_balance],
           ["Charges / increases", s.charges],
           ["Credits / reductions", s.credits],
           [
@@ -126,7 +132,7 @@ export default async function StatementPage({
             s.invoices,
           ],
           ["Refunds", s.refunds],
-          ["Closing balance", s.closing_balance],
+          ["Closing balance (goods)", s.closing_balance],
         ].map(([k, v]) => (
           <div key={k}>
             <dt>{k}</dt>
@@ -134,6 +140,34 @@ export default async function StatementPage({
           </div>
         ))}
       </dl>
+      {s.tax && (
+        <dl className="my-4 grid grid-cols-3 gap-3 text-sm">
+          {Object.entries({
+            opening_total: "Prior balance including VAT",
+            closing_total: "Closing balance including VAT",
+            opening_vat: "Prior VAT balance",
+            closing_vat: "Outstanding VAT",
+            vat_recognised: "VAT recognised",
+            vat_cash:
+              data.ledger_kind === "sales"
+                ? "VAT received (Output VAT)"
+                : "VAT paid (Input VAT)",
+            wht:
+              data.ledger_kind === "sales"
+                ? "WHT held by client"
+                : "WHT withheld from supplier",
+            actual_cash:
+              data.ledger_kind === "sales"
+                ? "Actual cash received (net)"
+                : "Actual cash paid (net)",
+          }).map(([k, label]) => (
+            <div key={k}>
+              <dt>{label}</dt>
+              <dd className="font-semibold">{fmt(s.tax![k])}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
       <p className="mb-3 text-sm">
         Positive balance:{" "}
         {data.ledger_kind === "sales"
@@ -148,9 +182,17 @@ export default async function StatementPage({
               "Date",
               "Type / reference",
               "Description",
-              "Increase",
-              "Reduction",
-              "Balance",
+              "Goods increase",
+              "Goods reduction",
+              ...(s.tax
+                ? [
+                    "VAT recognised",
+                    "VAT cash",
+                    "WHT",
+                    "Actual cash",
+                    "Balance incl. VAT",
+                  ]
+                : ["Balance"]),
             ].map((h) => (
               <th key={h} className="border p-2 text-left">
                 {h}
@@ -170,7 +212,17 @@ export default async function StatementPage({
               <td className="border p-2">{r.description}</td>
               <td className="border p-2">{fmt(r.debit)}</td>
               <td className="border p-2">{fmt(r.credit)}</td>
-              <td className="border p-2">{fmt(r.balance)}</td>
+              {s.tax &&
+                [r.vat_recognised, r.vat_cash, r.wht, r.actual_cash].map(
+                  (v, i) => (
+                    <td key={i} className="border p-2">
+                      {fmt(v || "0.00")}
+                    </td>
+                  ),
+                )}
+              <td className="border p-2">
+                {fmt(r.combined_balance ?? r.balance)}
+              </td>
             </tr>
           ))}
         </tbody>
