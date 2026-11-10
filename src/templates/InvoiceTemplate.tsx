@@ -50,9 +50,9 @@ export function InvoiceTemplate({ invoice }: { invoice: Invoice }) {
             )}
             {company?.email && <p>Email: {company.email}</p>}
             <p>WhatsApp: {company?.phone || "2348073033767, 2348090964567"}</p>
-            {company?.address && (
-              <p className="whitespace-pre-wrap">{company.address}</p>
-            )}
+            <p>
+              24, Damin Plaza, MKO Abiola Way, Ringroad, Ibadan, Oyo, Nigeria.
+            </p>
           </div>
         </div>
       </header>

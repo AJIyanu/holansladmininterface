@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reconciliation Statement - HolansL</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --color-primary: #1a3a6e;
+        --color-prior: #c41e3a;
+        --color-invoiced-bg: #a8d4f0;
+        --color-received-bg: #a8d5a2;
+        --color-balance: #1a3a6e;
+        --color-row-invoiced: #f8d7da;
+        --color-row-received: #d4edda;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans text-[13px] text-gray-800 p-6">
+    <div class="max-w-[900px] mx-auto bg-white shadow-md px-8 py-8">
+      <!-- Header: Logo + Company Info (right aligned) -->
+      <div class="flex justify-end mb-4">
+        <div class="text-right">
+          <!-- Logo Placeholder -->
+          <div
+            class="ml-auto mb-2 w-[200px] h-[75px] border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-gray-400 text-sm"
+          >
+            [LOGO PLACEHOLDER]
+          </div>
+
+          <!-- Company Contact Info -->
+          <div class="text-[12px] leading-relaxed text-gray-700">
+            <div>Website: www.holansl.com</div>
+            <div>Email: operations@holansl.com</div>
+            <div>WhatsApp: 2348073033767, 2348090964567</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <h1
+        class="text-center text-[15px] font-bold uppercase tracking-wide text-gray-900 mb-6 leading-snug"
+      >
+        RECONCILIATION STATEMENT OF ACCOUNT BETWEEN<br />
+        HOLANSL AND SAYED FARMS JAN 2026 - JUNE 2026
+      </h1>
+
+      <!-- Summary Box (right aligned) -->
+      <div class="flex justify-end mb-8">
+        <div class="w-[380px]">
+          <!-- Prior Balance -->
+          <div class="flex">
+            <div
+              class="w-44 bg-prior text-white font-semibold py-2.5 px-3 flex items-center"
+            >
+              Prior Balance
+            </div>
+            <div
+              class="flex-1 bg-prior text-white font-bold py-2.5 px-3 text-right"
+            >
+              ₦112,169.96
+            </div>
+          </div>
+
+          <!-- Total Invoiced -->
+          <div class="flex">
+            <div
+              class="w-44 bg-invoiced-bg text-gray-900 font-semibold py-2.5 px-3 flex items-center"
+            >
+              Total Invoiced
+            </div>
+            <div
+              class="flex-1 bg-invoiced-bg text-gray-900 font-bold py-2.5 px-3 text-right"
+            >
+              ₦21,481,094.00
+            </div>
+          </div>
+
+          <!-- Total Received -->
+          <div class="flex">
+            <div
+              class="w-44 bg-received-bg text-gray-900 font-semibold py-2.5 px-3 flex items-center"
+            >
+              Total Received
+            </div>
+            <div
+              class="flex-1 bg-received-bg text-gray-900 font-bold py-2.5 px-3 text-right"
+            >
+              ₦18,055,471.55
+            </div>
+          </div>
+
+          <!-- 2% Withholding Tax -->
+          <div class="flex border border-gray-300">
+            <div
+              class="w-44 bg-white text-gray-900 font-semibold py-2.5 px-3 flex items-center"
+            >
+              2% Withholding Tax
+            </div>
+            <div
+              class="flex-1 bg-white text-gray-900 font-bold py-2.5 px-3 text-right"
+            >
+              ₦399,648.26
+            </div>
+          </div>
+
+          <!-- Balance Due -->
+          <div class="flex">
+            <div
+              class="w-44 bg-balance text-white font-semibold py-2.5 px-3 flex items-center"
+            >
+              Balance Due
+            </div>
+            <div
+              class="flex-1 bg-balance text-white font-bold py-2.5 px-3 text-right text-[15px]"
+            >
+              ₦3,138,144.15
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transactions Table -->
+      <table class="w-full border-collapse text-[12.5px]">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="py-2.5 px-3 text-left font-semibold w-24">Date</th>
+            <th class="py-2.5 px-3 text-left font-semibold">Description</th>
+            <th class="py-2.5 px-3 text-left font-semibold w-44">
+              Waybill/Invoice
+            </th>
+            <th class="py-2.5 px-3 text-right font-semibold w-32">Invoiced</th>
+            <th class="py-2.5 px-3 text-right font-semibold w-32">Received</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Received row -->
+          <tr class="bg-row-received">
+            <td class="py-2 px-3">1/8/2026</td>
+            <td class="py-2 px-3">SAYED FARM</td>
+            <td class="py-2 px-3"></td>
+            <td class="py-2 px-3 text-right"></td>
+            <td class="py-2 px-3 text-right">₦120,481.00</td>
+          </tr>
+
+          <!-- Invoiced row -->
+          <tr class="bg-row-invoiced">
+            <td class="py-2 px-3">1/15/2026</td>
+            <td class="py-2 px-3">Strapping rope ( propylene materials )</td>
+            <td class="py-2 px-3">HOL-INV-20260115-001</td>
+            <td class="py-2 px-3 text-right">₦696,600.00</td>
+            <td class="py-2 px-3 text-right"></td>
+          </tr>
+
+          <!-- Invoiced row -->
+          <tr class="bg-row-invoiced">
+            <td class="py-2 px-3">1/21/2026</td>
+            <td class="py-2 px-3">Belt A35 and Belt A36 OPTIBELT</td>
+            <td class="py-2 px-3">HOL-INV-20260121-002</td>
+            <td class="py-2 px-3 text-right">₦53,750.00</td>
+            <td class="py-2 px-3 text-right"></td>
+          </tr>
+
+          <!-- Received row -->
+          <tr class="bg-row-received">
+            <td class="py-2 px-3">1/31/2026</td>
+            <td class="py-2 px-3">SAYED FARM</td>
+            <td class="py-2 px-3"></td>
+            <td class="py-2 px-3 text-right"></td>
+            <td class="py-2 px-3 text-right">₦683,640.00</td>
+          </tr>
+
+          <!-- Invoiced row -->
+          <tr class="bg-row-invoiced">
+            <td class="py-2 px-3">2/3/2026</td>
+            <td class="py-2 px-3">ANTOX 71E CHEMETALL</td>
+            <td class="py-2 px-3">HOL-INV-20260203-003</td>
+            <td class="py-2 px-3 text-right">₦167,700.00</td>
+            <td class="py-2 px-3 text-right"></td>
+          </tr>
+
+          <!-- Received row -->
+          <tr class="bg-row-received">
+            <td class="py-2 px-3">2/6/2026</td>
+            <td class="py-2 px-3">SAYED FARM</td>
+            <td class="py-2 px-3"></td>
+            <td class="py-2 px-3 text-right"></td>
+            <td class="py-2 px-3 text-right">₦52,750.00</td>
+          </tr>
+
+          <!-- Invoiced row -->
+          <tr class="bg-row-invoiced">
+            <td class="py-2 px-3">2/7/2026</td>
+            <td class="py-2 px-3">16A 2 POLE BREAKER &</td>
+            <td class="py-2 px-3">HOL-INV-20260207-004</td>
+            <td class="py-2 px-3 text-right">₦325,778.00</td>
+            <td class="py-2 px-3 text-right"></td>
+          </tr>
+
+          <!-- Invoiced row -->
+          <tr class="bg-row-invoiced">
+            <td class="py-2 px-3">2/10/2026</td>
+            <td class="py-2 px-3">A1060 BELT OPTIBELT</td>
+            <td class="py-2 px-3">HOL-INV-20260210-005</td>
+            <td class="py-2 px-3 text-right">₦20,425.00</td>
+            <td class="py-2 px-3 text-right"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

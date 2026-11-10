@@ -1,4 +1,27 @@
-# Ledger — current non-tax workspace
+# Ledger — printable reconciliation update (2026-11-10)
+
+Sales, purchase and staff statement pages now share the TSX conversion of the
+user-supplied `src/templates/reconciliation.html`: right-aligned logo/contact block,
+right-aligned full statement title and currency, compact coloured summary, and
+five-column account table. Dates use `Jan 03, 2026`; currency is NGN, USD or GBP.
+
+Party statements show prior balance, invoices excluding VAT, invoice VAT, invoices
+including VAT, actual receipts/payments, WHT and closing balance. Credits/other
+adjustments appear only when needed to reconcile the original frozen balance.
+Receipt rows are green and invoice rows red. Staff statements use the same layout
+with staff-specific totals and separate due-from/due-to balances; expense approvals
+are described without inventing cash movements or invoices.
+
+Printed documents exclude internal snapshot identifiers, review history, repeated
+balance cards and outstanding/advance schedules. Review controls/history remain
+available on screen. New backend snapshots freeze full delivery VAT and the actual
+supplier receipt reference. Existing saved snapshots are not rewritten: regenerate
+for complete new fields; the older snapshot notice is screen-only. No migration.
+Paper styling uses a scoped CSS module, approved navy, the supplied status colours,
+A4 portrait rules, repeating table headers and exact print colours. The supplied
+HTML is retained unchanged as the design reference. No CDN script is used.
+
+## Earlier ledger implementation notes
 
 ## Supplier bills and payments — 2026-11-08
 
@@ -52,12 +75,12 @@ withholding is 2% of that same subtotal, before VAT. Cash received = goods + VAT
 The sales payment and allocations remain goods-only. For goods of NGN 100,000 with
 both switches enabled, journal totals are:
 
-| Account | Debit | Credit |
-| --- | ---: | ---: |
-| Receiving cash/bank account | 105,500 | |
-| Withholding Tax Receivable | 2,000 | |
-| Client receivable/payment | | 100,000 |
-| VAT Payable | | 7,500 |
+| Account                     |   Debit |  Credit |
+| --------------------------- | ------: | ------: |
+| Receiving cash/bank account | 105,500 |         |
+| Withholding Tax Receivable  |   2,000 |         |
+| Client receivable/payment   |         | 100,000 |
+| VAT Payable                 |         |   7,500 |
 
 The existing paired journal stores this as cash/receivable 98,000,
 WHT receivable/client receivable 2,000 and cash/VAT payable 7,500. They share the
