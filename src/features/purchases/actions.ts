@@ -37,7 +37,6 @@ function failure(e: unknown) {
 function refresh(kind: string, id: string) {
   for (const path of [
     "/dashboard/ledger/ledgers/purchase",
-    "/dashboard/ledger/ledgers/procurement",
     "/dashboard/ledger/cashbook/entry",
     "/dashboard/ledger/cashbook/journal",
     `/dashboard/ledger/purchase/${kind}/${id}`,

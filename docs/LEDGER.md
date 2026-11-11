@@ -170,9 +170,8 @@ previous confirmed revisions remain immutable and printable. The reference is re
   and email requests. Email history distinguishes provider acceptance from unknown
   outcomes; retrying the same key never sends another email. Provider acceptance does
   not prove inbox delivery. No live email was sent during verification.
-- Procurement invoice imports now create undelivered invoice documents. Their source
-  item details remain linked and fixed; confirmation permits direct PO selection.
-  Existing posted invoices and procurement links remain valid.
+- Procurement invoice imports and source links were retired on 2026-11-10. No
+  linked Ledger records existed in the application database at retirement.
 
 Backend routes are under `/ledger/sales-invoices/`: `parties/{party UUID}/`,
 `{invoice UUID}/`, and `{invoice UUID}/{confirm,deliver,email,pdf}/`.
@@ -217,9 +216,8 @@ are superseded by this section.
 - Saved snapshots are listed on each party ledger. Authorized staff append AGREED
   or DISPUTED reviews with notes, identity and time. These are staff-recorded reviews,
   not an external client's signature. Later transactions do not modify a snapshot.
-- /dashboard/ledger/ledgers/procurement shows scoped quotation approvals, invoice requests,
-  supplier bills and other submitted finance requests. Source links support review.
-  Invoice/bill import posts once; other request approvals do not claim funds moved.
+- The former `/dashboard/ledger/ledgers/procurement` approvals/import workspace was
+  retired with the previous Procurement implementation.
   Procurement can now submit finance requests and select an approved invoice item
   instead of a quotation for direct ordering. Acceptance comes from delivery evidence.
 - /dashboard/ledger/ledgers/settings adds, renames and activates/deactivates cash/bank accounts.

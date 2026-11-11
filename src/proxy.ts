@@ -1,5 +1,6 @@
 import { decodeJwt } from "jose";
 import { type NextRequest, NextResponse } from "next/server";
+import { getLoginRedirect } from "@/lib/login-redirect";
 
 import {
   clearAuthCookies,
@@ -45,7 +46,7 @@ function createLoginRedirect(request: NextRequest): NextResponse {
 
   loginUrl.searchParams.set(
     "redirect",
-    `${request.nextUrl.pathname}${request.nextUrl.search}`,
+    getLoginRedirect(`${request.nextUrl.pathname}${request.nextUrl.search}`),
   );
 
   const response = NextResponse.redirect(loginUrl);
@@ -128,7 +129,12 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
   }
 
   if (loginPage && accessToken) {
-    const response = NextResponse.redirect(new URL("/dashboard", request.url));
+    const response = NextResponse.redirect(
+      new URL(
+        getLoginRedirect(request.nextUrl.searchParams.get("redirect")),
+        request.url,
+      ),
+    );
 
     if (refreshedTokens) {
       setAuthCookies(response, refreshedTokens);

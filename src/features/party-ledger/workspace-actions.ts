@@ -30,7 +30,6 @@ async function send(
       body: JSON.stringify(payload),
     });
     revalidatePath("/dashboard/ledger", "layout");
-    revalidatePath("/dashboard/procurement", "layout");
     return { data };
   } catch (error) {
     if (error instanceof ServerFetchError && error.status === 400)
@@ -75,11 +74,6 @@ export async function reviewStatement(id: string, payload: unknown) {
   return send(`/ledger/statements/${id}/`, payload, [
     "ledger.reconciliation.view",
     "ledger.reconciliation.confirm",
-  ]);
-}
-export async function procurementAction(payload: unknown) {
-  return send("/ledger/procurement-inbox/", payload, [
-    "ledger.procurement.approve",
   ]);
 }
 export async function saveLedgerAccount(payload: unknown, edit = false) {

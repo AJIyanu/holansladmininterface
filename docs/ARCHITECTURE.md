@@ -33,19 +33,16 @@ Tasks, comments, reminders and dashboard notifications are implemented. Procurem
 and finance links/proxy remnants do not imply implemented business functionality.
 Consult backend app docs and stabilize backend contracts before dependent UI work.
 
-Procurement now uses `/dashboard/procurement/[[...segments]]` with the existing
-sidebar, assigned permission checks, server-fetched records and the authenticated
-`/api/procurement/[...path]` proxy. Document-version pages display saved PDF/JPG
-previews and downloads through the protected proxy. Company office details come
-from backend configuration, never from obsolete sample addresses. Official
-quotation/invoice issuance and receipts remain dependent on ledger integration.
-
-Procurement form review uses the shared Dialog: validated field values, selected
-record labels, filenames and item rows appear before Confirm and save. Edit
-closes the modal and retains values. Request ownership/department are backend
-defaults. The journey uses alternating rounded cards, circular icons and a dotted
-path, with hover/focus/tap popups and paginated milestone history. Keyboard users
-can enter the popup with Enter, Space or Arrow Down; Escape closes it.
+The first Procurement navigation group now has Item Requests, Item Trackers and
+Analytics. The remaining Sourcing & Quotations, Purchase Orders, Purchasing,
+Delivery & Rejections, Finance Requests and Documents roadmap groups remain
+visible with under-development destinations until redesigned in order. Item
+Requests supports permission-gated CRM-client registration of multiple independent
+items, review-before-save, private sample images, server filtering and paginated
+detailed cards. Item Trackers exposes one activity journey per item with attributed
+activities, comments and controlled completion status. Authenticated work uses
+Server Components and Server Actions; private images stream through a protected
+Route Handler. Analytics remains under development pending its approved measures.
 
 Ledger was reset on 2026-11-03. Its first rebuild feature is the NGN cash book at
 `/dashboard/ledger/cashbook/entry` and read-only paired journal at `/dashboard/ledger/cashbook/journal`.

@@ -24,6 +24,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { Alert, AlertDescription } from "./ui/alert";
 import { toast } from "sonner";
+import { getLoginRedirect } from "@/lib/login-redirect";
 
 // Zod validation schema
 const loginSchema = z.object({
@@ -79,9 +80,9 @@ export function LoginForm() {
       if (response.ok && result.success) {
         // Get redirect URL from query params or default to dashboard
         const searchParams = new URLSearchParams(window.location.search);
-        const redirectTo = searchParams.get("redirect") || "/dashboard";
+        const redirectTo = getLoginRedirect(searchParams.get("redirect"));
 
-        router.push(redirectTo);
+        router.replace(redirectTo);
         router.refresh();
       } else {
         const errorMessage =
@@ -131,6 +132,8 @@ export function LoginForm() {
         {/* Login Form */}
         <Form {...form}>
           <form
+            method="post"
+            action="/api/auth/login"
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
           >

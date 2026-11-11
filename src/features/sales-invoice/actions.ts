@@ -36,10 +36,8 @@ function refresh(id: string) {
   revalidatePath("/dashboard/ledger/sales");
   revalidatePath("/dashboard/ledger/ledgers/sales");
   revalidatePath("/dashboard/ledger/cashbook/journal");
-  revalidatePath("/dashboard/ledger/ledgers/procurement");
   revalidatePath(`/dashboard/ledger/sales/invoices/${id}`);
   revalidatePath("/dashboard/ledger/journal");
-  revalidatePath("/dashboard/ledger/procurement");
 }
 export async function saveInvoice(
   input: unknown,

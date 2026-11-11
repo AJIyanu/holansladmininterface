@@ -137,12 +137,6 @@ export const dashboardNavigation: NavigationSection[] = [
             permission: "ledger.staffledger.view",
           },
           {
-            title: "Procurement approvals",
-            href: "/dashboard/ledger/ledgers/procurement",
-            icon: FileText,
-            permission: "ledger.procurement.approve",
-          },
-          {
             title: "Settings",
             href: "/dashboard/ledger/ledgers/settings",
             icon: FileText,
@@ -174,27 +168,24 @@ export const dashboardNavigation: NavigationSection[] = [
     title: "Procurement",
     items: [
       {
-        title: "Requests & Tracking",
+        title: "Item Requests",
+        href: "/dashboard/procurement/requests",
         icon: ClipboardList,
-        children: [
-          {
-            title: "All Requests",
-            href: "/dashboard/procurement/requests",
-            icon: ClipboardList,
-            permission: "procurement.procurementrequest.view",
-          },
-          {
-            title: "New Request",
-            href: "/dashboard/procurement/requests/new",
-            icon: ClipboardList,
-            permission: "procurement.procurementrequest.create",
-          },
-          {
-            title: "Item Trackers",
-            href: "/dashboard/procurement/items",
-            icon: ClipboardList,
-            permission: "procurement.requestitem.view",
-          },
+        permission: "procurement.itemrequest.view",
+      },
+      {
+        title: "Item Trackers",
+        href: "/dashboard/procurement/items",
+        icon: PackageCheck,
+        permission: "procurement.itemtracker.view",
+      },
+      {
+        title: "Analytics",
+        href: "/dashboard/procurement/analytics",
+        icon: Activity,
+        permission: [
+          "procurement.itemrequest.view",
+          "procurement.itemtracker.view",
         ],
       },
       {
@@ -501,27 +492,14 @@ function canSeeNavigationLink(
     !user.is_superuser
   )
     return false;
-  if (!href?.startsWith("/dashboard/procurement"))
-    return hasPermission(user, permission);
-  if (!user.is_staff && !user.is_superuser) return false;
-  const required = [
-    "procurement.procurementrequest.view",
-    ...(Array.isArray(permission)
-      ? permission
-      : permission
-        ? [permission]
-        : []),
-  ];
-  if (typeof permission === "string" && permission.endsWith(".create")) {
-    required.push(
-      "procurement.procurementrequest.operate",
-      permission.replace(/\.create$/, ".view"),
-    );
-  }
-  return (
-    user.is_superuser ||
-    required.every((value) => user.permissions.includes(value))
-  );
+  if (
+    href?.startsWith("/dashboard/procurement/") &&
+    !href.startsWith("/dashboard/procurement/requests") &&
+    !href.startsWith("/dashboard/procurement/items") &&
+    !href.startsWith("/dashboard/procurement/analytics")
+  )
+    return user.is_staff || user.is_superuser;
+  return hasPermission(user, permission);
 }
 
 function filterNavigationItem(

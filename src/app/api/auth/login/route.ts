@@ -3,6 +3,21 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL = process.env.DJANGO_API_URL || "http://localhost:8000/api";
 
 export async function POST(request: NextRequest) {
+  // Native submission before hydration must never fall back to a GET with credentials.
+  // Authentication uses JSON; fail closed with no credential reflection otherwise.
+  if (
+    request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !==
+    "application/json"
+  ) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Please enable JavaScript and reload the login page.",
+      },
+      { status: 415, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
   try {
     const { email, password } = await request.json();
 
