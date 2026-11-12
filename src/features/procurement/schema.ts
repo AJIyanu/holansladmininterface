@@ -14,7 +14,6 @@ export const requestItemSchema = z.object({
 export const itemRequestSchema = z
   .object({
     client: z.string().uuid("Choose a client."),
-    requester: z.string(),
     received_via: z.enum([
       "",
       "EMAIL",
@@ -37,3 +36,6 @@ export const itemRequestSchema = z
   );
 
 export type ItemRequestValues = z.infer<typeof itemRequestSchema>;
+
+export const itemEditSchema = requestItemSchema;
+export type ItemEditValues = z.infer<typeof itemEditSchema>;

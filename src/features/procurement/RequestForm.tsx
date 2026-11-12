@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -33,11 +33,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import {
-  createItemRequest,
-  getRequesterOptions,
-  uploadItemImage,
-} from "./actions";
+import { createItemRequest, uploadItemImages } from "./actions";
 import { itemRequestSchema, type ItemRequestValues } from "./schema";
 import type { Option } from "./types";
 
@@ -68,13 +64,11 @@ export function RequestForm({ clients }: { clients: Option[] }) {
   const [open, setOpen] = useState(false);
   const [reviewing, setReviewing] = useState(false);
   const [pending, startTransition] = useTransition();
-  const [requesters, setRequesters] = useState<Option[]>([]);
   const [images, setImages] = useState<Record<number, File[]>>({});
   const form = useForm<ItemRequestValues>({
     resolver: zodResolver(itemRequestSchema),
     defaultValues: {
       client: "",
-      requester: "",
       received_via: "",
       received_via_custom: "",
       notes: "",
@@ -86,14 +80,18 @@ export function RequestForm({ clients }: { clients: Option[] }) {
   const values = form.watch();
   const clientName = clients.find((client) => client.id === clientId)?.label;
 
-  useEffect(() => {
-    if (!clientId) {
-      setRequesters([]);
+  function selectPictures(index: number, selected: FileList | null) {
+    const files = Array.from(selected || []);
+    if (files.length > 5) {
+      toast.error("An item can have at most five picture samples.");
       return;
     }
-    void getRequesterOptions(clientId).then(setRequesters);
-    form.setValue("requester", "");
-  }, [clientId, form]);
+    if (files.some((file) => file.size > 5 * 1024 * 1024)) {
+      toast.error("Each picture must be 5 MB or smaller.");
+      return;
+    }
+    setImages((current) => ({ ...current, [index]: files }));
+  }
 
   function submit() {
     startTransition(async () => {
@@ -107,13 +105,11 @@ export function RequestForm({ clients }: { clients: Option[] }) {
         for (const [index, files] of Object.entries(images)) {
           const item = result.data.items[Number(index)];
           if (!item) continue;
-          for (const file of files) {
-            const upload = new FormData();
-            upload.set("item", item.id);
-            upload.set("file", file);
-            const uploaded = await uploadItemImage(upload);
-            if (!uploaded.success) imageFailures += 1;
-          }
+          const upload = new FormData();
+          upload.set("item", item.id);
+          for (const file of files) upload.append("files", file);
+          const uploaded = await uploadItemImages(upload);
+          if (!uploaded.success) imageFailures += files.length;
         }
       }
       toast.success(
@@ -123,7 +119,6 @@ export function RequestForm({ clients }: { clients: Option[] }) {
       );
       form.reset({
         client: "",
-        requester: "",
         received_via: "",
         received_via_custom: "",
         notes: "",
@@ -157,13 +152,6 @@ export function RequestForm({ clients }: { clients: Option[] }) {
                 <div>
                   <p className="text-sm text-muted-foreground">Client</p>
                   <p className="font-medium">{clientName}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Requester</p>
-                  <p className="font-medium">
-                    {requesters.find((v) => v.id === values.requester)?.label ||
-                      clientName}
-                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">
@@ -256,27 +244,6 @@ export function RequestForm({ clients }: { clients: Option[] }) {
                     {clients.map((client) => (
                       <SelectItem key={client.id} value={client.id}>
                         {client.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field label="Who made the request?">
-                <Select
-                  value={form.watch("requester") || "CLIENT"}
-                  onValueChange={(value) =>
-                    form.setValue("requester", value === "CLIENT" ? "" : value)
-                  }
-                  disabled={!clientId}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Client or contact" />
-                  </SelectTrigger>
-                  <SelectContent className="backdrop-blur-md">
-                    <SelectItem value="CLIENT">The client</SelectItem>
-                    {requesters.map((requester) => (
-                      <SelectItem key={requester.id} value={requester.id}>
-                        {requester.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -459,17 +426,11 @@ export function RequestForm({ clients }: { clients: Option[] }) {
                       accept="image/jpeg,image/png,image/webp"
                       multiple
                       onChange={(event) =>
-                        setImages((current) => ({
-                          ...current,
-                          [index]: Array.from(event.target.files || []).slice(
-                            0,
-                            10,
-                          ),
-                        }))
+                        selectPictures(index, event.target.files)
                       }
                     />
                     <p className="text-xs text-muted-foreground">
-                      JPEG, PNG or WebP; up to 10 images and 10 MB each.
+                      JPEG, PNG or WebP; up to 5 pictures and 5 MB each.
                     </p>
                   </Field>
                 </article>

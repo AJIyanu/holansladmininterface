@@ -21,7 +21,7 @@ export function TrackerCards({ items }: { items: RequestedItem[] }) {
       {items.map((item) => (
         <Link
           key={item.id}
-          href={`/dashboard/procurement/items/${item.id}`}
+          href={`/dashboard/procurement/requesttracks/items/${item.id}`}
           className="group rounded-2xl border bg-card p-5 shadow-sm transition hover:border-primary/40"
         >
           <div className="flex items-start justify-between gap-3">
@@ -36,7 +36,9 @@ export function TrackerCards({ items }: { items: RequestedItem[] }) {
                 {item.code}
               </p>
             </div>
-            <Badge variant="secondary">{titleCase(item.status)}</Badge>
+            <Badge className={statusClass(item.status)}>
+              {titleCase(item.status)}
+            </Badge>
           </div>
           <div className="mt-6">
             <div className="flex items-center">
@@ -65,6 +67,16 @@ export function TrackerCards({ items }: { items: RequestedItem[] }) {
       ))}
     </div>
   );
+}
+
+function statusClass(status: RequestedItem["status"]) {
+  return {
+    OPEN: "border-info-border bg-info-subtle text-info-content",
+    CLOSED:
+      "border-destructive-border bg-destructive-subtle text-destructive-content",
+    DELIVERED: "border-success-border bg-success-subtle text-success-content",
+    SUSPENDED: "border-warning-border bg-warning-subtle text-warning-content",
+  }[status];
 }
 
 function Milestone({ active, label }: { active: boolean; label: string }) {

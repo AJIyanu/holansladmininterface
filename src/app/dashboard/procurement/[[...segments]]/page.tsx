@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProcurementFilters } from "@/features/procurement/Filters";
+import { AnalyticsDashboard } from "@/features/procurement/AnalyticsDashboard";
 import { RequestCards } from "@/features/procurement/RequestCards";
 import { RequestForm } from "@/features/procurement/RequestForm";
 import { TrackerCards } from "@/features/procurement/TrackerCards";
@@ -28,9 +29,31 @@ type Props = {
 export default async function ProcurementPage({ params, searchParams }: Props) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
-  const { segments = [] } = await params;
+  const { segments: routeSegments = [] } = await params;
   const search = await searchParams;
-  if (segments[0] === "requests" && segments.length === 1) {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(search)) {
+    if (Array.isArray(value)) {
+      for (const entry of value) query.append(key, entry);
+    } else if (value !== undefined) {
+      query.append(key, value);
+    }
+  }
+  const suffix = query.size ? `?${query}` : "";
+  if (["requests", "items", "analytics"].includes(routeSegments[0])) {
+    redirect(
+      `/dashboard/procurement/requesttracks/${routeSegments.map(encodeURIComponent).join("/")}${suffix}`,
+    );
+  }
+  if (
+    routeSegments.length === 0 ||
+    (routeSegments[0] === "requesttracks" && routeSegments.length === 1)
+  ) {
+    redirect(`/dashboard/procurement/requesttracks/analytics${suffix}`);
+  }
+  const isRequestTracks = routeSegments[0] === "requesttracks";
+  const segments = isRequestTracks ? routeSegments.slice(1) : routeSegments;
+  if (isRequestTracks && segments[0] === "requests" && segments.length === 1) {
     if (!hasPermission(user, "procurement.itemrequest.view"))
       redirect("/dashboard/unauthorized");
     const query = queryString(search, [
@@ -71,7 +94,7 @@ export default async function ProcurementPage({ params, searchParams }: Props) {
       </main>
     );
   }
-  if (segments[0] === "items" && segments.length === 1) {
+  if (isRequestTracks && segments[0] === "items" && segments.length === 1) {
     if (!hasPermission(user, "procurement.itemtracker.view"))
       redirect("/dashboard/unauthorized");
     const query = queryString(search, [
@@ -106,7 +129,7 @@ export default async function ProcurementPage({ params, searchParams }: Props) {
       </main>
     );
   }
-  if (segments[0] === "items" && segments[1]) {
+  if (isRequestTracks && segments[0] === "items" && segments.length === 2) {
     if (!hasPermission(user, "procurement.itemtracker.view"))
       redirect("/dashboard/unauthorized");
     const item = await trackerDetail(segments[1]);
@@ -115,24 +138,34 @@ export default async function ProcurementPage({ params, searchParams }: Props) {
         item={item}
         canAdd={hasPermission(user, "procurement.itemactivity.create")}
         canChangeStatus={hasPermission(user, "procurement.itemstatus.edit")}
+        canEdit={hasPermission(user, "procurement.requesteditem.edit")}
+        canAddPictures={hasPermission(
+          user,
+          "procurement.requesteditemimage.create",
+        )}
+        canDeletePictures={hasPermission(
+          user,
+          "procurement.requesteditemimage.delete",
+        )}
       />
     );
   }
-  if (segments[0] === "analytics" && segments.length === 1) {
+  if (isRequestTracks && segments[0] === "analytics" && segments.length === 1) {
     if (
       !hasPermission(user, "procurement.itemrequest.view") &&
       !hasPermission(user, "procurement.itemtracker.view")
     )
       redirect("/dashboard/unauthorized");
-    return <UnderDevelopment title="Analytics" />;
+    return <AnalyticsDashboard />;
   }
-  const futureTitle = futureProcurementTitle(segments, search);
+  const futureTitle = isRequestTracks
+    ? undefined
+    : futureProcurementTitle(segments, search);
   if (futureTitle) {
     if (!user.is_staff && !user.is_superuser)
       redirect("/dashboard/unauthorized");
     return <UnderDevelopment title={futureTitle} />;
   }
-  if (segments.length === 0) redirect("/dashboard/procurement/requests");
   notFound();
 }
 
@@ -261,7 +294,7 @@ function UnderDevelopment({ title }: { title: string }) {
           redesigned in order after its business rules are approved.
         </p>
         <Button asChild variant="outline" className="mt-8">
-          <Link href="/dashboard/procurement/requests">
+          <Link href="/dashboard/procurement/requesttracks/requests">
             <ArrowLeft className="size-4" /> Return to item requests
           </Link>
         </Button>

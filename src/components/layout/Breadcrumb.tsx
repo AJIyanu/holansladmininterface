@@ -20,6 +20,7 @@ const routeNameMap: Record<string, string> = {
   projects: "Project Plans",
   reports: "Status Reports",
   analytics: "Analytics",
+  requesttracks: "Request and Tracker",
   deliverables: "Deliverables",
   files: "Files",
   assets: "Assets",

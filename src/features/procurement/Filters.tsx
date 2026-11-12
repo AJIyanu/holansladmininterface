@@ -37,7 +37,7 @@ export function ProcurementFilters({
       query.set(kind === "requests" ? "received_via" : "status", state);
     query.set("ordering", ordering);
     router.push(
-      `/dashboard/procurement/${kind === "requests" ? "requests" : "items"}?${query}`,
+      `/dashboard/procurement/requesttracks/${kind === "requests" ? "requests" : "items"}?${query}`,
     );
   }
   return (
@@ -114,7 +114,7 @@ export function ProcurementFilters({
           variant="outline"
           onClick={() =>
             router.push(
-              `/dashboard/procurement/${kind === "requests" ? "requests" : "items"}`,
+              `/dashboard/procurement/requesttracks/${kind === "requests" ? "requests" : "items"}`,
             )
           }
         >

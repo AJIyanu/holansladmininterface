@@ -42,8 +42,7 @@ export function RequestCards({ requests }: { requests: ItemRequest[] }) {
                   {request.client_name}
                 </h2>
                 <p className="mt-1 text-sm">
-                  Requested by {request.requester_name} · Received by{" "}
-                  {request.created_by_name}
+                  Registered by {request.created_by_name}
                 </p>
               </div>
               <Badge variant="secondary">
@@ -136,11 +135,6 @@ function ItemDialog({
                 icon={<UserRound />}
               />
               <Detail
-                label="Who made the request"
-                value={item.requester_name}
-                icon={<UserRound />}
-              />
-              <Detail
                 label="Registered"
                 value={formatDate(item.received_at, true)}
                 icon={<CalendarClock />}
@@ -188,7 +182,7 @@ function ItemDialog({
               </dl>
             </section>
             <Button asChild>
-              <a href={`/dashboard/procurement/items/${item.id}`}>
+              <a href={`/dashboard/procurement/requesttracks/items/${item.id}`}>
                 Open item tracker
               </a>
             </Button>

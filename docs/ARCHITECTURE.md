@@ -33,16 +33,29 @@ Tasks, comments, reminders and dashboard notifications are implemented. Procurem
 and finance links/proxy remnants do not imply implemented business functionality.
 Consult backend app docs and stabilize backend contracts before dependent UI work.
 
-The first Procurement navigation group now has Item Requests, Item Trackers and
-Analytics. The remaining Sourcing & Quotations, Purchase Orders, Purchasing,
+The first Procurement navigation group is **Request and Tracker**, with Analytics
+first, followed by Item Requests and Item Trackers. Their routes are
+`/dashboard/procurement/requesttracks/analytics`,
+`/dashboard/procurement/requesttracks/requests` and
+`/dashboard/procurement/requesttracks/items` (including `items/{id}` details).
+Legacy page URLs redirect to these routes while retaining query parameters; the
+Procurement and Request and Tracker roots open Analytics. The remaining Sourcing & Quotations, Purchase Orders, Purchasing,
 Delivery & Rejections, Finance Requests and Documents roadmap groups remain
 visible with under-development destinations until redesigned in order. Item
 Requests supports permission-gated CRM-client registration of multiple independent
 items, review-before-save, private sample images, server filtering and paginated
 detailed cards. Item Trackers exposes one activity journey per item with attributed
-activities, comments and controlled completion status. Authenticated work uses
+activities in chronological order, comments, audited item-property edits and
+controlled completion status. Open/suspended trackers also manage up to five
+private 5 MB picture samples, with reviewed removal and attributed add/remove
+activities. The CRM client is the request source of truth; no
+separate requester field is collected. Authenticated work uses
 Server Components and Server Actions; private images stream through a protected
-Route Handler. Analytics remains under development pending its approved measures.
+Route Handler. Analytics uses shadcn Card/Chart components for six period metrics,
+open-item comparison, monthly deliveries, client demand and client-selectable
+delivery ratios. Summary and AI requests have backend stale-cache invalidation plus
+session request deduplication; AI analysis uses the same independent timeout/retry
+pattern as Accounts security insights.
 
 Ledger was reset on 2026-11-03. Its first rebuild feature is the NGN cash book at
 `/dashboard/ledger/cashbook/entry` and read-only paired journal at `/dashboard/ledger/cashbook/journal`.

@@ -168,24 +168,30 @@ export const dashboardNavigation: NavigationSection[] = [
     title: "Procurement",
     items: [
       {
-        title: "Item Requests",
-        href: "/dashboard/procurement/requests",
+        title: "Request and Tracker",
         icon: ClipboardList,
-        permission: "procurement.itemrequest.view",
-      },
-      {
-        title: "Item Trackers",
-        href: "/dashboard/procurement/items",
-        icon: PackageCheck,
-        permission: "procurement.itemtracker.view",
-      },
-      {
-        title: "Analytics",
-        href: "/dashboard/procurement/analytics",
-        icon: Activity,
-        permission: [
-          "procurement.itemrequest.view",
-          "procurement.itemtracker.view",
+        children: [
+          {
+            title: "Analytics",
+            href: "/dashboard/procurement/requesttracks/analytics",
+            icon: Activity,
+            permission: [
+              "procurement.itemrequest.view",
+              "procurement.itemtracker.view",
+            ],
+          },
+          {
+            title: "Item Requests",
+            href: "/dashboard/procurement/requesttracks/requests",
+            icon: ClipboardList,
+            permission: "procurement.itemrequest.view",
+          },
+          {
+            title: "Item Trackers",
+            href: "/dashboard/procurement/requesttracks/items",
+            icon: PackageCheck,
+            permission: "procurement.itemtracker.view",
+          },
         ],
       },
       {
@@ -494,9 +500,9 @@ function canSeeNavigationLink(
     return false;
   if (
     href?.startsWith("/dashboard/procurement/") &&
-    !href.startsWith("/dashboard/procurement/requests") &&
-    !href.startsWith("/dashboard/procurement/items") &&
-    !href.startsWith("/dashboard/procurement/analytics")
+    !href.startsWith("/dashboard/procurement/requesttracks/requests") &&
+    !href.startsWith("/dashboard/procurement/requesttracks/items") &&
+    !href.startsWith("/dashboard/procurement/requesttracks/analytics")
   )
     return user.is_staff || user.is_superuser;
   return hasPermission(user, permission);

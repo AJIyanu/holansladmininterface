@@ -5,8 +5,8 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth-server";
 import { hasPermission } from "@/lib/permissions";
 import { serverFetch, ServerFetchError } from "@/lib/server-fetch";
-import { itemRequestSchema } from "./schema";
-import type { ItemRequest, Option } from "./types";
+import { itemEditSchema, itemRequestSchema } from "./schema";
+import type { ItemRequest } from "./types";
 
 type Result<T = undefined> = {
   success: boolean;
@@ -50,7 +50,6 @@ export async function createItemRequest(
       method: "POST",
       body: JSON.stringify({
         ...parsed.data,
-        requester: parsed.data.requester || null,
         items: parsed.data.items.map((item) => ({
           ...item,
           deadline: item.deadline || null,
@@ -58,28 +57,33 @@ export async function createItemRequest(
         })),
       }),
     });
-    revalidatePath("/dashboard/procurement/requests");
-    revalidatePath("/dashboard/procurement/items");
+    revalidatePath("/dashboard/procurement/requesttracks/requests");
+    revalidatePath("/dashboard/procurement/requesttracks/items");
     return { success: true, message: "Item request registered.", data };
   } catch (error) {
     return errorResult(error);
   }
 }
 
-export async function uploadItemImage(formData: FormData): Promise<Result> {
+export async function uploadItemImages(formData: FormData): Promise<Result> {
   const item = formData.get("item");
-  const file = formData.get("file");
+  const files = formData
+    .getAll("files")
+    .filter((file): file is File => file instanceof File);
   if (
     typeof item !== "string" ||
     !z.string().uuid().safeParse(item).success ||
-    !(file instanceof File)
+    files.length < 1 ||
+    files.length > 5
   )
-    return { success: false, message: "Choose a valid item image." };
+    return { success: false, message: "Choose between one and five pictures." };
+  if (files.some((file) => file.size > 5 * 1024 * 1024))
+    return { success: false, message: "Each picture must be 5 MB or smaller." };
   const user = await getCurrentUser();
   if (!user || !hasPermission(user, "procurement.requesteditemimage.create"))
     return { success: false, message: "You cannot upload item images." };
   const upload = new FormData();
-  upload.set("file", file);
+  for (const file of files) upload.append("files", file);
   const caption = formData.get("caption");
   if (typeof caption === "string") upload.set("caption", caption);
   try {
@@ -87,24 +91,77 @@ export async function uploadItemImage(formData: FormData): Promise<Result> {
       method: "POST",
       body: upload,
     });
-    revalidatePath("/dashboard/procurement/requests");
-    revalidatePath(`/dashboard/procurement/items/${item}`);
-    return { success: true, message: "Image uploaded." };
+    revalidatePath("/dashboard/procurement/requesttracks/requests");
+    revalidatePath(`/dashboard/procurement/requesttracks/items/${item}`);
+    return {
+      success: true,
+      message: `${files.length} picture sample${files.length === 1 ? "" : "s"} added.`,
+    };
   } catch (error) {
     return errorResult(error);
   }
 }
 
-export async function getRequesterOptions(client: string): Promise<Option[]> {
-  if (!z.string().uuid().safeParse(client).success) return [];
+export async function removeItemImages(input: unknown): Promise<Result> {
+  const parsed = z
+    .object({
+      item: z.string().uuid(),
+      images: z.array(z.string().uuid()).min(1).max(5),
+    })
+    .safeParse(input);
+  if (!parsed.success)
+    return { success: false, message: "Choose pictures to remove." };
   const user = await getCurrentUser();
-  if (!user || !hasPermission(user, "procurement.itemrequest.view")) return [];
+  if (!user || !hasPermission(user, "procurement.requesteditemimage.delete"))
+    return { success: false, message: "You cannot remove item pictures." };
   try {
-    return await serverFetch<Option[]>(
-      `/procurement/item-requests/requester-options/?client=${encodeURIComponent(client)}`,
+    await serverFetch(`/procurement/items/${parsed.data.item}/images/`, {
+      method: "DELETE",
+      body: JSON.stringify({ images: parsed.data.images }),
+    });
+    revalidatePath(
+      `/dashboard/procurement/requesttracks/items/${parsed.data.item}`,
     );
-  } catch {
-    return [];
+    revalidatePath("/dashboard/procurement/requesttracks/items");
+    revalidatePath("/dashboard/procurement/requesttracks/requests");
+    return {
+      success: true,
+      message: `${parsed.data.images.length} picture sample${parsed.data.images.length === 1 ? "" : "s"} removed.`,
+    };
+  } catch (error) {
+    return errorResult(error);
+  }
+}
+
+export async function editRequestedItem(input: unknown): Promise<Result> {
+  const parsed = z
+    .object({ item: z.string().uuid(), values: itemEditSchema })
+    .safeParse(input);
+  if (!parsed.success)
+    return { success: false, message: "Review the item details." };
+  const user = await getCurrentUser();
+  if (!user || !hasPermission(user, "procurement.requesteditem.edit"))
+    return { success: false, message: "You cannot edit requested items." };
+  try {
+    await serverFetch(`/procurement/items/${parsed.data.item}/edit/`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        ...parsed.data.values,
+        deadline: parsed.data.values.deadline || null,
+        quantity: String(parsed.data.values.quantity),
+      }),
+    });
+    revalidatePath(
+      `/dashboard/procurement/requesttracks/items/${parsed.data.item}`,
+    );
+    revalidatePath("/dashboard/procurement/requesttracks/items");
+    revalidatePath("/dashboard/procurement/requesttracks/requests");
+    return {
+      success: true,
+      message: "Item updated and recorded in its activity history.",
+    };
+  } catch (error) {
+    return errorResult(error);
   }
 }
 
@@ -129,8 +186,8 @@ export async function addTrackerActivity(input: unknown): Promise<Result> {
       method: "POST",
       body: JSON.stringify(body),
     });
-    revalidatePath(`/dashboard/procurement/items/${item}`);
-    revalidatePath("/dashboard/procurement/items");
+    revalidatePath(`/dashboard/procurement/requesttracks/items/${item}`);
+    revalidatePath("/dashboard/procurement/requesttracks/items");
     return { success: true, message: "Activity added to the tracker." };
   } catch (error) {
     return errorResult(error);
@@ -156,8 +213,8 @@ export async function changeTrackerStatus(input: unknown): Promise<Result> {
       method: "POST",
       body: JSON.stringify(body),
     });
-    revalidatePath(`/dashboard/procurement/items/${item}`);
-    revalidatePath("/dashboard/procurement/items");
+    revalidatePath(`/dashboard/procurement/requesttracks/items/${item}`);
+    revalidatePath("/dashboard/procurement/requesttracks/items");
     return { success: true, message: "Item status updated." };
   } catch (error) {
     return errorResult(error);

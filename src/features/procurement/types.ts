@@ -32,12 +32,11 @@ export type RequestedItem = {
   brand: string;
   quantity: string;
   unit: string;
-  urgency: string;
+  urgency: "LOW" | "NORMAL" | "HIGH" | "URGENT" | "CRITICAL";
   deadline: string | null;
   status: "OPEN" | "SUSPENDED" | "DELIVERED" | "CLOSED";
   completed_at: string | null;
   client_name: string;
-  requester_name: string;
   received_via: string;
   received_via_custom: string;
   received_at: string;
@@ -53,8 +52,6 @@ export type ItemRequest = {
   id: string;
   client: string;
   client_name: string;
-  requester: string | null;
-  requester_name: string;
   received_via: string;
   received_via_custom: string;
   notes: string;

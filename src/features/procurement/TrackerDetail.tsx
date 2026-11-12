@@ -1,9 +1,22 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import Image from "next/image";
 import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Plus, UserRound } from "lucide-react";
+import {
+  CalendarIcon,
+  Download,
+  Images,
+  Pencil,
+  Plus,
+  UserRound,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +26,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -22,18 +41,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { addTrackerActivity, changeTrackerStatus } from "./actions";
+import { cn } from "@/lib/utils";
+import {
+  addTrackerActivity,
+  changeTrackerStatus,
+  editRequestedItem,
+  removeItemImages,
+  uploadItemImages,
+} from "./actions";
 import { formatDate, formatQuantity, titleCase } from "./format";
+import { itemEditSchema, type ItemEditValues } from "./schema";
 import type { TrackerDetail as Detail } from "./types";
 
 export function TrackerDetail({
   item,
   canAdd,
   canChangeStatus,
+  canEdit,
+  canAddPictures,
+  canDeletePictures,
 }: {
   item: Detail;
   canAdd: boolean;
   canChangeStatus: boolean;
+  canEdit: boolean;
+  canAddPictures: boolean;
+  canDeletePictures: boolean;
 }) {
   const complete = item.status === "DELIVERED" || item.status === "CLOSED";
   return (
@@ -45,11 +78,19 @@ export function TrackerDetail({
           </p>
           <h1 className="mt-1 font-heading text-3xl font-bold">{item.name}</h1>
           <p className="mt-2 text-muted-foreground">
-            Requested by {item.requester_name} · Registered by{" "}
-            {item.created_by_name} on {formatDate(item.received_at, true)}
+            Registered by {item.created_by_name} on{" "}
+            {formatDate(item.received_at, true)}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          {(canAddPictures || canDeletePictures) && !complete && (
+            <PictureManager
+              item={item}
+              canAdd={canAddPictures}
+              canDelete={canDeletePictures}
+            />
+          )}
+          {canEdit && !complete && <EditItemDialog item={item} />}
           {canAdd && !complete && <ActivityDialog item={item} />}
           {canChangeStatus && !complete && <StatusDialog item={item} />}
         </div>
@@ -128,6 +169,511 @@ export function TrackerDetail({
         </aside>
       </section>
     </main>
+  );
+}
+
+function PictureManager({
+  item,
+  canAdd,
+  canDelete,
+}: {
+  item: Detail;
+  canAdd: boolean;
+  canDelete: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [pending, startTransition] = useTransition();
+  const remaining = 5 - item.images.length;
+
+  function chooseFiles(list: FileList | null) {
+    const next = Array.from(list || []);
+    if (next.length > remaining) {
+      toast.error(
+        `You can add only ${remaining} more picture${remaining === 1 ? "" : "s"}.`,
+      );
+      return;
+    }
+    if (next.some((file) => file.size > 5 * 1024 * 1024)) {
+      toast.error("Each picture must be 5 MB or smaller.");
+      return;
+    }
+    setFiles(next);
+  }
+
+  function upload() {
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.set("item", item.id);
+      for (const file of files) formData.append("files", file);
+      const result = await uploadItemImages(formData);
+      if (result.success) {
+        toast.success(result.message);
+        setFiles([]);
+        setOpen(false);
+      } else toast.error(result.message);
+    });
+  }
+
+  function remove() {
+    startTransition(async () => {
+      const result = await removeItemImages({
+        item: item.id,
+        images: selected,
+      });
+      if (result.success) {
+        toast.success(result.message);
+        setSelected([]);
+        setConfirmingDelete(false);
+        setOpen(false);
+      } else toast.error(result.message);
+    });
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <Images className="size-4" /> Manage pictures
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Manage picture samples</DialogTitle>
+          <DialogDescription>
+            Up to five JPEG, PNG or WebP pictures, with a maximum of 5 MB each.
+            Additions and removals become attributed tracker activities.
+          </DialogDescription>
+        </DialogHeader>
+        {item.images.length ? (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {item.images.map((picture) => {
+              const checked = selected.includes(picture.id);
+              return (
+                <article
+                  key={picture.id}
+                  className="overflow-hidden rounded-xl border"
+                >
+                  <a
+                    href={`/api/procurement/item-images/${picture.id}/download`}
+                    target="_blank"
+                    className="relative block h-40 bg-muted"
+                  >
+                    <Image
+                      src={`/api/procurement/item-images/${picture.id}/download`}
+                      alt={picture.caption || picture.filename}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </a>
+                  <div className="space-y-2 p-3">
+                    <p className="truncate text-sm font-medium">
+                      {picture.filename}
+                    </p>
+                    <div className="flex items-center justify-between gap-2">
+                      <Button asChild variant="ghost" size="sm">
+                        <a
+                          href={`/api/procurement/item-images/${picture.id}/download`}
+                          target="_blank"
+                        >
+                          <Download className="size-4" /> Download
+                        </a>
+                      </Button>
+                      {canDelete && (
+                        <label className="flex items-center gap-2 text-sm">
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(value) =>
+                              setSelected((current) =>
+                                value
+                                  ? [...current, picture.id]
+                                  : current.filter((id) => id !== picture.id),
+                              )
+                            }
+                          />
+                          Remove
+                        </label>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="rounded-xl border border-dashed p-6 text-center text-muted-foreground">
+            No picture samples have been added.
+          </p>
+        )}
+        {canAdd && remaining > 0 && (
+          <div className="space-y-2 rounded-xl border p-4">
+            <Label>Add pictures · {remaining} remaining</Label>
+            <Input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              onChange={(event) => chooseFiles(event.target.files)}
+            />
+            {files.length > 0 && (
+              <p className="text-sm text-muted-foreground">
+                {files.length} picture{files.length === 1 ? "" : "s"} selected
+              </p>
+            )}
+          </div>
+        )}
+        {confirmingDelete ? (
+          <div className="rounded-xl border border-destructive-border bg-destructive-subtle p-4 text-destructive-content">
+            <p className="font-medium">
+              Remove {selected.length} picture sample
+              {selected.length === 1 ? "" : "s"}?
+            </p>
+            <p className="mt-1 text-sm">
+              The stored files will be deleted and the action recorded in the
+              journey.
+            </p>
+          </div>
+        ) : null}
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          {canDelete &&
+            selected.length > 0 &&
+            (confirmingDelete ? (
+              <Button variant="destructive" disabled={pending} onClick={remove}>
+                {pending ? "Removing…" : "Confirm removal"}
+              </Button>
+            ) : (
+              <Button
+                variant="destructive"
+                onClick={() => setConfirmingDelete(true)}
+              >
+                Review removal
+              </Button>
+            ))}
+          {canAdd && files.length > 0 && !confirmingDelete && (
+            <Button disabled={pending} onClick={upload}>
+              {pending ? "Uploading…" : "Add pictures"}
+            </Button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+const editUnits = [
+  "piece",
+  "set",
+  "pair",
+  "box",
+  "carton",
+  "pack",
+  "kilogram",
+  "litre",
+  "metre",
+  "roll",
+];
+
+function EditItemDialog({ item }: { item: Detail }) {
+  const [open, setOpen] = useState(false);
+  const [reviewing, setReviewing] = useState(false);
+  const [pending, startTransition] = useTransition();
+  const form = useForm<ItemEditValues>({
+    resolver: zodResolver(itemEditSchema),
+    defaultValues: {
+      name: item.name,
+      description: item.description,
+      specification: item.specification,
+      brand: item.brand,
+      quantity: Number(item.quantity),
+      unit: item.unit,
+      urgency: item.urgency,
+      deadline: item.deadline || "",
+    },
+  });
+  // React Hook Form watch drives the live edit-review comparison.
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const values = form.watch();
+  const changes = itemChanges(item, values);
+
+  function save() {
+    startTransition(async () => {
+      const result = await editRequestedItem({ item: item.id, values });
+      if (result.success) {
+        toast.success(result.message);
+        setOpen(false);
+        setReviewing(false);
+      } else toast.error(result.message);
+    });
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) setReviewing(false);
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <Pencil className="size-4" /> Edit item
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
+        {reviewing ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Review item changes</DialogTitle>
+              <DialogDescription>
+                These changes will be saved as a new attributed activity.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              {changes.map((change) => (
+                <div key={change.label} className="rounded-xl border p-4">
+                  <p className="font-medium">{change.label}</p>
+                  <div className="mt-2 grid gap-3 text-sm sm:grid-cols-2">
+                    <div>
+                      <p className="text-muted-foreground">Previous</p>
+                      <p className="break-words">{change.from || "Not set"}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">New</p>
+                      <p className="break-words">{change.to || "Not set"}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setReviewing(false)}>
+                Edit
+              </Button>
+              <Button disabled={pending || changes.length === 0} onClick={save}>
+                {pending ? "Saving…" : "Confirm changes"}
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+          <form
+            className="space-y-4"
+            onSubmit={form.handleSubmit(() => setReviewing(true))}
+          >
+            <DialogHeader>
+              <DialogTitle>Edit requested item</DialogTitle>
+              <DialogDescription>
+                Only changed properties will appear in the new tracker activity.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <EditField
+                label="Item name"
+                error={form.formState.errors.name?.message}
+              >
+                <Input {...form.register("name")} />
+              </EditField>
+              <EditField label="Brand">
+                <Input {...form.register("brand")} />
+              </EditField>
+              <EditField
+                label="Description"
+                className="sm:col-span-2"
+                error={form.formState.errors.description?.message}
+              >
+                <Textarea {...form.register("description")} />
+              </EditField>
+              <EditField label="Specification" className="sm:col-span-2">
+                <Textarea {...form.register("specification")} />
+              </EditField>
+              <EditField
+                label="Quantity"
+                error={form.formState.errors.quantity?.message}
+              >
+                <Input
+                  type="number"
+                  min="0.0001"
+                  step="any"
+                  {...form.register("quantity", { valueAsNumber: true })}
+                />
+              </EditField>
+              <EditField label="Unit">
+                <EditUnit
+                  value={values.unit}
+                  onChange={(unit) =>
+                    form.setValue("unit", unit, { shouldValidate: true })
+                  }
+                />
+              </EditField>
+              <EditField label="Urgency">
+                <Select
+                  value={values.urgency}
+                  onValueChange={(urgency) =>
+                    form.setValue(
+                      "urgency",
+                      urgency as ItemEditValues["urgency"],
+                    )
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="backdrop-blur-md">
+                    {["LOW", "NORMAL", "HIGH", "URGENT", "CRITICAL"].map(
+                      (urgency) => (
+                        <SelectItem key={urgency} value={urgency}>
+                          {titleCase(urgency)}
+                        </SelectItem>
+                      ),
+                    )}
+                  </SelectContent>
+                </Select>
+              </EditField>
+              <EditField label="Deadline">
+                <EditDeadline
+                  value={values.deadline}
+                  onChange={(deadline) => form.setValue("deadline", deadline)}
+                />
+              </EditField>
+            </div>
+            {changes.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                Change at least one item property to continue.
+              </p>
+            )}
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={changes.length === 0}>
+                Review changes
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function itemChanges(item: Detail, values: ItemEditValues) {
+  const rows = [
+    ["Item name", item.name, values.name],
+    ["Description", item.description, values.description],
+    ["Specification", item.specification, values.specification],
+    ["Brand", item.brand, values.brand],
+    ["Quantity", Number(item.quantity), values.quantity],
+    ["Unit", item.unit, values.unit],
+    ["Urgency", item.urgency, values.urgency],
+    ["Deadline", item.deadline || "", values.deadline],
+  ] as const;
+  return rows
+    .filter(([, from, to]) => from !== to)
+    .map(([label, from, to]) => ({
+      label,
+      from: String(from),
+      to: String(to),
+    }));
+}
+
+function EditField({
+  label,
+  error,
+  className,
+  children,
+}: {
+  label: string;
+  error?: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={cn("space-y-2", className)}>
+      <Label>{label}</Label>
+      {children}
+      {error && <p className="text-sm text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+function EditUnit({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const custom = !editUnits.includes(value);
+  return (
+    <div className="space-y-2">
+      <Select
+        value={custom ? "CUSTOM" : value}
+        onValueChange={(next) => onChange(next === "CUSTOM" ? "" : next)}
+      >
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent className="backdrop-blur-md">
+          {editUnits.map((unit) => (
+            <SelectItem key={unit} value={unit}>
+              {unit}
+            </SelectItem>
+          ))}
+          <SelectItem value="CUSTOM">Custom unit</SelectItem>
+        </SelectContent>
+      </Select>
+      {custom && (
+        <Input
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder="Enter custom unit"
+        />
+      )}
+    </div>
+  );
+}
+
+function EditDeadline({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const date = value ? new Date(`${value}T12:00:00`) : undefined;
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          className={cn(
+            "w-full justify-start font-normal",
+            !value && "text-muted-foreground",
+          )}
+        >
+          <CalendarIcon className="size-4" />
+          {date ? format(date, "PPP") : "Choose date"}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0 backdrop-blur-md">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={(selected) =>
+            onChange(selected ? format(selected, "yyyy-MM-dd") : "")
+          }
+        />
+      </PopoverContent>
+    </Popover>
   );
 }
 
